@@ -11,7 +11,7 @@ export default function AppContainer({ title, children }) {
       </Head>
       <Toaster position="top-center" reverseOrder={false} />
       <Header />
-      {children}
+      <main>{children}</main>
       {/* TODO: add player */}
     </div>
   );
