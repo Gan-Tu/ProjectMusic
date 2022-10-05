@@ -24,7 +24,7 @@ export default function Header() {
             objectPosition="left"
             alt="Project Music logo"
             onClick={() => router.push("/")}
-          />
+            />
         </div>
       </div>
 

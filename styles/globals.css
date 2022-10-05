@@ -2,15 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
-/* @layer base {
-  html {
-    font-family: Gotham, sans-serif;
-    font-weight: bold;
-  }
-} */
-
 @layer utilities {
   .transparent-selection {
     @apply selection:bg-transparent select-none;
+  }
+  .artists-alternate-row-reverse {
+    @apply even:flex-row-reverse;
+    @apply md:even:flex-row;
+
+    @apply md:[&:nth-child(4n+3)]:flex-row-reverse;
+    @apply md:[&:nth-child(4n+4)]:flex-row-reverse;
+    @apply md:[&:nth-child(4n+5)]:flex-row;
+    @apply xl:[&:nth-child(4n+3)]:flex-row;
+    @apply xl:[&:nth-child(4n+4)]:flex-row;
+    @apply xl:[&:nth-child(4n+5)]:flex-row;
+
+    @apply xl:[&:nth-child(6n+4)]:flex-row-reverse;
+    @apply xl:[&:nth-child(6n+5)]:flex-row-reverse;
+    @apply xl:[&:nth-child(6n+6)]:flex-row-reverse;
   }
 }
