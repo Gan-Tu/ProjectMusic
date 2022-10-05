@@ -41,7 +41,7 @@ export default function ArtistProfile({ artistsData }) {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 h-96 bg-neutral-900 transparent-selection">
-        <div className="flex items-center px-20 space-x-10 my-10">
+        <div className="flex items-center space-x-10 my-10 px-5 sm:px-20">
           <div className="relative h-52 w-52 aspect-square cursor-pointer">
             <Image
               src={artistsData.imgUrl}
@@ -66,7 +66,7 @@ export default function ArtistProfile({ artistsData }) {
             </div>
           </div>
         </div>
-        <div className="py-10 px-20 bg-gradient-to-bl from-neutral-900 to-neutral-800">
+        <div className="py-10 bg-gradient-to-bl from-neutral-900 to-neutral-800 px-5 sm:px-20">
           <h1 className="uppercase text-pmred font-semibold">Top 10 Artists</h1>
           <div className="grid grid-cols-2 mt-10">
             <ul className="text-white uppercase space-y-5 font-medium text-sm">
