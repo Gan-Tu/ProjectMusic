@@ -1,14 +1,12 @@
 import Image from "next/image";
 import AppContainer from "../../components/AppContainer";
-import { useRouter } from "next/router";
 import { ArrowLeftIcon } from "@heroicons/react/solid";
 import Link from "next/link";
+import { getArtistData } from "../../utils/getFakeArtistsData";
 
-export default function ArtistProfile() {
-  const router = useRouter();
-  // const { name } = router.query;
+export default function ArtistProfile({ artistsData }) {
   return (
-    <AppContainer title={"Nick Breton - Profile"}>
+    <AppContainer title={`${artistsData.name} - Profile`}>
       <div className="uppercase p-8 bg-neutral-800 text-white flex text-center font-semibold text-sm transparent-selection  place-content-between drop-shadow-4">
         <div className="flex space-x-10">
           <Link href="/artists">
@@ -46,7 +44,7 @@ export default function ArtistProfile() {
         <div className="flex items-center px-20 space-x-10 my-10">
           <div className="relative h-52 w-52 aspect-square cursor-pointer">
             <Image
-              src="https://images.unsplash.com/photo-1663369304150-69821bd08bb3?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1160&q=80"
+              src={artistsData.imgUrl}
               layout="fill"
               objectFit="contain"
               objectPosition="left"
@@ -56,7 +54,7 @@ export default function ArtistProfile() {
           <div className="text-white flex flex-col items-start">
             <p className="cursor-pointer font-light uppercase">Administrator</p>
             <p className="cursor-pointer font-extrabold text-3xl py-4">
-              Nick Breton
+              {artistsData.name || "Nick Breton"}
             </p>
             <div className="flex space-x-4 py-2">
               <button className="bg-pmred rounded-full cursor-pointer px-4 pt-2">
@@ -121,4 +119,11 @@ export default function ArtistProfile() {
     </AppContainer>
   );
 }
-0;
+
+export async function getServerSideProps({ query }) {
+  return {
+    props: {
+      artistsData: getArtistData(query.id)
+    }
+  };
+}
