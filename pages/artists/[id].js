@@ -4,10 +4,29 @@ import { ArrowLeftIcon } from "@heroicons/react/solid";
 import Link from "next/link";
 import { getArtistData } from "../../utils/getFakeArtistsData";
 
+function AlbumCard({ imgUrl, num }) {
+  return (
+    <div className="cursor-pointer m-1 relative">
+      <div className="z-10 absolute bg-pmred text-white px-3 py-2 text-sm top-3 left-3 rounded-sm">
+        {num < 9 ? `0${num + 1}` : num}
+      </div>
+      <div className="relative aspect-square hover:opacity-90">
+        <Image
+          src={`https://picsum.photos/id/${num * 7}/220`}
+          layout="fill"
+          objectFit="contain"
+          objectPosition="left"
+          alt="Profile Thumbnail"
+        />
+      </div>
+    </div>
+  );
+}
+
 export default function ArtistProfile({ artistsData }) {
   return (
     <AppContainer title={`${artistsData.name} - Profile`}>
-      <div className="min-h-screen">
+      <div className="min-h-screen flex flex-col">
         <div className="uppercase p-8 bg-neutral-800 text-white flex text-center font-semibold text-sm transparent-selection  place-content-between drop-shadow-4">
           <div className="flex space-x-10">
             <Link href="/artists">
@@ -20,9 +39,9 @@ export default function ArtistProfile({ artistsData }) {
             </Link>
             <div className="flex space-x-8 border-l-2 border-neutral-500 pl-10 items-center">
               <p className="text-neutral-500 cursor-pointer">Profile</p>
-              <p className="cursor-pointer">Inbox</p>
-              <p className="cursor-pointer">Credits</p>
-              <p className="cursor-pointer">VIP</p>
+              <p className="cursor-pointer hover:text-neutral-200">Inbox</p>
+              <p className="cursor-pointer hover:text-neutral-200">Credits</p>
+              <p className="cursor-pointer hover:text-neutral-200">VIP</p>
             </div>
           </div>
           <div className="items-center space-x-14 px-8 hidden lg:inline-flex">
@@ -77,65 +96,101 @@ export default function ArtistProfile({ artistsData }) {
               <ul className="text-white uppercase space-y-5 font-medium text-sm">
                 <li className="cursor-pointer grid grid-cols-6">
                   <span className="text-pmred mw-5 ">01</span>
-                  <span className="flex-1 col-span-5">Taylor Swift</span>
+                  <span className="flex-1 col-span-5 hover:text-neutral-200">
+                    Taylor Swift
+                  </span>
                 </li>
                 <li className="cursor-pointer grid grid-cols-6">
                   <span className="text-pmred mw-5 ">02</span>
-                  <span className="flex-1 col-span-5">Kiesza Hideaway</span>
+                  <span className="flex-1 col-span-5 hover:text-neutral-200">
+                    Kiesza Hideaway
+                  </span>
                 </li>
                 <li className="cursor-pointer grid grid-cols-6">
                   <span className="text-pmred mw-5 ">03</span>
-                  <span className="flex-1 col-span-5">Raign Fix Me</span>
+                  <span className="flex-1 col-span-5 hover:text-neutral-200">
+                    Raign Fix Me
+                  </span>
                 </li>
                 <li className="cursor-pointer grid grid-cols-6">
                   <span className="text-pmred mw-5 ">04</span>
-                  <span className="flex-1 col-span-5">John Newman</span>
+                  <span className="flex-1 col-span-5 hover:text-neutral-200">
+                    John Newman
+                  </span>
                 </li>
                 <li className="cursor-pointer grid grid-cols-6">
                   <span className="text-pmred mw-5 ">05</span>
-                  <span className="flex-1 col-span-5">Linkin Park</span>
+                  <span className="flex-1 col-span-5 hover:text-neutral-200">
+                    Linkin Park
+                  </span>
                 </li>
               </ul>
               <ul className="text-white uppercase space-y-5 font-medium text-sm">
                 <li className="cursor-pointer grid grid-cols-6">
                   <span className="text-pmred mw-5">06</span>
-                  <span className="flex-1 col-span-5">Aloe Blacc</span>
+                  <span className="flex-1 col-span-5 hover:text-neutral-200">
+                    Aloe Blacc
+                  </span>
                 </li>
                 <li className="cursor-pointer grid grid-cols-6">
                   <span className="text-pmred mw-5">07</span>
-                  <span className="flex-1 col-span-5">Mind Vortex</span>
+                  <span className="flex-1 col-span-5 hover:text-neutral-200">
+                    Mind Vortex
+                  </span>
                 </li>
                 <li className="cursor-pointer grid grid-cols-6">
                   <span className="text-pmred mw-5">08</span>
-                  <span className="flex-1 col-span-5">Ellie Goulding</span>
+                  <span className="flex-1 col-span-5 hover:text-neutral-200">
+                    Ellie Goulding
+                  </span>
                 </li>
                 <li className="cursor-pointer grid grid-cols-6">
                   <span className="text-pmred mw-5">09</span>
-                  <span className="flex-1 col-span-5">Armin Van Buuren</span>
+                  <span className="flex-1 col-span-5 hover:text-neutral-200">
+                    Armin Van Buuren
+                  </span>
                 </li>
                 <li className="cursor-pointer grid grid-cols-6">
                   <span className="text-pmred mw-5">10</span>
-                  <span className="flex-1 col-span-5">Three Days Grace</span>
+                  <span className="flex-1 col-span-5 hover:text-neutral-200">
+                    Three Days Grace
+                  </span>
                 </li>
               </ul>
             </div>
           </div>
         </div>
 
-        <div className="bg-white -translate-y-16 shadow-lg max-w-fit p-10 m-auto">
-          <div className="flex space-x-5 justify-center items-center uppercase text-xs text-neutral-700 font-light">
-            <span className="cursor-pointer border-r-2 pr-5 font-semibold text-pmred">
-              Playlist
-            </span>
-            <span className="cursor-pointer border-r-2 pr-5 ">Timeline</span>
-            <span className="cursor-pointer border-r-2 pr-5">Statistics</span>
-            <span className="cursor-pointer border-r-2 pr-5">Purchased</span>
-            <span className="cursor-pointer border-r-2 pr-5">Suggested</span>
-            <span className="cursor-pointer">Rewards</span>
+        <div className="z-50 relative">
+          <div className="bg-white -translate-y-16  max-w-fit p-10 absolute shadow-2xl left-1/4">
+            <div className="flex space-x-5 justify-center items-center uppercase text-xs text-neutral-700 font-light">
+              <span className="cursor-pointer border-r-2 pr-5 font-semibold text-pmred ">
+                Playlist
+              </span>
+              <span className="cursor-pointer border-r-2 pr-5 hover:text-neutral-500">
+                Timeline
+              </span>
+              <span className="cursor-pointer border-r-2 pr-5 hover:text-neutral-500">
+                Statistics
+              </span>
+              <span className="cursor-pointer border-r-2 pr-5 hover:text-neutral-500">
+                Purchased
+              </span>
+              <span className="cursor-pointer border-r-2 pr-5 hover:text-neutral-500">
+                Suggested
+              </span>
+              <span className="cursor-pointer">Rewards</span>
+            </div>
           </div>
         </div>
 
-        <div className="bg-black"></div>
+        <div className="p-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+            {[...Array(35).keys()].map((x) => (
+              <AlbumCard imgUrl={artistsData.imgUrl} key={x} num={x} />
+            ))}
+          </div>
+        </div>
       </div>
     </AppContainer>
   );
