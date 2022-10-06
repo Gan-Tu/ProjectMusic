@@ -2,7 +2,7 @@ import Image from "next/image";
 import { MenuIcon, DotsHorizontalIcon } from "@heroicons/react/solid";
 import Link from "next/link";
 
-export default function Header() {
+export default function Header({breadcrumb}) {
   return (
     <header className="sticky top-0 z-50 grid grid-cols-3 bg-white px-2 shadow-md md:px-10">
       <div className="flex items-center uppercase font-extrabold text-md space-x-3">
@@ -10,7 +10,7 @@ export default function Header() {
           <MenuIcon className="h-6" />
         </div>
         <div className="text-pmred border-l pl-4 cursor-pointer transparent-selection">
-          Video
+          {breadcrumb}
         </div>
       </div>
 

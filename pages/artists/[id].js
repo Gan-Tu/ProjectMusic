@@ -52,7 +52,10 @@ function AlbumCard({ musicData, num }) {
 
 export default function ArtistProfile({ artistsData, topArtists, musics }) {
   return (
-    <AppContainer title={`${artistsData.name} - Profile`}>
+    <AppContainer
+      title={`${artistsData.name} - Profile`}
+      breadcrumb={`#${artistsData.id}`}
+    >
       <div className="min-h-screen flex flex-col">
         <div className="uppercase p-8 bg-neutral-800 text-white flex text-center font-semibold text-sm transparent-selection  place-content-between drop-shadow-4">
           <div className="flex space-x-10">
