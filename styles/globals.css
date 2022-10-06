@@ -21,4 +21,7 @@
     @apply xl:[&:nth-child(6n+5)]:flex-row-reverse;
     @apply xl:[&:nth-child(6n+6)]:flex-row-reverse;
   }
+  .click-animation {
+    @apply transition-all duration-150 hover:scale-105 active:scale-100;
+  }
 }

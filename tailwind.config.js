@@ -1,5 +1,5 @@
+const defaultTheme = require("tailwindcss/defaultTheme");
 /** @type {import('tailwindcss').Config} */
-const defaultTheme = require('tailwindcss/defaultTheme')
 
 module.exports = {
   content: [
@@ -12,7 +12,7 @@ module.exports = {
         pmred: "#FF0646"
       },
       fontFamily: {
-        sans: ["Gotham", ...defaultTheme.fontFamily.sans]
+        sans: ["Gotham Pro", "Gotham Light", ...defaultTheme.fontFamily.sans]
       }
     }
   },

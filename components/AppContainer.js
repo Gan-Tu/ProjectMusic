@@ -8,6 +8,7 @@ export default function AppContainer({ title, children }) {
       <Head>
         <title>{title || "Project Music"}</title>
         <link href="http://fonts.cdnfonts.com/css/gotham" rel="stylesheet" />
+        <link href="http://fonts.cdnfonts.com/css/gotham-pro" rel="stylesheet" />
       </Head>
       <Toaster position="top-center" reverseOrder={false} />
       <Header />
