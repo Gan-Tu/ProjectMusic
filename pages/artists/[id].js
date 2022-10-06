@@ -2,13 +2,17 @@ import Image from "next/image";
 import AppContainer from "../../components/AppContainer";
 import { ArrowLeftIcon } from "@heroicons/react/solid";
 import Link from "next/link";
-import { getArtistData } from "../../utils/getFakeArtistsData";
+import { getArtistData, getTopArtists } from "../../utils/getFakeArtistsData";
+
+function getNumberFormatted(num) {
+  return num < 10 ? `0${num}` : num;
+}
 
 function AlbumCard({ imgUrl, num }) {
   return (
     <div className="cursor-pointer m-1 relative">
       <div className="z-10 absolute bg-pmred text-white px-3 py-2 text-sm top-3 left-3 rounded-sm">
-        {num < 9 ? `0${num + 1}` : num}
+        {getNumberFormatted(num)}
       </div>
       <div className="relative aspect-square hover:opacity-90">
         <Image
@@ -23,7 +27,7 @@ function AlbumCard({ imgUrl, num }) {
   );
 }
 
-export default function ArtistProfile({ artistsData }) {
+export default function ArtistProfile({ artistsData, topArtists }) {
   return (
     <AppContainer title={`${artistsData.name} - Profile`}>
       <div className="min-h-screen flex flex-col">
@@ -92,72 +96,18 @@ export default function ArtistProfile({ artistsData }) {
             <h1 className="uppercase text-pmred font-semibold">
               Top 10 Artists
             </h1>
-            <div className="grid grid-cols-2 mt-10">
-              <ul className="text-white uppercase space-y-5 font-medium text-sm">
+            <ul className="text-white uppercase gap-5 font-medium text-sm grid grid-cols-2 mt-10 items-cneter">
+              {topArtists.map((name, index) => (
                 <li className="cursor-pointer grid grid-cols-6">
-                  <span className="text-pmred mw-5 ">01</span>
+                  <span className="text-pmred mw-5 ">
+                    {getNumberFormatted(index + 1)}
+                  </span>
                   <span className="flex-1 col-span-5 hover:text-neutral-200">
-                    Taylor Swift
+                    {name}
                   </span>
                 </li>
-                <li className="cursor-pointer grid grid-cols-6">
-                  <span className="text-pmred mw-5 ">02</span>
-                  <span className="flex-1 col-span-5 hover:text-neutral-200">
-                    Kiesza Hideaway
-                  </span>
-                </li>
-                <li className="cursor-pointer grid grid-cols-6">
-                  <span className="text-pmred mw-5 ">03</span>
-                  <span className="flex-1 col-span-5 hover:text-neutral-200">
-                    Raign Fix Me
-                  </span>
-                </li>
-                <li className="cursor-pointer grid grid-cols-6">
-                  <span className="text-pmred mw-5 ">04</span>
-                  <span className="flex-1 col-span-5 hover:text-neutral-200">
-                    John Newman
-                  </span>
-                </li>
-                <li className="cursor-pointer grid grid-cols-6">
-                  <span className="text-pmred mw-5 ">05</span>
-                  <span className="flex-1 col-span-5 hover:text-neutral-200">
-                    Linkin Park
-                  </span>
-                </li>
-              </ul>
-              <ul className="text-white uppercase space-y-5 font-medium text-sm">
-                <li className="cursor-pointer grid grid-cols-6">
-                  <span className="text-pmred mw-5">06</span>
-                  <span className="flex-1 col-span-5 hover:text-neutral-200">
-                    Aloe Blacc
-                  </span>
-                </li>
-                <li className="cursor-pointer grid grid-cols-6">
-                  <span className="text-pmred mw-5">07</span>
-                  <span className="flex-1 col-span-5 hover:text-neutral-200">
-                    Mind Vortex
-                  </span>
-                </li>
-                <li className="cursor-pointer grid grid-cols-6">
-                  <span className="text-pmred mw-5">08</span>
-                  <span className="flex-1 col-span-5 hover:text-neutral-200">
-                    Ellie Goulding
-                  </span>
-                </li>
-                <li className="cursor-pointer grid grid-cols-6">
-                  <span className="text-pmred mw-5">09</span>
-                  <span className="flex-1 col-span-5 hover:text-neutral-200">
-                    Armin Van Buuren
-                  </span>
-                </li>
-                <li className="cursor-pointer grid grid-cols-6">
-                  <span className="text-pmred mw-5">10</span>
-                  <span className="flex-1 col-span-5 hover:text-neutral-200">
-                    Three Days Grace
-                  </span>
-                </li>
-              </ul>
-            </div>
+              ))}
+            </ul>
           </div>
         </div>
 
@@ -187,7 +137,7 @@ export default function ArtistProfile({ artistsData }) {
         <div className="p-4">
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
             {[...Array(35).keys()].map((x) => (
-              <AlbumCard imgUrl={artistsData.imgUrl} key={x} num={x} />
+              <AlbumCard imgUrl={artistsData.imgUrl} key={x} num={x + 1} />
             ))}
           </div>
         </div>
@@ -199,7 +149,8 @@ export default function ArtistProfile({ artistsData }) {
 export async function getServerSideProps({ query }) {
   return {
     props: {
-      artistsData: getArtistData(query.id)
+      artistsData: getArtistData(query.id),
+      topArtists: getTopArtists()
     }
   };
 }

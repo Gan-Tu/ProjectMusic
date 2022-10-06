@@ -481,3 +481,18 @@ export const getArtistHomePageData = () => {
 export const getArtistData = (id) => {
   return ARTIST_ID_TO_DATA.get(id);
 };
+
+export const getTopArtists = () => {
+  return [
+    "Taylor Swift",
+    "Kiesza Hideaway",
+    "Raign Fix Me",
+    "John Newman",
+    "Linkin Park",
+    "Aloe Blacc",
+    "Mind Vortex",
+    "Ellie Goulding",
+    "Armin Van Buuren",
+    "Three Days Grace"
+  ];
+};
