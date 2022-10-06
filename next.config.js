@@ -3,7 +3,13 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   images: {
-    domains: ["pm-vue.projctone.com", "s3.amazonaws.com", "images.unsplash.com", "picsum.photos"]
+    domains: [
+      "pm-vue.projctone.com",
+      "s3.amazonaws.com",
+      "images.unsplash.com",
+      "picsum.photos",
+      "i.scdn.co"
+    ]
   }
 };
 
