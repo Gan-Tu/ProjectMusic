@@ -54,7 +54,7 @@ export default function ArtistProfile({ artistsData, topArtists, musics }) {
   return (
     <AppContainer
       title={`${artistsData.name} - Profile`}
-      breadcrumb={`#${artistsData.id}`}
+      curMenu={`#${artistsData.id}`}
     >
       <div className="min-h-screen flex flex-col">
         <div className="uppercase p-8 bg-neutral-800 text-white flex text-center font-semibold text-sm transparent-selection  place-content-between drop-shadow-4">

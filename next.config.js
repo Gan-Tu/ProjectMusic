@@ -10,6 +10,15 @@ const nextConfig = {
       "picsum.photos",
       "i.scdn.co"
     ]
+  },
+  async redirects() {
+    return [
+      {
+        source: "/",
+        destination: "/artists",
+        permanent: false
+      }
+    ];
   }
 };
 

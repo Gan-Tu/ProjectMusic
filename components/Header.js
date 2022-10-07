@@ -1,16 +1,17 @@
 import Image from "next/image";
 import { MenuIcon, DotsHorizontalIcon } from "@heroicons/react/solid";
 import Link from "next/link";
+import NavMenu from "./NavMenu";
 
-export default function Header({breadcrumb}) {
+export default function Header({ curMenu }) {
   return (
     <header className="sticky top-0 z-50 grid grid-cols-3 bg-white px-2 shadow-md md:px-10">
       <div className="flex items-center uppercase font-extrabold text-md space-x-3">
-        <div className="flex cursor-pointer items-center space-x-2 p-2">
+        <div className="flex cursor-pointer items-center space-x-2 p-2 border-r pr-4">
           <MenuIcon className="h-6" />
         </div>
-        <div className="text-pmred border-l pl-4 cursor-pointer transparent-selection">
-          {breadcrumb}
+        <div className="cursor-pointer transparent-selection pl-2">
+          <NavMenu curMenu={curMenu} />
         </div>
       </div>
 

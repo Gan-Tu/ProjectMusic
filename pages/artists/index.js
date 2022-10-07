@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export default function ArtistsHome({ artistsData }) {
   return (
-    <AppContainer breadcrumb={"Artists"}>
+    <AppContainer curMenu={"Artists"}>
       <ul
         role="list"
         className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3"

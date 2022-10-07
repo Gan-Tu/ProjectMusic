@@ -2,7 +2,7 @@ import Head from "next/head";
 import Header from "./Header";
 import { Toaster } from "react-hot-toast";
 
-export default function AppContainer({ title, breadcrumb, children }) {
+export default function AppContainer({ title, curMenu, children }) {
   return (
     <div>
       <Head>
@@ -11,7 +11,7 @@ export default function AppContainer({ title, breadcrumb, children }) {
         <link href="http://fonts.cdnfonts.com/css/gotham-pro" rel="stylesheet" />
       </Head>
       <Toaster position="top-center" reverseOrder={false} />
-      <Header breadcrumb={breadcrumb} />
+      <Header curMenu={curMenu} />
       <main>{children}</main>
       {/* TODO: add player */}
     </div>
