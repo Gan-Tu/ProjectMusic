@@ -2,8 +2,10 @@ import Image from "next/image";
 import { MenuIcon, DotsHorizontalIcon } from "@heroicons/react/solid";
 import Link from "next/link";
 import NavMenu from "./NavMenu";
+import { useSessionContext } from "../lib/SessionProvider";
 
 export default function Header({ curMenu }) {
+  const [session, dispatch] = useSessionContext();
   return (
     <header className="sticky top-0 z-50 grid grid-cols-3 bg-white px-2 shadow-md md:px-10">
       <div className="flex items-center uppercase font-extrabold text-md space-x-3">
@@ -33,8 +35,31 @@ export default function Header({ curMenu }) {
       </div>
 
       <div className="flex space-x-5 uppercase font-extrabold text-md cursor-pointer transparent-selection items-center justify-end">
-        <div className="border-r pr-4 hidden md:inline-flex">Sign Up</div>
-        <div className="border-r pr-4 hidden md:inline-flex">Login</div>
+        {session.user ? (
+          <>
+            <div className="border-r pr-4 hidden md:inline-flex">
+              <button
+                className="uppercase"
+                onClick={() => dispatch({ type: "unset_user" })}
+              >
+                Log Out
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="border-r pr-4 hidden md:inline-flex">Sign Up</div>
+            <div className="border-r pr-4 hidden md:inline-flex">
+              <button
+                className="uppercase"
+                onClick={() => dispatch({ type: "set_user", user: "Hello" })}
+              >
+                Login
+              </button>
+            </div>
+          </>
+        )}
+
         <div className="flex cursor-pointer items-center text-gray-400">
           <DotsHorizontalIcon className="h-6" />
         </div>
