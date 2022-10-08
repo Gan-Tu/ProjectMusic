@@ -124,7 +124,10 @@ export default function ArtistProfile({ artistsData, topArtists, musics }) {
             </h1>
             <ul className="text-white uppercase gap-5 font-medium text-sm grid grid-cols-2 mt-10 items-cneter">
               {topArtists.map((name, index) => (
-                <li className="cursor-pointer grid grid-cols-6" key={name}>
+                <li
+                  className="cursor-pointer grid grid-cols-6"
+                  key={`top-artist${index}`}
+                >
                   <span className="text-pmred mw-5 ">
                     {getNumberFormatted(index + 1)}
                   </span>
@@ -160,15 +163,13 @@ export default function ArtistProfile({ artistsData, topArtists, musics }) {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+        <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
           {musics.map((musicData, index) => (
-            <AlbumCard
-              musicData={musicData}
-              key={musicData.name}
-              num={index + 1}
-            />
+            <li key={`album-${index}`}>
+              <AlbumCard musicData={musicData} num={index + 1} />
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
     </AppContainer>
   );

@@ -19,13 +19,15 @@ export default function Header({ curMenu }) {
         <div className="relative h-16 w-40">
           {/* TODO: change to home page after done */}
           <Link href="/artists">
-            <Image
-              src="https://pm-vue.projctone.com/static/img/logo.98d7b40.png"
-              layout="fill"
-              objectFit="contain"
-              objectPosition="left"
-              alt="Project Music logo"
-            />
+            <div>
+              <Image
+                src="https://pm-vue.projctone.com/static/img/logo.98d7b40.png"
+                layout="fill"
+                objectFit="contain"
+                objectPosition="left"
+                alt="Project Music logo"
+              />
+            </div>
           </Link>
         </div>
       </div>
