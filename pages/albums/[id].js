@@ -16,7 +16,7 @@ export default function AlbumDetail({ musicData }) {
             alt="Profile Thumbnail"
           />
         </div>
-        <div className="flex items-center justify-center z-10">
+        <div className="flex items-center justify-center z-10 -translate-x-28">
           <div className="flex flex-col text-end p-5 space-y-2 max-w-xs">
             <p className="font-bold text-xl uppercase">{musicData.name}</p>
             <p className="pl-2 text-ellipsis overflow-hidden text-xs ">
