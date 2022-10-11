@@ -42,7 +42,7 @@ export default function NavMenu({ curMenu }) {
               "group inline-flex items-center rounded-md bg-white text-base font-medium hover:text-gray-900 focus:outline-none"
             )}
           >
-            <span className="uppercase cursor-pointer transparent-selection text-pmred">
+            <span className="uppercase cursor-pointer transparent-selection text-pmred line-clamp-1 max-w-xs">
               {curMenu}
             </span>
             <ChevronDownIcon
