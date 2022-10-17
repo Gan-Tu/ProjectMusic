@@ -1,8 +1,9 @@
 import Head from "next/head";
 import Header from "./Header";
 import { Toaster } from "react-hot-toast";
+import AudioPlayer from "./AudioPlayer";
 
-export default function AppContainer({ title, curMenu, children }) {
+export default function AppContainer({ title, curMenu, curMusic, children }) {
   return (
     <div>
       <Head>
@@ -11,7 +12,7 @@ export default function AppContainer({ title, curMenu, children }) {
       <Toaster position="top-center" reverseOrder={false} />
       <Header curMenu={curMenu} />
       <main>{children}</main>
-      {/* TODO: add player */}
+      <AudioPlayer curMusic={curMusic} />
     </div>
   );
 }

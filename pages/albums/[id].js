@@ -5,7 +5,7 @@ import { PlayIcon } from "@heroicons/react/solid";
 
 export default function AlbumDetail({ musicData }) {
   return (
-    <AppContainer curMenu={musicData?.name}>
+    <AppContainer curMenu={musicData?.name} curMusic={musicData?.name}>
       <div className="bg-black text-white relative flex items-center justify-center px-10 min-h-screen max-w-screen">
         <div className="h-full w-full object-cover absolute inset-0 blur-lg brightness-50 z-0 aspect-square">
           <Image
@@ -16,7 +16,7 @@ export default function AlbumDetail({ musicData }) {
             alt="Profile Thumbnail"
           />
         </div>
-        <div className="flex items-center justify-center z-10 -translate-x-28">
+        <div className="flex items-center justify-center z-10 md:-translate-x-28">
           <div className="flex flex-col text-end p-5 space-y-2 max-w-xs">
             <p className="font-bold text-xl uppercase">{musicData.name}</p>
             <p className="pl-2 text-ellipsis overflow-hidden text-xs ">
