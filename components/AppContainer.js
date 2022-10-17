@@ -5,13 +5,13 @@ import AudioPlayer from "./AudioPlayer";
 
 export default function AppContainer({ title, curMenu, curMusic, children }) {
   return (
-    <div>
+    <div class="flex flex-col h-screen">
       <Head>
         <title>{title || "Project Music"}</title>
       </Head>
       <Toaster position="top-center" reverseOrder={false} />
       <Header curMenu={curMenu} />
-      <main>{children}</main>
+      <main className="flex-1">{children}</main>
       <AudioPlayer curMusic={curMusic} />
     </div>
   );

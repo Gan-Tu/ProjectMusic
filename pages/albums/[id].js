@@ -6,7 +6,7 @@ import { PlayIcon } from "@heroicons/react/solid";
 export default function AlbumDetail({ musicData }) {
   return (
     <AppContainer curMenu={musicData?.name} curMusic={musicData?.name}>
-      <div className="bg-black text-white relative flex items-center justify-center px-10 min-h-screen max-w-screen">
+      <div className="bg-black text-white relative flex items-center justify-center px-10 max-w-screen h-full">
         <div className="h-full w-full object-cover absolute inset-0 blur-lg brightness-50 z-0 aspect-square">
           <Image
             src={musicData.img_url}
