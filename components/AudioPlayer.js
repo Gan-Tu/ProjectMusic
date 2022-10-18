@@ -60,7 +60,7 @@ export default function AudioPlayer({curMusic}) {
               type="range"
               min="1"
               max="100"
-              class="slider cursor-pointer"
+              className="slider cursor-pointer"
               id="myRange"
             />
             <div className="font-light">
@@ -91,7 +91,7 @@ export default function AudioPlayer({curMusic}) {
                 type="range"
                 min="1"
                 max="100"
-                class="slider cursor-pointer -translate-y-1"
+                className="slider cursor-pointer -translate-y-1"
                 id="myRange"
               />
               <svg
