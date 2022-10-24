@@ -102,7 +102,7 @@ export default function Header({ curMenu }) {
                 <span className="uppercase text-sm md:text-md">
                   Nick Breton
                 </span>
-                <div className="relative h-10 w-10 rounded-sm">
+                <div className="relative h-12 w-12 rounded-sm">
                   <div className="uppercase">
                     <Image
                       src="https://s3.amazonaws.com/projctmusic.com/party_favor_500x500_4517214868832703424.jpeg"
