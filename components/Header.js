@@ -1,20 +1,34 @@
 import Image from "next/image";
-import { MenuIcon, DotsHorizontalIcon } from "@heroicons/react/solid";
 import Link from "next/link";
 import NavMenu from "./NavMenu";
+import MegaMenu from "./MegaMenu";
+import { MenuIcon, DotsHorizontalIcon } from "@heroicons/react/solid";
 import { useSessionContext } from "../lib/SessionProvider";
+import { useState } from "react";
 
 export default function Header({ curMenu }) {
   const [session, dispatch] = useSessionContext();
+  const [menuOpen, setMenuOpen] = useState(false);
   return (
-    <header className="sticky top-0 z-50 grid grid-cols-4 xl:grid-cols-3 bg-white px-2 shadow-md md:px-10">
+    <header className="sticky top-0 z-50 grid grid-cols-4 xl:grid-cols-3 bg-white shadow-md px-2 md:px-10">
       <div className="flex items-center uppercase font-extrabold text-md space-x-3 col-span-1">
-        <div className="flex cursor-pointer items-center space-x-2 p-2 border-r pr-4">
-          <MenuIcon className="h-6" />
-        </div>
-        <div className="cursor-pointer transparent-selection pl-2 hidden lg:inline-flex">
-          <NavMenu curMenu={curMenu} />
-        </div>
+        {menuOpen ? (
+          <div className="h-full -ml-2 md:-ml-10 items-center relative w-full">
+            <MegaMenu curMenu={curMenu} onClose={() => setMenuOpen(false)} />
+          </div>
+        ) : (
+          <>
+            <button
+              className="flex cursor-pointer items-center space-x-2 p-2 border-r pr-4 md:-ml-5"
+              onClick={() => setMenuOpen(true)}
+            >
+              <MenuIcon className="h-6" />
+            </button>
+            <div className="cursor-pointer transparent-selection pl-2 hidden lg:inline-flex">
+              <NavMenu curMenu={curMenu} />
+            </div>
+          </>
+        )}
       </div>
 
       <div className="justify-center flex cursor-pointer col-span-1">
@@ -107,7 +121,9 @@ export default function Header({ curMenu }) {
             <div className="border-r pr-4 hidden md:inline-flex">
               <button
                 className="uppercase"
-                onClick={() => dispatch({ type: "set_user", user: "Nick Brenton" })}
+                onClick={() =>
+                  dispatch({ type: "set_user", user: "Nick Brenton" })
+                }
               >
                 Login
               </button>

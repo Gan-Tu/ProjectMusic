@@ -5,7 +5,7 @@ import AudioPlayer from "./AudioPlayer";
 
 export default function AppContainer({ title, curMenu, curMusic, children }) {
   return (
-    <div class="flex flex-col h-screen">
+    <div className="flex flex-col h-screen">
       <Head>
         <title>{title || "Project Music"}</title>
       </Head>
