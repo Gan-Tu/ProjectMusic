@@ -100,7 +100,7 @@ export default function ArtistProfile({ artistsData, topArtists, musics }) {
           </div>
         </div>
 
-        <div className="z-50 relative">
+        <div className="z-10 relative">
           <div className="bg-white -translate-y-14  max-w-fit px-10 py-7 absolute shadow-2xl left-1/4">
             <div className="flex space-x-5 justify-center items-center uppercase text-xs text-neutral-700 font-light">
               <span className="cursor-pointer border-r-2 pr-5 font-semibold text-pmred ">
