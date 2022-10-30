@@ -207,12 +207,14 @@ export default function SettingsModal({ isOpen, setIsOpen }) {
                             <div className="pt-4 flex justify-end space-x-2">
                               <button
                                 type="button"
+                                onClick={() => setIsOpen(false)}
                                 className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-full shadow-sm text-gray-600  focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 ring-gray-500 ring-2 outline-2 outline-gray-700"
                               >
                                 Cancel
                               </button>
                               <button
                                 type="button"
+                                onClick={() => setIsOpen(false)}
                                 className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-full shadow-sm text-white bg-pmred focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pmred"
                               >
                                 Save Changes
