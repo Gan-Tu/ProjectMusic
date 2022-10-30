@@ -177,6 +177,22 @@ export default function SettingsModal({ isOpen, setIsOpen }) {
                               defaultToggle={true}
                             />
                           </dl>
+                          <div className="divide-y divide-gray-200">
+                            <div className="mt-4 flex justify-end space-x-2">
+                              <button
+                                type="button"
+                                className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-full shadow-sm text-gray-600  focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 ring-gray-500 ring-2 outline-2 outline-gray-700"
+                              >
+                                Cancel
+                              </button>
+                              <button
+                                type="button"
+                                className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-full shadow-sm text-white bg-pmred focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pmred"
+                              >
+                                Save Changes
+                              </button>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
