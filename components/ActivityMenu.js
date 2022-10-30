@@ -40,8 +40,8 @@ export default function ActivityMenu({ onLogout }) {
               leaveTo="opacity-0 translate-y-1"
             >
               <Popover.Panel className="absolute right-0 top-10 z-10 translate-x-1/2  transform px-2 sm:px-0 normal-case shadow-lg">
-                <div className="flex flex-col  bg-white align-center justify-start gap-4 font-light p-4 text-sm min-w-full w-80 mx-2">
-                  <div className="flex space-x-4 items-center border-b border-gray-300 pb-4 justify">
+                <div className="flex flex-col  bg-white align-center justify-start font-light text-sm min-w-full w-80 mx-2">
+                  <div className="flex space-x-4 hover:bg-gray-100 rounded-md items-center border-b border-gray-300 p-4 justify">
                     <div className="relative h-10 w-10 aspect-square cursor-pointer">
                       <Image
                         src="https://s3.amazonaws.com/projctmusic.com/little_simz_500x500_4944914752144939467.jpg"
@@ -60,7 +60,7 @@ export default function ActivityMenu({ onLogout }) {
                       </span>
                     </div>
                   </div>
-                  <div className="flex space-x-4 items-center border-b border-gray-300 pb-4">
+                  <div className="flex space-x-4 hover:bg-gray-100 rounded-md items-center border-b border-gray-300 p-4">
                     <div className="relative h-10 w-10 aspect-square cursor-pointer">
                       <Image
                         src="https://s3.amazonaws.com/projctmusic.com/smino_500x500_3314714878444994791.jpg"
@@ -80,7 +80,7 @@ export default function ActivityMenu({ onLogout }) {
                       </span>
                     </div>
                   </div>
-                  <div className="flex space-x-4 items-center border-b border-gray-300 pb-4">
+                  <div className="flex space-x-4 hover:bg-gray-100 rounded-md items-center border-b border-gray-300 p-4">
                     <div className="text-pmred w-10 pl-2">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -108,7 +108,7 @@ export default function ActivityMenu({ onLogout }) {
                       </span>
                     </div>
                   </div>
-                  <div className="flex space-x-4 items-center border-b border-gray-300 pb-4">
+                  <div className="flex space-x-4 hover:bg-gray-100 rounded-md items-center border-b border-gray-300 p-4">
                     <div className="text-pmred w-10 pl-2">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -136,7 +136,7 @@ export default function ActivityMenu({ onLogout }) {
                       </span>
                     </div>
                   </div>
-                  <div className="flex space-x-4 items-center border-b border-gray-300 pb-4">
+                  <div className="flex space-x-4 hover:bg-gray-100 rounded-md items-center p-4">
                     <div className="text-pmred w-10 pl-2">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
