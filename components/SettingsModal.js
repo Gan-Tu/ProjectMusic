@@ -130,7 +130,12 @@ function SecurityTab() {
 }
 
 function PlaylistTab() {
-  return <div>PlaylistTab</div>;
+  return (
+    <div>
+      <SwitchToggle label="Share Timeline Publicly" defaultToggle={true} />
+      <SwitchToggle label="Share Playlist Publicly" defaultToggle={true} />
+    </div>
+  );
 }
 
 export default function SettingsModal({ isOpen, setIsOpen }) {
