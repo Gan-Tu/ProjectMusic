@@ -36,7 +36,7 @@ export default function Header({ curMenu }) {
       <div className="justify-center flex cursor-pointer col-span-1">
         <div className="relative h-16 w-40 hidden lg:inline-flex">
           {/* TODO: change to home page after done */}
-          <Link href="/artists">
+          <Link href="/albums">
             <div>
               <Image
                 src="https://pm-vue.projctone.com/static/img/logo.98d7b40.png"
