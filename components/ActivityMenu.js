@@ -3,6 +3,7 @@ import { Fragment } from "react";
 import { Popover, Transition } from "@headlessui/react";
 import SettingsModal from "./SettingsModal";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function ActivityMenu({ onLogout }) {
   const [openSettings, setOpenSettings] = useState(false);
@@ -41,45 +42,50 @@ export default function ActivityMenu({ onLogout }) {
             >
               <Popover.Panel className="absolute right-0 top-10 z-10 translate-x-1/2  transform px-2 sm:px-0 normal-case shadow-lg">
                 <div className="flex flex-col  bg-white align-center justify-start font-light text-sm min-w-full w-80 mx-2">
-                  <div className="flex space-x-4 hover:bg-gray-100 rounded-md items-center border-b border-gray-300 p-4 justify">
-                    <div className="relative h-10 w-10 aspect-square cursor-pointer">
-                      <Image
-                        src="https://s3.amazonaws.com/projctmusic.com/little_simz_500x500_4944914752144939467.jpg"
-                        layout="fill"
-                        objectFit="contain"
-                        objectPosition="left"
-                        alt="Profile Thumbnail"
-                      />
+                  <Link href="/artists/little-simz">
+                    <div className="flex space-x-4 hover:bg-gray-100 rounded-md items-center border-b border-gray-300 p-4 justify">
+                      <div className="relative h-10 w-10 aspect-square cursor-pointer">
+                        <Image
+                          src="https://s3.amazonaws.com/projctmusic.com/little_simz_500x500_4944914752144939467.jpg"
+                          layout="fill"
+                          objectFit="contain"
+                          objectPosition="left"
+                          alt="Profile Thumbnail"
+                        />
+                      </div>
+                      <div className="flex flex-col space-y-1">
+                        <span>
+                          <span className="text-pmred">Little Smiz</span>{" "}
+                          followed you
+                        </span>
+                        <span className="uppercase font-medium text-xs text-gray-700">
+                          2 minutes ago
+                        </span>
+                      </div>
                     </div>
-                    <div className="flex flex-col space-y-1">
-                      <span>
-                        <span className="text-pmred">Jessica</span> followed you
-                      </span>
-                      <span className="uppercase font-medium text-xs text-gray-700">
-                        2 minutes ago
-                      </span>
+                  </Link>
+                  <Link href="/artists/smino">
+                    <div className="flex space-x-4 hover:bg-gray-100 rounded-md items-center border-b border-gray-300 p-4">
+                      <div className="relative h-10 w-10 aspect-square cursor-pointer">
+                        <Image
+                          src="https://s3.amazonaws.com/projctmusic.com/smino_500x500_3314714878444994791.jpg"
+                          layout="fill"
+                          objectFit="contain"
+                          objectPosition="left"
+                          alt="Profile Thumbnail"
+                        />
+                      </div>
+                      <div className="flex flex-col space-y-1">
+                        <span>
+                          <span className="text-pmred">Smino</span> accept your
+                          friend request
+                        </span>
+                        <span className="uppercase font-medium text-xs text-gray-700">
+                          3 hours ago
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex space-x-4 hover:bg-gray-100 rounded-md items-center border-b border-gray-300 p-4">
-                    <div className="relative h-10 w-10 aspect-square cursor-pointer">
-                      <Image
-                        src="https://s3.amazonaws.com/projctmusic.com/smino_500x500_3314714878444994791.jpg"
-                        layout="fill"
-                        objectFit="contain"
-                        objectPosition="left"
-                        alt="Profile Thumbnail"
-                      />
-                    </div>
-                    <div className="flex flex-col space-y-1">
-                      <span>
-                        <span className="text-pmred">John</span> accept your
-                        friend request
-                      </span>
-                      <span className="uppercase font-medium text-xs text-gray-700">
-                        3 hours ago
-                      </span>
-                    </div>
-                  </div>
+                  </Link>
                   <div className="flex space-x-4 hover:bg-gray-100 rounded-md items-center border-b border-gray-300 p-4">
                     <div className="text-pmred w-10 pl-2">
                       <svg
