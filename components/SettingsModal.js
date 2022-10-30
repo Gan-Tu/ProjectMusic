@@ -2,10 +2,12 @@ import { Fragment, useState } from "react";
 import { Dialog, Switch, Transition } from "@headlessui/react";
 import Image from "next/image";
 
+// const tabs = ["General", "Security", "Playlists"];
+
 const tabs = [
-  { name: "General", href: "#", current: true },
-  { name: "Security", href: "#", current: false },
-  { name: "Playlists", href: "#", current: false }
+  { name: "General", component: <GeneralTab /> },
+  { name: "Security", component: <SecurityTab /> },
+  { name: "Playlists", component: <PlaylistTab /> }
 ];
 
 function classNames(...classes) {
@@ -34,10 +36,7 @@ function TextInputGroup({ label, value }) {
 function SwitchToggle({ label, defaultToggle }) {
   const [isToggled, setIsToggled] = useState(defaultToggle);
   return (
-    <Switch.Group
-      as="div"
-      className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5 sm:pt-5"
-    >
+    <Switch.Group as="div" className="py-4 flex justify-between ">
       <Switch.Label
         as="dt"
         className="text-sm font-medium text-gray-500"
@@ -45,7 +44,7 @@ function SwitchToggle({ label, defaultToggle }) {
       >
         {label}
       </Switch.Label>
-      <dd className="mt-1 flex text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+      <dd className="mt-1 text-sm text-gray-900  sm:mt-0">
         <Switch
           checked={isToggled}
           onChange={setIsToggled}
@@ -67,7 +66,75 @@ function SwitchToggle({ label, defaultToggle }) {
   );
 }
 
+function GeneralTab() {
+  return (
+    <dl className="divide-y divide-gray-200">
+      <div className="grid grid-cols-3 gap-5">
+        <div className="col-span-2">
+          <div className="divide-y divide-gray-200">
+            <TextInputGroup label="Name" value="Nick Breton" />
+            <TextInputGroup label="Email" value="info@truthstudios.com" />
+            <TextInputGroup label="Password" value="******" />
+          </div>
+        </div>
+        <div className="col-span-1 flex flex-col place-items-center m-auto gap-2">
+          <div className="relative h-20 w-20 rounded-sm">
+            <div className="uppercase">
+              <Image
+                src="https://s3.amazonaws.com/projctmusic.com/party_favor_500x500_4517214868832703424.jpeg"
+                layout="fill"
+                objectFit="contain"
+                objectPosition="left"
+                alt="User logo"
+              />
+            </div>
+          </div>
+          <span className="text-sm font-medium text-pmred transparent-selection cursor-pointer">
+            Upload Photo
+          </span>
+        </div>
+      </div>
+      <SwitchToggle label="Available to chat" defaultToggle={true} />
+      <SwitchToggle label="Show Song DNA" defaultToggle={false} />
+      <SwitchToggle label="Pop up messing" defaultToggle={true} />
+    </dl>
+  );
+}
+
+function SecurityTab() {
+  const blockedUsers = ["SorryX", "AngleMC", "TestQuest", "CurseSoul"];
+  return (
+    <div className="py-5 px-3 transparent-selection">
+      <span className="text-md font-medium text-gray-500">
+        Blocked user list
+      </span>
+      <ul className="py-4 divide-gray-200 grid grid-cols-1 space-y-5">
+        {blockedUsers.map((x, idx) => (
+          <li className="flex border-b pb-4 justify-between" key={x}>
+            <div className="justify-between flex">
+              <span className="mr-5">0{idx + 1}.</span>
+              <span className="text-pmred">{x}</span>
+            </div>
+            <span className="uppercase text-pmred flex justify-end text-sm font-semibold flex-1 cursor-pointer">
+              Remove
+            </span>
+          </li>
+        ))}
+      </ul>
+      <SwitchToggle
+        label="Do not show messages from blocked users"
+        defaultToggle={true}
+      />
+    </div>
+  );
+}
+
+function PlaylistTab() {
+  return <div>PlaylistTab</div>;
+}
+
 export default function SettingsModal({ isOpen, setIsOpen }) {
+  const [curTabIndex, setCurTabIndex] = useState(0);
   return (
     <Transition.Root show={isOpen} as={Fragment}>
       <Dialog
@@ -111,74 +178,28 @@ export default function SettingsModal({ isOpen, setIsOpen }) {
                       <div className="py-2">
                         <div className="border-b border-gray-200">
                           <nav className="-mb-px flex space-x-8">
-                            {tabs.map((tab) => (
-                              <a
+                            {tabs.map((tab, idx) => (
+                              <button
                                 key={tab.name}
-                                href={tab.href}
+                                onClick={() => setCurTabIndex(idx)}
                                 className={classNames(
-                                  tab.current
+                                  idx == curTabIndex
                                     ? "border-pmred text-pmred"
                                     : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700",
                                   "whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm uppercase"
                                 )}
                               >
                                 {tab.name}
-                              </a>
+                              </button>
                             ))}
                           </nav>
                         </div>
 
                         <div className="divide-y divide-gray-200">
-                          <dl className="divide-y divide-gray-200">
-                            <div className="grid grid-cols-3 gap-5">
-                              <div className="col-span-2">
-                                <div className="divide-y divide-gray-200">
-                                  <TextInputGroup
-                                    label="Name"
-                                    value="Nick Breton"
-                                  />
-                                  <TextInputGroup
-                                    label="Email"
-                                    value="info@truthstudios.com"
-                                  />
-                                  <TextInputGroup
-                                    label="Password"
-                                    value="******"
-                                  />
-                                </div>
-                              </div>
-                              <div className="col-span-1 flex flex-col place-items-center m-auto gap-2">
-                                <div className="relative h-20 w-20 rounded-sm">
-                                  <div className="uppercase">
-                                    <Image
-                                      src="https://s3.amazonaws.com/projctmusic.com/party_favor_500x500_4517214868832703424.jpeg"
-                                      layout="fill"
-                                      objectFit="contain"
-                                      objectPosition="left"
-                                      alt="User logo"
-                                    />
-                                  </div>
-                                </div>
-                                <span className="text-sm font-medium text-pmred transparent-selection cursor-pointer">
-                                  Upload Photo
-                                </span>
-                              </div>
-                            </div>
-                            <SwitchToggle
-                              label="Available to chat"
-                              defaultToggle={true}
-                            />
-                            <SwitchToggle
-                              label="Show Song DNA"
-                              defaultToggle={false}
-                            />
-                            <SwitchToggle
-                              label="Pop up messing"
-                              defaultToggle={true}
-                            />
-                          </dl>
                           <div className="divide-y divide-gray-200">
-                            <div className="mt-4 flex justify-end space-x-2">
+                            {/* <GeneralTab /> */}
+                            {tabs[curTabIndex].component}
+                            <div className="pt-4 flex justify-end space-x-2">
                               <button
                                 type="button"
                                 className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-full shadow-sm text-gray-600  focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 ring-gray-500 ring-2 outline-2 outline-gray-700"
