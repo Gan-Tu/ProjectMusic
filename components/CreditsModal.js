@@ -3,6 +3,8 @@ import { Dialog, Transition } from "@headlessui/react";
 
 export default function CreditsModal({ isOpen, setIsOpen, curCredits }) {
   const [isPurchase, setIsPurchase] = useState(false);
+  const [showThankYou, setShowThankYou] = useState(false);
+
   return (
     <Transition.Root show={isOpen} as={Fragment}>
       <Dialog
@@ -18,7 +20,10 @@ export default function CreditsModal({ isOpen, setIsOpen, curCredits }) {
           leave="ease-in duration-200"
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
-          afterLeave={() => setIsPurchase(false)}
+          afterLeave={() => {
+            setIsPurchase(false);
+            setShowThankYou(false);
+          }}
         >
           <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
         </Transition.Child>
@@ -35,30 +40,41 @@ export default function CreditsModal({ isOpen, setIsOpen, curCredits }) {
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
               <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all my-8 w-full max-w-xs sm:max-w-lg px">
-                <Dialog.Title
-                  as="h3"
-                  className="text-md font-medium leading-6 text-gray-900 uppercase px-6 shadow-sm py-4"
-                >
-                  <div className="flex justify-between items-center transparent-selection">
-                    <span>
-                      {isPurchase ? "Confirm Purchase" : "Credits Purchase"}
-                    </span>
-                    <div>
-                      <div className="flex flex-col text-center">
-                        <span className="font-bold text-md text-pmred">
-                          {curCredits}
-                        </span>
-                        <span className="text-gray-400 text-xs group-hover:text-white">
-                          Credits
-                        </span>
-                      </div>
-                    </div>
+                {showThankYou ? (
+                  <div className="p-20 text-pmred font-bold uppercase text-center text-xl">
+                    Thank you for purchasing!
                   </div>
-                </Dialog.Title>
-                {isPurchase ? (
-                  <PurchaseConfirmation onClose={() => setIsOpen(false)} />
                 ) : (
-                  <PricingTable onPurchase={() => setIsPurchase(true)} />
+                  <>
+                    <Dialog.Title
+                      as="h3"
+                      className="text-md font-medium leading-6 text-gray-900 uppercase px-6 shadow-sm py-4"
+                    >
+                      <div className="flex justify-between items-center transparent-selection">
+                        <span>
+                          {isPurchase ? "Confirm Purchase" : "Credits Purchase"}
+                        </span>
+                        <div>
+                          <div className="flex flex-col text-center">
+                            <span className="font-bold text-md text-pmred">
+                              {curCredits}
+                            </span>
+                            <span className="text-gray-400 text-xs group-hover:text-white">
+                              Credits
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </Dialog.Title>
+                    {isPurchase ? (
+                      <PurchaseConfirmation
+                        onClose={() => setIsOpen(false)}
+                        onPurchase={() => setShowThankYou(true)}
+                      />
+                    ) : (
+                      <PricingTable onPurchase={() => setIsPurchase(true)} />
+                    )}
+                  </>
                 )}
               </Dialog.Panel>
             </Transition.Child>
@@ -69,7 +85,7 @@ export default function CreditsModal({ isOpen, setIsOpen, curCredits }) {
   );
 }
 
-function PurchaseConfirmation({ onClose }) {
+function PurchaseConfirmation({ onPurchase, onClose }) {
   return (
     <div className="px-10 py-6">
       <div>To confirm this purchase please enter your password:</div>
@@ -113,7 +129,7 @@ function PurchaseConfirmation({ onClose }) {
         </button>
         <button
           type="button"
-          onClick={onClose}
+          onClick={onPurchase}
           className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-full shadow-sm text-white bg-pmred focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pmred"
         >
           Purchase
