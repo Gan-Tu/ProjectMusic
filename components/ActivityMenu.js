@@ -1,12 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import { Fragment } from "react";
 import { Popover, Transition } from "@headlessui/react";
-import SettingsModal from "./SettingsModal";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function ActivityMenu({ onLogout }) {
-  const [openSettings, setOpenSettings] = useState(false);
+export default function ActivityMenu() {
   return (
     <>
       <Popover className="relative h-full">
@@ -175,7 +173,6 @@ export default function ActivityMenu({ onLogout }) {
           </>
         )}
       </Popover>
-      <SettingsModal isOpen={openSettings} setIsOpen={setOpenSettings} />
     </>
   );
 }
