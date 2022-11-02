@@ -2,8 +2,6 @@ import { Fragment, useState } from "react";
 import { Dialog, Switch, Transition } from "@headlessui/react";
 import Image from "next/image";
 
-// const tabs = ["General", "Security", "Playlists"];
-
 const tabs = [
   { name: "General", component: <GeneralTab /> },
   { name: "Security", component: <SecurityTab /> },
