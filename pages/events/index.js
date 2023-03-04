@@ -1,7 +1,5 @@
 import AppContainer from "../../components/AppContainer";
-import Image from "next/image";
 import { getEvents } from "../../utils/getFakeEvents";
-import Link from "next/link";
 
 function getFormattedData(year, month, day) {
   // let dateStr = day < 10 ? `0${day}` : `${day}`;
@@ -23,7 +21,7 @@ function getFormattedData(year, month, day) {
   return `${dateStr} ${monthStr} ${year}`;
 }
 
-export default function ArtistsHome({ eventData }) {
+export default function EventsHome({ eventData }) {
   return (
     <AppContainer curMenu={"Events"}>
       <ul

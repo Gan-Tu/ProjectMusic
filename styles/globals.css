@@ -6,7 +6,7 @@
   .transparent-selection {
     @apply selection:bg-transparent select-none;
   }
-  .artists-alternate-row-reverse {
+  .artists-artists-alternate-row-reverse {
     @apply even:flex-row-reverse;
     @apply md:even:flex-row;
 

@@ -265,7 +265,7 @@ function DropdownMenu() {
     <div className="grid grid-cols-4 bg-black text-white">
       <MenuItem iconName="Artist" text="Artists" href="/artists" />
       <MenuItem iconName="Chat" text="Chat" />
-      <MenuItem iconName="News" text="News" />
+      <MenuItem iconName="News" text="News" href="/news" />
       <MenuItem iconName="About" text="About" />
       <MenuItem iconName="Videos" text="Videos" href="/albums" />
       <MenuItem iconName="Music" text="Music" href="/albums" />

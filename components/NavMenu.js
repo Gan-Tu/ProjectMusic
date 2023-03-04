@@ -20,6 +20,10 @@ const paths = [
   {
     name: "Events",
     href: "/events"
+  },
+  {
+    name: "News",
+    href: "/news"
   }
 ];
 

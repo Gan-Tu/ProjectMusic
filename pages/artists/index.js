@@ -13,7 +13,7 @@ export default function ArtistsHome({ artistsData }) {
         {artistsData.map((x) => (
           // TODO: change to actual artist name
           <Link href={`/artists/${x.id}`} key={x.id}>
-            <li className="flex artists-alternate-row-reverse">
+            <li className="flex artists-artists-alternate-row-reverse">
               <div className="relative flex-grow cursor-pointer flex-1 aspect-square">
                 <Image
                   src={x.imgUrl}
