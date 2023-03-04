@@ -271,7 +271,7 @@ function DropdownMenu() {
       <MenuItem iconName="Music" text="Music" href="/albums" />
       <MenuItem iconName="Photo" text="Photo" href="/albums" />
       <MenuItem iconName="Blog" text="Blog" />
-      <MenuItem iconName="Events" text="Events" />
+      <MenuItem iconName="Events" text="Events" href="/events" />
       <MenuItem iconName="Volunteer" text="Volunteer" />
       <MenuItem iconName="Contact" text="Contact" />
     </div>
