@@ -47,7 +47,7 @@ export default function ArtistsHome({ eventData }) {
                     viewBox="0 0 24 24"
                     strokeWidth={1.5}
                     stroke="currentColor"
-                    className="w-5 h-5 text-pmred mr-1"
+                    className="w-5 h-5 text-pmred mr-1 group-hover:text-white group-hover:text-opacity-70"
                   >
                     <path
                       strokeLinecap="round"
