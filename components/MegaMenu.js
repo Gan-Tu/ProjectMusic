@@ -270,7 +270,7 @@ function DropdownMenu() {
       <MenuItem iconName="Videos" text="Videos" href="/albums" />
       <MenuItem iconName="Music" text="Music" href="/albums" />
       <MenuItem iconName="Photo" text="Photo" href="/albums" />
-      <MenuItem iconName="Blog" text="Blog" />
+      <MenuItem iconName="Blog" text="Blog" href="/blog" />
       <MenuItem iconName="Events" text="Events" href="/events" />
       <MenuItem iconName="Volunteer" text="Volunteer" />
       <MenuItem iconName="Contact" text="Contact" />
