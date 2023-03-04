@@ -1,5 +1,4 @@
 import AppContainer from "../../components/AppContainer";
-import Image from "next/image";
 import { getMusics } from "../../utils/getFakeTracks";
 import Link from "next/link";
 import AlbumCard from "../../components/AlbumCard";
