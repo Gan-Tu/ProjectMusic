@@ -1,6 +1,7 @@
 import AppContainer from "../../components/AppContainer";
-import Image from "next/image";
 import { getBlogs } from "../../utils/getFakeBlogs";
+import Link from "next/link";
+import ArticleCard from "../../components/ArticleCard";
 
 export default function NewsHome({ blogData }) {
   return (
@@ -8,39 +9,18 @@ export default function NewsHome({ blogData }) {
       <div className="bg-neutral-100">
         <ul role="list" className="grid grid-cols-1 lg:grid-cols-2 gap-2">
           {blogData?.map((x, i) => (
-            <li className="flex bg-white h-96" key={`blog-${i}`}>
-              <div className="relative flex-grow cursor-pointer">
-                <Image
-                  src={x.imgUrl}
-                  layout="fill"
-                  objectFit="cover"
-                  objectPosition="left"
-                  alt={`Blog Cover ${i}`}
-                  className="hover:scale-105 transition-all duration-200 opacity-90 hover:opacity-100 object-cover"
+            <Link href={`/blog/${i}`} key={`blog-${i}`}>
+              <li className="flex bg-white h-96">
+                <ArticleCard
+                  imgUrl={x.imgUrl}
+                  imgAlt={`Cover ${i}`}
+                  title={x.title}
+                  date={x.date}
+                  author={x.author}
+                  snippet={x.snippet}
                 />
-              </div>
-              <div className="flex cursor-pointer flex-1 my-4">
-                <div className="flex flex-col flex-1 p-10 space-y-6 transparent-selection">
-                  <div>
-                    <h1 className="font-extrabold text-lg uppercase">
-                      {x.title}
-                    </h1>
-                    <h2 className="text-neutral-400 text-sm">
-                      <span>Posted on {x.date}</span>
-                      <span className="text-pmred font-semibold pl-2">
-                        {x.author}
-                      </span>
-                    </h2>
-                  </div>
-                  <h2 className="text-neutral-400 font-light text-sm leading-relaxed border-y py-3 border-gray-200">
-                    {x.snippet}
-                  </h2>
-                  <button className="uppercase rounded-full cursor-pointer px-4 py-1 items-center text-xs click-animation border-pmred border-2 text-pmred font-semibold max-w-fit">
-                    Read More
-                  </button>
-                </div>
-              </div>
-            </li>
+              </li>
+            </Link>
           ))}
         </ul>
       </div>

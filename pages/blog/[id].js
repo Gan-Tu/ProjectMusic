@@ -1,12 +1,12 @@
 import AppContainer from "../../components/AppContainer";
 import Image from "next/image";
-import { getNewsById, getRelatedNews } from "../../utils/getFakeNews";
+import { getBlogsById, getRelatedBlogs } from "../../utils/getFakeBlogs";
 import ArticleCard from "../../components/ArticleCard";
 import Link from "next/link";
 
-export default function NewsDetail({ newsData, relatedNews }) {
+export default function BlogDetail({ blogData, relatedBlogs }) {
   return (
-    <AppContainer curMenu={"News"}>
+    <AppContainer curMenu={"Blog"}>
       <div className="bg-gray-100">
         <div className="relative isolate overflow-hidden bg-gray-900 py-72 sm:py-32">
           <Image
@@ -20,7 +20,7 @@ export default function NewsDetail({ newsData, relatedNews }) {
           <div className="mx-auto pt-20 max-w-7xl px-6 lg:px-8 my-20">
             <div className="mx-auto max-w-2xl lg:mx-0">
               <h2 className="text-4xl font-bold tracking-tight text-white sm:text-6xl bg-pmred uppercase">
-                {newsData.title}
+                {blogData.title}
               </h2>
             </div>
           </div>
@@ -70,7 +70,7 @@ export default function NewsDetail({ newsData, relatedNews }) {
           <div className="col-start-6 col-end-9 space-x-2 space-y-2 px-10 flex flex-col">
             <div className="relative flex h-80 w-80 cursor-pointer aspect-square">
               <Image
-                src={newsData.imgUrl}
+                src={blogData.imgUrl}
                 layout="fill"
                 objectFit="cover"
                 objectPosition="left"
@@ -118,15 +118,15 @@ export default function NewsDetail({ newsData, relatedNews }) {
 
         <section className="bg-white mb-10">
           <h1 className="uppercase font-bold text-neutral-800 px-10 py-10 my-2">
-            Related News
+            Related Blogs
           </h1>
           <div className="grid grid-cols-2">
-            {relatedNews.map((x) => (
-              <Link href={`/news/${x.id}`} key={`relatedNews-${x.id}`}>
+            {relatedBlogs.map((x) => (
+              <Link href={`/blog/${x.id}`} key={`relatedBlog-${x.id}`}>
                 <div className="col-span-1">
                   <ArticleCard
                     imgUrl={x.imgUrl}
-                    imgAlt={`Related News Cover ${x.id}`}
+                    imgAlt={`Related Blog Cover ${x.id}`}
                     title={x.title}
                     date={x.date}
                     author={x.author}
@@ -145,8 +145,8 @@ export default function NewsDetail({ newsData, relatedNews }) {
 export async function getServerSideProps({ params: { id } }) {
   return {
     props: {
-      newsData: getNewsById(id),
-      relatedNews: getRelatedNews(id)
+      blogData: getBlogsById(id),
+      relatedBlogs: getRelatedBlogs(id)
     }
   };
 }
