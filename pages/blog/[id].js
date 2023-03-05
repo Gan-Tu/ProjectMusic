@@ -60,11 +60,13 @@ export default function BlogDetail({ blogData, relatedBlogs }) {
               have it done right. Can&apos;t stress the importance of detail in
               a mix.
             </p>
-            <div className="border-t py-6 border-gray-200 uppercase">
-              <span className="text-pmred font-semibold px-4 border-r border-gray-300">
+            <div className="border-t py-6 border-gray-200 uppercase transparent-selection">
+              <span className="text-pmred cursor-pointer font-semibold px-4 border-r border-gray-300">
                 Comment
               </span>
-              <span className="text-pmred font-semibold px-4">Share</span>
+              <span className="text-pmred cursor-pointer font-semibold px-4">
+                Share
+              </span>
             </div>
           </div>
           <div className="col-start-6 col-end-9 space-x-2 space-y-2 px-10 flex flex-col">
