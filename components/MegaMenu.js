@@ -266,10 +266,10 @@ function DropdownMenu() {
       <MenuItem iconName="Artist" text="Artists" href="/artists" />
       <MenuItem iconName="Chat" text="Chat" />
       <MenuItem iconName="News" text="News" href="/news" />
-      <MenuItem iconName="About" text="About" />
-      <MenuItem iconName="Videos" text="Videos" href="/albums" />
-      <MenuItem iconName="Music" text="Music" href="/albums" />
-      <MenuItem iconName="Photo" text="Photo" href="/albums" />
+      <MenuItem iconName="About" text="About" href="/about" />
+      <MenuItem iconName="Videos" text="Videos" />
+      <MenuItem iconName="Music" text="Albums" href="/albums" />
+      <MenuItem iconName="Photo" text="Photo" />
       <MenuItem iconName="Blog" text="Blog" href="/blog" />
       <MenuItem iconName="Events" text="Events" href="/events" />
       <MenuItem iconName="Volunteer" text="Volunteer" />

@@ -8,14 +8,15 @@ const nextConfig = {
       "s3.amazonaws.com",
       "images.unsplash.com",
       "picsum.photos",
-      "i.scdn.co"
+      "i.scdn.co",
+      "assets.audiomack.com"
     ]
   },
   async redirects() {
     return [
       {
         source: "/",
-        destination: "/albums",
+        destination: "/songs",
         permanent: false
       }
     ];
