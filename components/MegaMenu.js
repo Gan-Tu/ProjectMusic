@@ -273,7 +273,7 @@ function DropdownMenu() {
       <MenuItem iconName="Blog" text="Blog" href="/blog" />
       <MenuItem iconName="Events" text="Events" href="/events" />
       <MenuItem iconName="Volunteer" text="Volunteer" />
-      <MenuItem iconName="Contact" text="Contact" />
+      <MenuItem iconName="Contact" text="Contact" href="/contact" />
     </div>
   );
 }
