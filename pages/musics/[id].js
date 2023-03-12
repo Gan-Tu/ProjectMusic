@@ -3,7 +3,7 @@ import { getMusicById } from "../../utils/getFakeTracks";
 import Image from "next/image";
 import { PlayIcon } from "@heroicons/react/solid";
 
-export default function AlbumDetail({ musicData }) {
+export default function MusicDetail({ musicData }) {
   return (
     <AppContainer curMenu={musicData?.name} curMusic={musicData?.name}>
       <div className="bg-black text-white relative flex items-center justify-center px-10 max-w-screen h-full">

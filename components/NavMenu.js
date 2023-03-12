@@ -18,6 +18,10 @@ const paths = [
     href: "/albums"
   },
   {
+    name: "Musics",
+    href: "/musics"
+  },
+  {
     name: "Events",
     href: "/events"
   },

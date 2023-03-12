@@ -18,6 +18,11 @@ const nextConfig = {
         source: "/",
         destination: "/albums",
         permanent: false
+      },
+      {
+        source: "/albums/:slug",
+        destination: "/musics/:slug",
+        permanent: false
       }
     ];
   }
