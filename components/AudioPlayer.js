@@ -1,4 +1,9 @@
-export default function AudioPlayer({curMusic}) {
+import { useState } from "react";
+
+export default function AudioPlayer({ curMusic }) {
+  const [musicProgressValue, setMusicProgressValue] = useState(40);
+  const [volumeValue, setVolumeValue] = useState(70);
+  const [onPause, setOnPause] = useState(false);
   return (
     <div className="sticky bottom-0 bg-black h-24 z-30">
       <div className="grid grid-cols-5 md:grid-cols-12 h-24 place-items-center">
@@ -24,17 +29,28 @@ export default function AudioPlayer({curMusic}) {
             strokeWidth={0.6}
             stroke="white"
             className="w-8 h-8 md:w-12 md:h-12 click-animation group-hover:scale-110 cursor-pointer"
+            onClick={() => setOnPause(!onPause)}
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M15.91 11.672a.375.375 0 010 .656l-5.603 3.113a.375.375 0 01-.557-.328V8.887c0-.286.307-.466.557-.327l5.603 3.112z"
-            />
+            {onPause ? (
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M14.25 9v6m-4.5 0V9M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            ) : (
+              <>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15.91 11.672a.375.375 0 010 .656l-5.603 3.113a.375.375 0 01-.557-.328V8.887c0-.286.307-.466.557-.327l5.603 3.112z"
+                />
+              </>
+            )}
           </svg>
 
           <svg
@@ -57,11 +73,13 @@ export default function AudioPlayer({curMusic}) {
           <div className="text-white flex flex-col space-y-1 w-full">
             <span>{curMusic || "Draft Punk"}</span>
             <input
+              className="slider cursor-pointer accent-white  bg-white"
               type="range"
               min="1"
               max="100"
-              className="slider cursor-pointer"
-              id="myRange"
+              value={musicProgressValue}
+              onChange={(e) => setMusicProgressValue(e.target.value)}
+              onMouseMove={(e) => setMusicProgressValue(e.target.value)}
             />
             <div className="font-light">
               <span className="border-r border-gray-600 pr-2">01:56</span>
@@ -88,11 +106,13 @@ export default function AudioPlayer({curMusic}) {
                 />
               </svg>
               <input
+                className="slider cursor-pointer accent-white  bg-white"
                 type="range"
                 min="1"
                 max="100"
-                className="slider cursor-pointer -translate-y-1"
-                id="myRange"
+                value={volumeValue}
+                onChange={(e) => setVolumeValue(e.target.value)}
+                onMouseMove={(e) => setVolumeValue(e.target.value)}
               />
               <svg
                 xmlns="http://www.w3.org/2000/svg"
