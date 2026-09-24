@@ -15,14 +15,14 @@ import {
   UserPlusIcon
 } from "@heroicons/react/24/outline";
 import toast from "react-hot-toast";
-import { useSessionContext } from "../lib/SessionProvider";
+import { loginHref, useSessionContext } from "../lib/SessionProvider";
 import { useUI } from "../lib/ui";
 import { classNames } from "../lib/format";
 
 // The red "…" menu at the right edge of the header.
 export default function SettingsMenu() {
   const router = useRouter();
-  const [session, dispatch] = useSessionContext();
+  const [session] = useSessionContext();
   const { openModal } = useUI();
   const loggedIn = Boolean(session.user);
 
@@ -44,9 +44,10 @@ export default function SettingsMenu() {
         {
           label: "Logout",
           Icon: ArrowRightStartOnRectangleIcon,
-          run: () => {
-            dispatch({ type: "unset_user" });
-            toast.success("You have been logged out.");
+          run: async () => {
+            const result = await session.logout();
+            if (result.ok) toast.success("You have been logged out.");
+            else toast.error(result.error);
           }
         }
       ]
@@ -54,12 +55,13 @@ export default function SettingsMenu() {
         {
           label: "Login",
           Icon: ArrowLeftEndOnRectangleIcon,
-          run: () => {
-            dispatch({ type: "set_user", user: {} });
-            toast.success("Welcome back, Nick!");
-          }
+          run: () => router.push(loginHref(router.asPath))
         },
-        { label: "Sign Up", Icon: UserPlusIcon, run: () => router.push("/signup") },
+        {
+          label: "Sign Up",
+          Icon: UserPlusIcon,
+          run: () => router.push(loginHref(router.asPath, "/signup"))
+        },
         { label: "Cart", Icon: ShoppingCartIcon, run: () => openModal("cart") },
         { label: "Quick Navigation", Icon: Squares2X2Icon, run: () => openModal("quickNav") },
         { label: "Reset Demo Data", Icon: ArrowPathIcon, run: () => openModal("reset") }

@@ -1,8 +1,11 @@
 import { useState } from "react";
-import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 import Modal from "../ui/Modal";
+import Image from "../ui/SmartImage";
 import { useStore } from "../../lib/store";
+import { loginHref, useSessionContext } from "../../lib/SessionProvider";
 import { useUI } from "../../lib/ui";
 import { tierLine } from "../../lib/pricing";
 import { formatCredits, formatNumber, formatUSD } from "../../lib/format";
@@ -18,6 +21,8 @@ function tiersFor(item) {
 
 export default function PurchaseModal({ open, onClose, item }) {
   const { state, actions } = useStore();
+  const [session] = useSessionContext();
+  const router = useRouter();
   const { openModal } = useUI();
   const [busy, setBusy] = useState(false);
   if (!item) return null;
@@ -32,9 +37,15 @@ export default function PurchaseModal({ open, onClose, item }) {
     const line = { ...(item.tiers?.length ? tierLine(item, tier.id) : item), qty };
     const result = await actions.checkout(method, [line]);
     setBusy(false);
+    if (result.needsLogin) {
+      toast.error(result.error);
+      onClose();
+      router.push(loginHref(router.asPath));
+      return;
+    }
     if (!result.ok) {
       toast.error(result.error);
-      if (method === "credits" && tier.credits * qty > state.credits) openModal("credits");
+      if (result.code === "insufficient_credits") openModal("credits");
       return;
     }
     openModal("thankYou", { orderId: result.purchase.id });
@@ -92,6 +103,7 @@ export default function PurchaseModal({ open, onClose, item }) {
             <button
               type="button"
               onClick={() => buy(primary, "card")}
+              disabled={busy}
               className="py-3 text-center text-xs font-semibold text-neutral-500 hover:text-pmred"
             >
               or pay {formatUSD(primary.price * qty)} by card
@@ -107,6 +119,7 @@ export default function PurchaseModal({ open, onClose, item }) {
                   <button
                     type="button"
                     className="hover:underline"
+                    disabled={busy}
                     onClick={() => buy(tier, "credits")}
                   >
                     {formatCredits(tier.credits * qty)}
@@ -119,6 +132,7 @@ export default function PurchaseModal({ open, onClose, item }) {
                   <button
                     type="button"
                     className="hover:underline"
+                    disabled={busy}
                     onClick={() => buy(tier, "card")}
                   >
                     {formatUSD(tier.price * qty)}
@@ -127,9 +141,30 @@ export default function PurchaseModal({ open, onClose, item }) {
               </p>
             </div>
           ))}
-          <p className="border-t border-neutral-100 px-6 py-3 text-center text-2xs uppercase tracking-wider text-neutral-500">
-            Balance {formatNumber(state.credits)} credits
-          </p>
+          {session.user ? (
+            <p className="border-t border-neutral-100 px-6 py-3 text-center text-2xs uppercase tracking-wider text-neutral-500">
+              Balance {formatNumber(state.credits)} credits
+            </p>
+          ) : (
+            <p className="border-t border-neutral-100 px-6 py-3 text-center text-2xs uppercase tracking-wider text-neutral-500">
+              <Link
+                href={loginHref(router.asPath)}
+                onClick={onClose}
+                className="font-bold text-pmred hover:underline"
+              >
+                Log in
+              </Link>{" "}
+              or{" "}
+              <Link
+                href={loginHref(router.asPath, "/signup")}
+                onClick={onClose}
+                className="font-bold text-pmred hover:underline"
+              >
+                sign up
+              </Link>{" "}
+              to buy
+            </p>
+          )}
         </div>
       </div>
     </Modal>

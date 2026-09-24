@@ -1,5 +1,4 @@
-import { useState } from "react";
-import Image from "next/image";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   ChartBarIcon,
@@ -19,12 +18,21 @@ import {
 } from "@heroicons/react/24/outline";
 import toast from "react-hot-toast";
 import Button from "../ui/Button";
+import Image from "../ui/SmartImage";
 import AlbumGrid from "../artists/AlbumGrid";
 import PhotoGallery from "../pictures/PhotoGallery";
 import { useStore } from "../../lib/store";
+import { requestJson, useSession } from "../../lib/SessionProvider";
 import { usePlayer } from "../../lib/player";
 import { useUI } from "../../lib/ui";
-import { formatNumber, formatLongDate, formatUSD, formatTime, pad2 } from "../../lib/format";
+import {
+  classNames,
+  formatNumber,
+  formatLongDate,
+  formatUSD,
+  formatTime,
+  pad2
+} from "../../lib/format";
 import { downloadDemoTrack } from "../../lib/demoAudio";
 import { useDownloadPass } from "../../lib/entitlements";
 import CaptionsTrack from "../videos/CaptionsTrack";
@@ -170,6 +178,15 @@ export default function ProfileContent({ tab, albums, photos, videos, topArtists
     return (
       <Section title="Your purchases" detail="Every order, in one place.">
         <Purchases />
+      </Section>
+    );
+  if (tab === "credits")
+    return (
+      <Section
+        title="Your credits"
+        detail="Spend credits on music, merch, tickets and passes. Every change to your balance is listed here."
+      >
+        <Credits />
       </Section>
     );
   if (tab === "rewards")
@@ -347,9 +364,24 @@ function passLength(item) {
   return `${days} ${days === 1 ? "day" : "days"}`;
 }
 
+// "Subtitle · option · option" without repeating options the subtitle already names.
+function itemDetails(item) {
+  const parts = [...(item.subtitle ? item.subtitle.split(" · ") : [])];
+  for (const value of Object.values(item.options || {})) {
+    if (value && !parts.includes(value)) parts.push(value);
+  }
+  return parts.filter(Boolean).join(" · ");
+}
+
 function Purchases() {
   const { state } = useStore();
   const { until: downloadsUntil } = useDownloadPass();
+  if (!state.purchasesLoaded)
+    return (
+      <p className="bg-neutral-50 px-5 py-16 text-center text-sm text-neutral-500" aria-busy="true">
+        Loading your orders…
+      </p>
+    );
   if (!state.purchases.length)
     return (
       <Empty
@@ -365,7 +397,14 @@ function Purchases() {
         <article key={order.id} className="border border-neutral-200">
           <header className="flex flex-wrap items-center justify-between gap-4 bg-neutral-50 p-5">
             <div>
-              <h3 className="text-xs font-bold uppercase tracking-wide">{order.id}</h3>
+              <h3 className="text-xs font-bold uppercase tracking-wide">
+                {order.id}
+                {order.status && order.status !== "completed" && (
+                  <span className="ml-3 rounded-full bg-neutral-200 px-2 py-0.5 text-2xs text-neutral-600">
+                    {order.status}
+                  </span>
+                )}
+              </h3>
               <p className="mt-1 text-xs text-neutral-500">{formatLongDate(order.date)}</p>
             </div>
             <p className="text-sm font-bold text-pmred">
@@ -393,11 +432,12 @@ function Purchases() {
                 )}
                 <div className="min-w-0 flex-1">
                   <p className="text-xs font-bold uppercase">{item.name}</p>
-                  <p className="mt-1 text-xs text-neutral-500">
-                    {[item.subtitle, ...Object.values(item.options || {})]
-                      .filter(Boolean)
-                      .join(" · ")}
-                  </p>
+                  <p className="mt-1 text-xs text-neutral-500">{itemDetails(item)}</p>
+                  {item.grantsCredits > 0 && (
+                    <p className="mt-1 text-xs text-neutral-500">
+                      +{formatNumber(item.grantsCredits * (item.qty || 1))} credits added
+                    </p>
+                  )}
                   {item.downloads?.length > 0 && <Downloads tracks={item.downloads} />}
                   {item.entitlement?.type === "downloads" && (
                     <p className="mt-2 text-xs text-neutral-500">
@@ -413,6 +453,116 @@ function Purchases() {
           </ul>
         </article>
       ))}
+    </div>
+  );
+}
+
+const LEDGER_REASONS = {
+  signup_bonus: "Welcome bonus",
+  order: "Purchase",
+  credit_pack: "Credit pack",
+  admin_adjustment: "Adjustment by the studio",
+  refund: "Refund",
+  seed: "Starting balance"
+};
+
+// Balance, "Buy credits" and the credit history (GET /api/me/credits).
+function Credits() {
+  const { state } = useStore();
+  const { openModal } = useUI();
+  const [history, setHistory] = useState(null); // null while loading
+  const [error, setError] = useState("");
+  // Reloaded whenever the balance changes (e.g. after buying credits).
+  useEffect(() => {
+    let current = true;
+    requestJson("/api/me/credits").then((result) => {
+      if (!current) return;
+      if (result.ok) {
+        setHistory(result.history || []);
+        setError("");
+      } else {
+        setError(result.error);
+      }
+    });
+    return () => {
+      current = false;
+    };
+  }, [state.credits]);
+  return (
+    <div className="grid gap-12 lg:grid-cols-[18rem_minmax(0,1fr)]">
+      <div>
+        <p className="text-5xl font-light text-pmred">
+          {formatNumber(state.credits)}
+          <span className="ml-3 text-xs font-bold uppercase tracking-widest text-neutral-500">
+            Credits
+          </span>
+        </p>
+        <p className="mt-3 text-xs leading-5 text-neutral-500">
+          Credits never expire. Payments on this site are simulated: packs are charged to a demo
+          card and no real money is involved.
+        </p>
+        <Button className="mt-6 cursor-pointer" onClick={() => openModal("credits")}>
+          <CurrencyDollarIcon className="h-4 w-4" />
+          Buy credits
+        </Button>
+      </div>
+      <div>
+        <h3 className="mb-4 text-xs font-bold uppercase tracking-widest">History</h3>
+        {error ? (
+          <p role="alert" className="text-sm text-pmred-dark">
+            {error}
+          </p>
+        ) : history === null ? (
+          <p className="text-sm text-neutral-500" aria-busy="true">
+            Loading your credit history…
+          </p>
+        ) : history.length === 0 ? (
+          <p className="text-sm text-neutral-500">No credit activity yet.</p>
+        ) : (
+          <ol className="divide-y divide-neutral-200 border-y border-neutral-200">
+            {history.map((entry) => (
+              <li key={entry.id} className="flex items-center gap-4 py-4">
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-bold uppercase">
+                    {LEDGER_REASONS[entry.reason] || entry.reason}
+                  </p>
+                  <p className="mt-1 text-xs text-neutral-500">
+                    {formatLongDate(entry.date)}
+                    {entry.orderId && (
+                      <>
+                        {" · "}
+                        <Link
+                          href="/profile?tab=purchased"
+                          shallow
+                          scroll={false}
+                          className="text-pmred hover:underline"
+                        >
+                          Order {entry.orderId}
+                        </Link>
+                      </>
+                    )}
+                    {entry.note && !entry.orderId && ` · ${entry.note}`}
+                  </p>
+                </div>
+                <div className="text-right">
+                  <p
+                    className={classNames(
+                      "text-sm font-bold tabular-nums",
+                      entry.delta < 0 ? "text-neutral-800" : "text-lime-700"
+                    )}
+                  >
+                    {entry.delta > 0 ? "+" : "−"}
+                    {formatNumber(Math.abs(entry.delta))}
+                  </p>
+                  <p className="text-2xs text-neutral-500 tabular-nums">
+                    Balance {formatNumber(entry.balanceAfter)}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        )}
+      </div>
     </div>
   );
 }
@@ -569,13 +719,27 @@ function Statistics({ artists }) {
 
 function Feedback() {
   const { state, actions } = useStore();
+  const session = useSession();
   const [text, setText] = useState("");
-  function submit(event) {
+  const [busy, setBusy] = useState(false);
+  // Sent to the studio's inbox (the CRM); a copy stays in this browser.
+  async function submit(event) {
     event.preventDefault();
-    if (!text.trim()) return;
-    actions.addFeedback(text.trim());
+    const body = text.trim();
+    if (!body || busy) return;
+    setBusy(true);
+    const result = await requestJson("/api/inbox", {
+      method: "POST",
+      body: { kind: "feedback", body, name: session.user?.name, email: session.user?.email }
+    });
+    setBusy(false);
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
+    }
+    actions.addFeedback(body);
     setText("");
-    toast.success("Thank you. Your feedback has been saved.");
+    toast.success("Thank you. Your feedback was sent to the studio.");
   }
   return (
     <div className="max-w-3xl">
@@ -594,9 +758,11 @@ function Feedback() {
           className="mt-3 block w-full resize-y border border-neutral-200 bg-neutral-50 p-5 text-sm leading-6 outline-none focus:border-pmred"
         />
         <div className="mt-4 flex items-center justify-between gap-3">
-          <p className="text-2xs text-neutral-500">{text.length} / 2,000 · Saved on this device</p>
-          <Button type="submit" disabled={!text.trim()} className="cursor-pointer">
-            Send feedback
+          <p className="text-2xs text-neutral-500">
+            {text.length} / 2,000 · Sent to the studio, with a copy on this device
+          </p>
+          <Button type="submit" disabled={!text.trim() || busy} className="cursor-pointer">
+            {busy ? "Sending…" : "Send feedback"}
           </Button>
         </div>
       </form>

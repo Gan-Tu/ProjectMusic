@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import Image from "next/image";
+import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 import {
   ArrowLeftIcon,
@@ -15,8 +15,9 @@ import { usePageVisible } from "../../lib/usePageVisible";
 import { chatTime, classNames } from "../../lib/format";
 import { useNow } from "../../lib/useNow";
 import { getArtistHomePageData } from "../../utils/getFakeArtistsData";
-import { useSessionContext } from "../../lib/SessionProvider";
+import { loginHref, useSessionContext } from "../../lib/SessionProvider";
 import Button from "../ui/Button";
+import Image from "../ui/SmartImage";
 
 function Avatar({ src, online, size = "h-10 w-10" }) {
   return (
@@ -40,7 +41,8 @@ function Avatar({ src, online, size = "h-10 w-10" }) {
 // the thread on the right (stacked on small screens).
 export default function ChatModal({ open, onClose, chatId: initialChatId }) {
   const { state, actions } = useStore();
-  const [session, sessionDispatch] = useSessionContext();
+  const [session] = useSessionContext();
+  const router = useRouter();
   const now = useNow(); // seeded messages carry a display `time`; sent ones an ISO `at`
   const [tab, setTab] = useState("chats");
   const [activeId, setActiveId] = useState(initialChatId || null);
@@ -107,12 +109,7 @@ export default function ChatModal({ open, onClose, chatId: initialChatId }) {
       <Modal open={open} onClose={onClose} title="Chat">
         <div className="flex flex-col items-center gap-4 px-6 py-12 text-center">
           <p className="text-sm text-neutral-600">Log in to read and send messages.</p>
-          <Button
-            onClick={() => {
-              sessionDispatch({ type: "set_user", user: {} });
-              toast.success("Welcome back, Nick!");
-            }}
-          >
+          <Button href={loginHref(router.asPath)} onClick={onClose}>
             Log in
           </Button>
         </div>

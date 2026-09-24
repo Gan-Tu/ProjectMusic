@@ -4,27 +4,24 @@ import Modal from "../ui/Modal";
 import Button from "../ui/Button";
 import { useStore } from "../../lib/store";
 import { usePlayer } from "../../lib/player";
-import { useSessionContext } from "../../lib/SessionProvider";
 
 const WHAT_RESETS = [
-  "Cart, orders and credits balance",
-  "Comments, likes, follows and RSVPs",
+  "Cart, likes, follows and RSVPs",
   "Chats, notifications and feedback",
   "Playlist, play queue and player settings",
-  "Settings, subscriptions and profile edits (you'll be logged in as Nick)"
+  "Settings and sign-up preferences"
 ];
 
-// Puts the whole single-user demo back to its original state.
+// Puts what this browser saved for the demo back to its original state. Accounts,
+// orders, credits and comments live on the server and aren't touched.
 export default function ResetDemoModal({ open, onClose }) {
   const { actions } = useStore();
   const player = usePlayer();
-  const [, dispatch] = useSessionContext();
 
   function reset() {
     actions.resetDemo();
     player.reset();
-    dispatch({ type: "reset" });
-    toast.success("Demo data reset to the original state");
+    toast.success("This browser's demo data was reset");
     onClose();
   }
 
@@ -41,13 +38,14 @@ export default function ResetDemoModal({ open, onClose }) {
           </Button>
           <Button size="sm" onClick={reset}>
             <ArrowPathIcon className="h-4 w-4" />
-            Reset everything
+            Reset this browser
           </Button>
         </>
       }
     >
       <p className="text-sm text-neutral-600">
-        This puts the app back the way it was on your first visit. It can&apos;t be undone.
+        This clears what this browser saved while you explored the demo and puts it back the way it
+        was on your first visit. It can&apos;t be undone.
       </p>
       <ul className="mt-5 space-y-2 text-sm text-neutral-500">
         {WHAT_RESETS.map((item) => (
@@ -57,6 +55,10 @@ export default function ResetDemoModal({ open, onClose }) {
           </li>
         ))}
       </ul>
+      <p className="mt-5 border-t border-neutral-200 pt-4 text-xs leading-5 text-neutral-500">
+        Your account stays as it is: you stay logged in, and your orders, credits, points and
+        comments are stored on the server and are not affected.
+      </p>
     </Modal>
   );
 }

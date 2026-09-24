@@ -1,33 +1,10 @@
 import toast from "react-hot-toast";
-import { periodDays } from "../../lib/entitlements";
-import { MAX_QTY, salesEnded } from "../../lib/store";
+import { MAX_QTY, productLine } from "../../lib/pricing";
+import { salesEnded } from "../../lib/store";
 
-export function makeCartItem(
-  product,
-  { tier = product.tiers?.[0], size = product.sizes?.[0], color = product.colors?.[0] } = {}
-) {
-  const options = {};
-  if (size) options.size = size;
-  if (color) options.color = color;
-  if (tier) options.tier = tier.label;
-  return {
-    id: product.cartId || product.id,
-    name: product.name,
-    image: product.images[0],
-    kind: product.kind,
-    price: tier ? tier.price : product.price,
-    credits: tier ? tier.credits : product.credits,
-    grantsCredits: tier?.grantsCredits || product.grantsCredits || 0,
-    options,
-    subtitle: [product.subtitle, ...Object.values(options)].filter(Boolean).join(" · "),
-    ...(product.startsAt ? { startsAt: product.startsAt } : {}),
-    // Download passes (and bundles that include them) grant download access for
-    // the tier's period; plans without a period (Basic/Premium/Custom) run a year.
-    ...(product.grantsDownloads && tier
-      ? { entitlement: { type: "downloads", days: periodDays(tier.label) || 365 } }
-      : {})
-  };
-}
+// The cart line for a product with the chosen tier / size / color (shared with the
+// server, which re-prices every line at checkout).
+export const makeCartItem = productLine;
 
 // Feedback after adding `requested` of an item, of which `added` fit in the cart.
 export function showCartToast(item, openModal, added = 1, requested = added) {

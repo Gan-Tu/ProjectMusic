@@ -1,11 +1,14 @@
 import { useState } from "react";
-import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
 import { MinusIcon, PlusIcon, ShoppingCartIcon, TrashIcon } from "@heroicons/react/24/outline";
 import toast from "react-hot-toast";
 import { Drawer } from "../ui/Modal";
 import UndoBar from "../ui/UndoBar";
 import Button from "../ui/Button";
+import Image from "../ui/SmartImage";
 import { cartTotals, MAX_QTY, useStore } from "../../lib/store";
+import { loginHref, useSessionContext } from "../../lib/SessionProvider";
 import { useUI } from "../../lib/ui";
 import { classNames, formatCredits, formatNumber, formatUSD } from "../../lib/format";
 
@@ -24,7 +27,10 @@ function Price({ item }) {
 
 export default function CartDrawer({ open, onClose }) {
   const { state, actions } = useStore();
+  const [session] = useSessionContext();
+  const router = useRouter();
   const { openModal } = useUI();
+  const member = session.user;
   const totals = cartTotals(state.cart);
   const [method, setMethod] = useState(() => (totals.cardPayable ? "card" : "credits"));
   const payable = method === "card" ? totals.cardPayable : totals.creditsPayable;
@@ -38,6 +44,12 @@ export default function CartDrawer({ open, onClose }) {
     setBusy(true);
     const result = await actions.checkout(method, null, state.cart);
     setBusy(false);
+    if (result.needsLogin) {
+      toast.error(result.error);
+      onClose();
+      router.push(loginHref(router.asPath));
+      return;
+    }
     if (!result.ok) {
       toast.error(result.error);
       return;
@@ -73,7 +85,7 @@ export default function CartDrawer({ open, onClose }) {
           { id: "card", label: "Card", enabled: totals.cardPayable },
           {
             id: "credits",
-            label: `Credits (${formatNumber(state.credits)})`,
+            label: member ? `Credits (${formatNumber(state.credits)})` : "Credits",
             enabled: totals.creditsPayable
           }
         ].map((option) => (
@@ -94,7 +106,7 @@ export default function CartDrawer({ open, onClose }) {
           </button>
         ))}
       </fieldset>
-      {method === "credits" && totals.creditsPayable && !enoughCredits && (
+      {member && method === "credits" && totals.creditsPayable && !enoughCredits && (
         <p className="text-xs text-pmred">
           You need {formatCredits(totals.credits - state.credits)} more.{" "}
           <button
@@ -106,14 +118,33 @@ export default function CartDrawer({ open, onClose }) {
           </button>
         </p>
       )}
-      <Button
-        size="lg"
-        className="w-full"
-        disabled={busy || !payable || (method === "credits" && !enoughCredits)}
-        onClick={checkout}
-      >
-        Checkout {method === "card" ? formatUSD(totals.usd) : formatCredits(totals.credits)}
-      </Button>
+      {member || !session.hydrated ? (
+        <Button
+          size="lg"
+          className="w-full"
+          disabled={busy || !member || !payable || (method === "credits" && !enoughCredits)}
+          onClick={checkout}
+        >
+          Checkout {method === "card" ? formatUSD(totals.usd) : formatCredits(totals.credits)}
+        </Button>
+      ) : (
+        <div className="space-y-2 text-center">
+          <Button size="lg" className="w-full" href={loginHref(router.asPath)} onClick={onClose}>
+            Log in to check out
+          </Button>
+          <p className="text-xs text-neutral-500">
+            New here?{" "}
+            <Link
+              href={loginHref(router.asPath, "/signup")}
+              onClick={onClose}
+              className="font-bold text-pmred hover:underline"
+            >
+              Create an account
+            </Link>{" "}
+            and get welcome credits. Your cart is kept.
+          </p>
+        </div>
+      )}
       {!totals.cardPayable && !totals.creditsPayable && (
         <p className="text-xs text-neutral-500">
           Some items can only be paid by card and others only with credits. Check them out

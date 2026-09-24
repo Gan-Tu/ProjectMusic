@@ -1,16 +1,25 @@
 import { useEffect, useRef } from "react";
-import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import toast from "react-hot-toast";
-import { Bars3Icon } from "@heroicons/react/24/outline";
-import { ShoppingCartIcon } from "@heroicons/react/24/outline";
+import { CloseButton, Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
+import {
+  ArrowRightStartOnRectangleIcon,
+  Bars3Icon,
+  Cog6ToothIcon,
+  CurrencyDollarIcon,
+  RectangleStackIcon,
+  ShoppingCartIcon,
+  UserCircleIcon
+} from "@heroicons/react/24/outline";
+import Image from "./ui/SmartImage";
 import Logo from "./Logo";
 import NavMenu from "./NavMenu";
 import MegaMenu, { MegaMenuTabs } from "./MegaMenu";
 import SettingsMenu from "./SettingsMenu";
 import ActivityMenu from "./ActivityMenu";
 import MessagesMenu from "./MessagesMenu";
-import { useSessionContext } from "../lib/SessionProvider";
+import { loginHref, useSessionContext } from "../lib/SessionProvider";
 import { useStore } from "../lib/store";
 import { useUI } from "../lib/ui";
 import { classNames, formatNumber } from "../lib/format";
@@ -38,11 +47,74 @@ function CartButton({ count, onClick, className }) {
 
 const DIVIDER = "h-8 w-px shrink-0 bg-neutral-200";
 
+// The member's name and photo; opens their account menu.
+function AccountMenu({ user }) {
+  const [session] = useSessionContext();
+  const router = useRouter();
+  const { openModal } = useUI();
+  const items = [
+    { label: "Profile", Icon: UserCircleIcon, run: () => router.push("/profile") },
+    {
+      label: "Purchases",
+      Icon: RectangleStackIcon,
+      run: () => router.push("/profile?tab=purchased")
+    },
+    { label: "Credits", Icon: CurrencyDollarIcon, run: () => router.push("/profile?tab=credits") },
+    { label: "Settings", Icon: Cog6ToothIcon, run: () => openModal("settings") },
+    {
+      label: "Logout",
+      Icon: ArrowRightStartOnRectangleIcon,
+      run: async () => {
+        const result = await session.logout();
+        if (result.ok) toast.success("You have been logged out.");
+        else toast.error(result.error);
+      }
+    }
+  ];
+  return (
+    <Popover className="relative hidden h-full items-center md:flex">
+      <PopoverButton
+        aria-label={`Account menu for ${user.name}`}
+        className="flex items-center gap-4 text-xs font-extrabold uppercase tracking-wider outline-none transition hover:text-pmred focus-visible:ring-2 focus-visible:ring-pmred focus-visible:ring-offset-4 data-open:text-pmred"
+      >
+        {/* Shown from 2xl (below that it would crowd the centered logo). */}
+        <span className="hidden max-w-24 text-left leading-tight 2xl:block">{user.name}</span>
+        <span className="relative h-11 w-11 overflow-hidden bg-neutral-100">
+          <Image src={user.avatar} alt="" fill sizes="44px" className="object-cover" />
+        </span>
+      </PopoverButton>
+      <PopoverPanel
+        transition
+        anchor="bottom end"
+        className="z-[60] w-64 bg-pmred py-1 text-white shadow-2xl transition duration-200 ease-out [--anchor-gap:0.75rem] data-closed:translate-y-1 data-closed:opacity-0"
+      >
+        <div className="border-b border-white/25 px-6 py-3.5">
+          <p className="truncate text-sm font-bold">{user.name}</p>
+          <p className="truncate text-xs text-white/80">@{user.username}</p>
+        </div>
+        {items.map(({ label, Icon, run }) => (
+          <CloseButton
+            key={label}
+            onClick={run}
+            className="flex w-full items-center gap-5 px-6 py-3.5 text-left text-xs font-bold uppercase tracking-wider transition-colors hover:bg-white hover:text-pmred focus-visible:bg-white focus-visible:text-pmred focus-visible:outline-none"
+          >
+            <Icon className="h-5 w-5" />
+            {label}
+          </CloseButton>
+        ))}
+      </PopoverPanel>
+    </Popover>
+  );
+}
+
 export default function Header({ curMenu }) {
-  const [session, dispatch] = useSessionContext();
+  const [session] = useSessionContext();
+  const router = useRouter();
   const { state } = useStore();
   const { megaMenu, openMegaMenu, closeMegaMenu, openModal, activeModal } = useUI();
   const user = session.user;
+  // Come back here after logging in (known after hydration; the links wait for it).
+  const here = session.hydrated ? router.asPath : "";
   const cartCount = state.cart.reduce((sum, line) => sum + line.qty, 0);
 
   // When the mega menu closes (Esc, close button, backdrop), return keyboard focus
@@ -154,41 +226,33 @@ export default function Header({ curMenu }) {
                   Points
                 </span>
               </Link>
-              <Link
-                href="/profile"
-                className="hidden items-center gap-4 text-xs font-extrabold uppercase tracking-wider md:flex"
-              >
-                {/* Shown from 2xl (below that it would crowd the centered logo), but it
-                    always names the link for screen readers. */}
-                <span className="sr-only max-w-24 leading-tight 2xl:not-sr-only 2xl:block">
-                  {user.name}
-                </span>
-                <span className="relative h-11 w-11 overflow-hidden bg-neutral-100">
-                  <Image src={user.avatar} alt="" fill sizes="44px" className="object-cover" />
-                </span>
-              </Link>
+              <AccountMenu user={user} />
               <span className={classNames(DIVIDER, "hidden md:block")} />
               <SettingsMenu />
             </>
           ) : (
             <>
-              <Link
-                href="/signup"
-                className="hidden text-xs font-extrabold uppercase tracking-wider transition hover:text-pmred md:block"
+              {/* Until the session is known, don't flash Login at members. */}
+              <div
+                className={classNames(
+                  "hidden items-center gap-4 md:flex md:gap-5",
+                  !session.hydrated && "invisible"
+                )}
               >
-                Sign up
-              </Link>
-              <span className={classNames(DIVIDER, "hidden md:block")} />
-              <button
-                type="button"
-                onClick={() => {
-                  dispatch({ type: "set_user", user: {} });
-                  toast.success("Welcome back, Nick!");
-                }}
-                className="hidden text-xs font-extrabold uppercase tracking-wider transition hover:text-pmred md:block"
-              >
-                Login
-              </button>
+                <Link
+                  href={loginHref(here, "/signup")}
+                  className="text-xs font-extrabold uppercase tracking-wider transition hover:text-pmred"
+                >
+                  Sign up
+                </Link>
+                <span className={DIVIDER} />
+                <Link
+                  href={loginHref(here)}
+                  className="text-xs font-extrabold uppercase tracking-wider transition hover:text-pmred"
+                >
+                  Login
+                </Link>
+              </div>
               <CartButton
                 count={cartCount}
                 onClick={() => openModal("cart")}

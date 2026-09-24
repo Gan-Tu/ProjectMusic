@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 import Modal from "../ui/Modal";
 import Button from "../ui/Button";
 import { useStore } from "../../lib/store";
+import { loginHref, useSessionContext } from "../../lib/SessionProvider";
 import { classNames, formatNumber, formatUSD } from "../../lib/format";
 import { CREDIT_PACKS, creditPackItem } from "../../lib/pricing";
 
@@ -12,10 +14,12 @@ function packItem(pack) {
   return { ...creditPackItem(pack), qty: 1 };
 }
 
+// Credit packs are bought with the (simulated) card, like any other checkout.
 export default function CreditsModal({ open, onClose }) {
   const { state, actions } = useStore();
+  const [session] = useSessionContext();
+  const router = useRouter();
   const [pack, setPack] = useState(null);
-  const [password, setPassword] = useState("");
   const [done, setDone] = useState(null); // credits granted by the completed purchase
   const [busy, setBusy] = useState(false);
   // The confirmation replaces the button that had focus: move focus into it.
@@ -29,6 +33,12 @@ export default function CreditsModal({ open, onClose }) {
     setBusy(true);
     const result = await actions.checkout("card", [packItem(selected)]);
     setBusy(false);
+    if (result.needsLogin) {
+      toast.error(result.error);
+      onClose();
+      router.push(loginHref(router.asPath));
+      return;
+    }
     if (!result.ok) {
       toast.error(result.error);
       return;
@@ -42,6 +52,27 @@ export default function CreditsModal({ open, onClose }) {
     if (busy) return;
     setPack(selected);
     if (quick) purchase(selected);
+  }
+
+  if (session.hydrated && !session.user) {
+    return (
+      <Modal open={open} onClose={onClose} title="Credits purchase" size="md">
+        <div className="flex flex-col items-center gap-4 px-2 py-8 text-center">
+          <p className="text-sm text-neutral-600">
+            Credits live in your account: use them for music, merch, tickets and passes. Log in or
+            create an account (new members get welcome credits) to buy more.
+          </p>
+          <div className="flex flex-wrap justify-center gap-3">
+            <Button href={loginHref(router.asPath)} onClick={onClose}>
+              Log in
+            </Button>
+            <Button href={loginHref(router.asPath, "/signup")} variant="outline" onClick={onClose}>
+              Sign up
+            </Button>
+          </div>
+        </div>
+      </Modal>
+    );
   }
 
   const balance = (
@@ -83,36 +114,24 @@ export default function CreditsModal({ open, onClose }) {
             <Button variant="muted" size="xs" disabled={busy} onClick={() => setPack(null)}>
               Back
             </Button>
-            <Button size="sm" disabled={!password || busy} onClick={() => purchase()}>
-              Purchase {formatUSD(pack.price)}
+            <Button size="sm" disabled={busy} onClick={() => purchase()}>
+              {busy ? "Processing…" : `Purchase ${formatUSD(pack.price)}`}
             </Button>
           </>
         )
       }
     >
       {pack ? (
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            if (password) purchase();
-          }}
-          className="space-y-5"
-        >
+        <div className="space-y-5">
           <p className="text-sm text-neutral-600">
             You&apos;re buying{" "}
             <strong className="text-pmred">{formatNumber(pack.credits)} credits</strong> for{" "}
-            <strong>{formatUSD(pack.price)}</strong>. To confirm this purchase please enter your
-            password:
+            <strong>{formatUSD(pack.price)}</strong>, paid with the demo card.
           </p>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Your password"
-            aria-label="Password"
-            autoFocus
-            className="h-10 w-full rounded-full border border-neutral-200 px-4 text-sm focus:border-pmred focus:outline-none"
-          />
+          <p className="flex items-center justify-between gap-4 border border-neutral-200 px-4 py-3 text-sm">
+            <span className="font-semibold text-neutral-700">Demo card •••• 4242</span>
+            <span className="text-xs text-neutral-500">Simulated payment, no real charge</span>
+          </p>
           <label className="flex items-start gap-3 text-sm">
             <input
               type="checkbox"
@@ -127,7 +146,7 @@ export default function CreditsModal({ open, onClose }) {
               </span>
             </span>
           </label>
-        </form>
+        </div>
       ) : (
         <>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
