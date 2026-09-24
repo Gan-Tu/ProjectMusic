@@ -11,6 +11,7 @@ import Modal from "../ui/Modal";
 import { TabList, tabPanelProps } from "../ui/Tabs";
 import { isHiddenContact, useStore, visibleChats } from "../../lib/store";
 import { useMediaQuery } from "../../lib/useMediaQuery";
+import { usePageVisible } from "../../lib/usePageVisible";
 import { chatTime, classNames } from "../../lib/format";
 import { useNow } from "../../lib/useNow";
 import { getArtistHomePageData } from "../../utils/getFakeArtistsData";
@@ -57,9 +58,11 @@ export default function ChatModal({ open, onClose, chatId: initialChatId }) {
   );
 
   // Replies count as read only while the conversation is on screen: phones hide it
-  // behind the Friends tab (from md up, list and conversation sit side by side).
+  // behind the Friends tab (from md up, list and conversation sit side by side), and
+  // a conversation left open in a background browser tab isn't being read either.
   const sideBySide = useMediaQuery("(min-width: 48rem)");
-  const conversationShown = tab === "chats" || sideBySide;
+  const pageVisible = usePageVisible();
+  const conversationShown = pageVisible && (tab === "chats" || sideBySide);
 
   // Keep the newest message in view, including when a hidden conversation comes back.
   const messageCount = active?.messages.length || 0;

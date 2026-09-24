@@ -86,7 +86,14 @@ export default function NotificationList({ onNavigate, limit }) {
         return (
           <li key={n.id} className="group/item relative">
             {n.href ? (
-              <Link href={n.href} onClick={onNavigate} className={classes}>
+              <Link
+                href={n.href}
+                onClick={() => {
+                  actions.markNotificationRead(n.id);
+                  onNavigate?.();
+                }}
+                className={classes}
+              >
                 {body}
               </Link>
             ) : (
@@ -94,6 +101,7 @@ export default function NotificationList({ onNavigate, limit }) {
                 type="button"
                 className={classes}
                 onClick={() => {
+                  actions.markNotificationRead(n.id);
                   onNavigate?.();
                   if (n.action) openModal(n.action);
                 }}
