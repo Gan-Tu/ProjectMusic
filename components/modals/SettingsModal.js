@@ -3,6 +3,7 @@ import Image from "next/image";
 import toast from "react-hot-toast";
 import Modal from "../ui/Modal";
 import Button from "../ui/Button";
+import { TabList, tabPanelProps } from "../ui/Tabs";
 import { Toggle } from "../ui/Form";
 import { useStore } from "../../lib/store";
 import { useSessionContext } from "../../lib/SessionProvider";
@@ -170,25 +171,22 @@ export default function SettingsModal({ open, onClose, tab: initialTab = "genera
       title="Settings"
       size="lg"
       headerExtra={
-        <div role="tablist" className="flex items-center gap-2">
-          {TABS.map((t) => (
-            <button
-              key={t.id}
-              type="button"
-              role="tab"
-              aria-selected={tab === t.id}
-              onClick={() => setTab(t.id)}
-              className={classNames(
-                "rounded-full border px-4 py-1 text-2xs font-bold uppercase tracking-wider transition",
-                tab === t.id
-                  ? "border-neutral-300 text-neutral-500"
-                  : "border-transparent text-pmred hover:border-pmred/30"
-              )}
-            >
-              {t.label}
-            </button>
-          ))}
-        </div>
+        <TabList
+          idBase="settings"
+          label="Settings sections"
+          tabs={TABS}
+          value={tab}
+          onChange={setTab}
+          className="flex items-center gap-2"
+          tabClassName={(selected) =>
+            classNames(
+              "rounded-full border px-4 py-1 text-2xs font-bold uppercase tracking-wider transition",
+              selected
+                ? "border-neutral-300 text-neutral-500"
+                : "border-transparent text-pmred hover:border-pmred/30"
+            )
+          }
+        />
       }
       footerStart={
         <button
@@ -210,7 +208,7 @@ export default function SettingsModal({ open, onClose, tab: initialTab = "genera
         </>
       }
     >
-      <div className="min-h-72">
+      <div className="min-h-72" {...tabPanelProps("settings", tab)}>
         {tab === "general" && (
           <div className="divide-y divide-neutral-200">
             <div className="flex flex-col-reverse gap-6 pb-3 sm:flex-row sm:items-start">

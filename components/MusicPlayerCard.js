@@ -57,7 +57,7 @@ export default function MusicPlayerCard({ musicData, track, queue, priority = fa
                 href={`/albums/${musicData.id}`}
                 className="block cursor-pointer truncate text-xs font-extrabold uppercase tracking-wide sm:text-sm"
               >
-                {musicData.name}
+                {track.title}
               </Link>
               <p
                 className={classNames(
@@ -65,7 +65,8 @@ export default function MusicPlayerCard({ musicData, track, queue, priority = fa
                   active ? "text-white" : "text-neutral-500"
                 )}
               >
-                {musicData.artist}
+                {track.artist}
+                {track.title !== musicData.name && ` · ${musicData.name}`}
               </p>
             </div>
             {player.isTrackPlaying(track.id) && <Equalizer />}
@@ -136,7 +137,7 @@ export default function MusicPlayerCard({ musicData, track, queue, priority = fa
           <CommentThread
             threadId={`album:${musicData.id}`}
             compact
-            placeholder={`Comment on ${track.title}…`}
+            placeholder={`Comment on ${musicData.name}…`}
           />
         </div>
       )}

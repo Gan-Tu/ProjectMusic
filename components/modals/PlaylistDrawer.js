@@ -5,6 +5,7 @@ import { MusicalNoteIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Drawer } from "../ui/Modal";
 import UndoBar from "../ui/UndoBar";
 import Button from "../ui/Button";
+import { TabList, tabPanelProps } from "../ui/Tabs";
 import { usePlayer } from "../../lib/player";
 import { useStore } from "../../lib/store";
 import { classNames } from "../../lib/format";
@@ -72,114 +73,113 @@ export default function PlaylistDrawer({ open, onClose }) {
 
   return (
     <Drawer open={open} onClose={onClose} title="Playlist">
-      <div
-        className="flex border-b border-neutral-200 text-xs font-bold uppercase tracking-wider"
-        role="tablist"
-      >
-        {[
+      <TabList
+        idBase="playlist"
+        label="Queue and playlist"
+        tabs={[
           { id: "queue", label: `Up next (${player.queue.length})` },
           { id: "mine", label: `My playlist (${state.playlist.length})` }
-        ].map((t) => (
-          <button
-            key={t.id}
-            type="button"
-            role="tab"
-            aria-selected={tab === t.id}
-            onClick={() => setTab(t.id)}
-            className={classNames(
-              "flex-1 border-b-2 py-3 transition",
-              tab === t.id
-                ? "border-pmred text-pmred"
-                : "border-transparent text-neutral-500 hover:text-neutral-700"
-            )}
-          >
-            {t.label}
-          </button>
-        ))}
-      </div>
+        ]}
+        value={tab}
+        onChange={setTab}
+        className="flex border-b border-neutral-200 text-xs font-bold uppercase tracking-wider"
+        tabClassName={(selected) =>
+          classNames(
+            "flex-1 border-b-2 py-3 transition",
+            selected
+              ? "border-pmred text-pmred"
+              : "border-transparent text-neutral-500 hover:text-neutral-700"
+          )
+        }
+      />
 
-      {undo && tab === "mine" && (
-        <UndoBar
-          key={undo.id}
-          message={undo.message}
-          onUndo={undo.run}
-          onDone={() => setUndo(null)}
-        />
-      )}
-      {tab === "queue" ? (
-        <ul className="py-2">
-          {player.queue.map((track, i) => (
-            <TrackRow
-              key={track.id}
-              track={track}
-              current={i === player.index}
-              playing={i === player.index && player.isPlaying}
-              onPlay={() => (i === player.index ? player.togglePlay() : player.jumpTo(i))}
-              onRemove={
-                player.queue.length > 1 ? () => player.removeFromQueue(track.id) : undefined
-              }
-            />
-          ))}
-        </ul>
-      ) : state.playlist.length ? (
-        <>
-          <div className="flex items-center gap-3 px-6 py-4">
-            <Button size="xs" onClick={() => player.playQueue(state.playlist)}>
-              <PlayIcon className="h-3.5 w-3.5" /> Play all
-            </Button>
-            <Button
-              size="xs"
-              variant="outline"
-              onClick={() => {
-                if (!player.shuffle) player.toggleShuffle();
-                player.playQueue(state.playlist, Math.floor(Math.random() * state.playlist.length));
-              }}
-            >
-              Shuffle
-            </Button>
-            <button
-              type="button"
-              onClick={() => {
-                const saved = state.playlist;
-                actions.clearPlaylist();
-                setUndo({
-                  id: Date.now(),
-                  message: "Playlist cleared",
-                  run: () => saved.forEach((track) => actions.addToPlaylist(track))
-                });
-              }}
-              className="ml-auto text-2xs font-bold uppercase tracking-wider text-neutral-500 hover:text-pmred"
-            >
-              Clear
-            </button>
-          </div>
-          <ul className="pb-2">
-            {state.playlist.map((track) => (
+      <div {...tabPanelProps("playlist", tab)}>
+        {undo && tab === "mine" && (
+          <UndoBar
+            key={undo.id}
+            message={undo.message}
+            onUndo={undo.run}
+            onDone={() => setUndo(null)}
+          />
+        )}
+        {tab === "queue" ? (
+          <ul className="py-2">
+            {player.queue.map((track, i) => (
               <TrackRow
                 key={track.id}
                 track={track}
-                current={player.isCurrent(track.id)}
-                playing={player.isTrackPlaying(track.id)}
-                onPlay={() =>
-                  player.playTrack(track, player.isCurrent(track.id) ? undefined : state.playlist)
+                current={i === player.index}
+                playing={i === player.index && player.isPlaying}
+                onPlay={() => (i === player.index ? player.togglePlay() : player.jumpTo(i))}
+                onRemove={
+                  player.queue.length > 1 ? () => player.removeFromQueue(track.id) : undefined
                 }
-                onRemove={() => actions.removeFromPlaylist(track.id)}
               />
             ))}
           </ul>
-        </>
-      ) : (
-        <div className="flex flex-col items-center gap-3 px-8 py-16 text-center">
-          <MusicalNoteIcon className="h-10 w-10 text-neutral-200" />
-          <p className="text-sm font-bold uppercase tracking-wider">Your playlist is empty</p>
-          <p className="text-xs text-neutral-500">
-            Use the red + in the player (or on any track) to save songs here.
-          </p>
-          <Button href="/musics" variant="outline" onClick={onClose}>
-            Discover music
-          </Button>
-        </div>
-      )}
+        ) : state.playlist.length ? (
+          <>
+            <div className="flex items-center gap-3 px-6 py-4">
+              <Button size="xs" onClick={() => player.playQueue(state.playlist)}>
+                <PlayIcon className="h-3.5 w-3.5" /> Play all
+              </Button>
+              <Button
+                size="xs"
+                variant="outline"
+                onClick={() => {
+                  if (!player.shuffle) player.toggleShuffle();
+                  player.playQueue(
+                    state.playlist,
+                    Math.floor(Math.random() * state.playlist.length)
+                  );
+                }}
+              >
+                Shuffle
+              </Button>
+              <button
+                type="button"
+                onClick={() => {
+                  const saved = state.playlist;
+                  actions.clearPlaylist();
+                  setUndo({
+                    id: Date.now(),
+                    message: "Playlist cleared",
+                    run: () => saved.forEach((track) => actions.addToPlaylist(track))
+                  });
+                }}
+                className="ml-auto text-2xs font-bold uppercase tracking-wider text-neutral-500 hover:text-pmred"
+              >
+                Clear
+              </button>
+            </div>
+            <ul className="pb-2">
+              {state.playlist.map((track) => (
+                <TrackRow
+                  key={track.id}
+                  track={track}
+                  current={player.isCurrent(track.id)}
+                  playing={player.isTrackPlaying(track.id)}
+                  onPlay={() =>
+                    player.playTrack(track, player.isCurrent(track.id) ? undefined : state.playlist)
+                  }
+                  onRemove={() => actions.removeFromPlaylist(track.id)}
+                />
+              ))}
+            </ul>
+          </>
+        ) : (
+          <div className="flex flex-col items-center gap-3 px-8 py-16 text-center">
+            <MusicalNoteIcon className="h-10 w-10 text-neutral-200" />
+            <p className="text-sm font-bold uppercase tracking-wider">Your playlist is empty</p>
+            <p className="text-xs text-neutral-500">
+              Use the red + in the player (or on any track) to save songs here.
+            </p>
+            <Button href="/musics" variant="outline" onClick={onClose}>
+              Discover music
+            </Button>
+          </div>
+        )}
+      </div>
     </Drawer>
   );
 }

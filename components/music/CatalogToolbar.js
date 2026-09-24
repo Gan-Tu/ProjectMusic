@@ -2,7 +2,7 @@ import Link from "next/link";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { classNames } from "../../lib/format";
 
-export default function CatalogToolbar({ active, query, onSearch, count }) {
+export default function CatalogToolbar({ active, query, onSearch, countLabel }) {
   return (
     <div className="flex flex-wrap items-center justify-between gap-4 border-b border-neutral-200 px-5 py-5 sm:px-8">
       <nav
@@ -25,9 +25,7 @@ export default function CatalogToolbar({ active, query, onSearch, count }) {
             {label}
           </Link>
         ))}
-        <span className="text-2xs font-normal tracking-normal text-neutral-500">
-          {count} releases
-        </span>
+        <span className="text-2xs font-normal tracking-normal text-neutral-500">{countLabel}</span>
       </nav>
       <label className="flex w-full items-center gap-3 rounded-full border border-neutral-200 px-4 focus-within:border-pmred focus-within:ring-2 focus-within:ring-pmred/15 sm:w-72">
         <MagnifyingGlassIcon className="h-4 w-4 shrink-0 text-neutral-400" />

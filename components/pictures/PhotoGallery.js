@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Image from "next/image";
+import Image, { getImageProps } from "next/image";
 import {
   ArrowDownTrayIcon,
   ArrowLeftIcon,
@@ -11,6 +11,20 @@ import toast from "react-hot-toast";
 import Modal from "../ui/Modal";
 import { useStore } from "../../lib/store";
 import { classNames, pad2 } from "../../lib/format";
+
+// Some originals live on hosts that refuse cross-origin fetches (S3), so downloads go
+// through Next's same-origin image endpoint: full size, in the original format.
+function downloadUrl(src) {
+  if (src.startsWith("/")) return src;
+  return getImageProps({ src, alt: "", width: 1920, height: 1920 }).props.src;
+}
+
+const EXTENSIONS = {
+  "image/jpeg": "jpg",
+  "image/png": "png",
+  "image/webp": "webp",
+  "image/avif": "avif"
+};
 
 export default function PhotoGallery({ photos, polaroids = false }) {
   const [selected, setSelected] = useState(null);
@@ -34,13 +48,13 @@ export default function PhotoGallery({ photos, polaroids = false }) {
   async function download() {
     setDownloading(true);
     try {
-      const response = await fetch(photo.src);
+      const response = await fetch(downloadUrl(photo.src));
       if (!response.ok) throw new Error("Download unavailable");
       const blob = await response.blob();
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `${photo.id}.${blob.type.includes("webp") ? "webp" : "jpg"}`;
+      link.download = `${photo.id}.${EXTENSIONS[blob.type] || "jpg"}`;
       link.click();
       setTimeout(() => URL.revokeObjectURL(url), 1000);
       toast.success("Photo downloaded");

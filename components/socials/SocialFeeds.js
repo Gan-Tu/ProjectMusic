@@ -16,6 +16,8 @@ import { useStore } from "../../lib/store";
 import { usePlayer } from "../../lib/player";
 import { formatLongDate, formatNumber } from "../../lib/format";
 
+const FIRST_BATCH = 12; // photos shown before "Load more"
+
 // `likeKey` overrides the default "social:<id>" key (e.g. tracks share music likes).
 // Seeded comments of a photo post (shared by its tile count and its lightbox thread).
 function conversationSeed(post) {
@@ -110,7 +112,7 @@ function useGalleryKeys(open, count, setSelected) {
 
 export function PhotoFeed({ posts, pinterest = false }) {
   const [selected, setSelected] = useState(null);
-  const [limit, setLimit] = useState(12);
+  const [limit, setLimit] = useState(FIRST_BATCH);
   const { state } = useStore();
   const post = selected == null ? null : posts[selected];
   const move = (step) => setSelected((index) => (index + step + posts.length) % posts.length);
@@ -143,6 +145,9 @@ export function PhotoFeed({ posts, pinterest = false }) {
                   fill
                   sizes="(max-width: 767px) 50vw, 25vw"
                   preload={index === 0}
+                  // Masonry columns put later items at the top of each column, so the
+                  // whole first batch can be on screen; the square grid shows one row.
+                  loading={index > 0 && index < (pinterest ? FIRST_BATCH : 4) ? "eager" : undefined}
                   className="object-cover transition duration-500 group-hover:scale-105 group-hover:brightness-75 motion-reduce:transform-none motion-reduce:transition-none"
                 />
                 <div className="absolute inset-0 flex items-center justify-center gap-6 bg-black/20 text-sm font-semibold text-white opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">

@@ -8,6 +8,7 @@ import {
   TrashIcon
 } from "@heroicons/react/24/outline";
 import Modal from "../ui/Modal";
+import { TabList, tabPanelProps } from "../ui/Tabs";
 import { useStore, visibleChats } from "../../lib/store";
 import { useMediaQuery } from "../../lib/useMediaQuery";
 import { classNames } from "../../lib/format";
@@ -91,22 +92,24 @@ export default function ChatModal({ open, onClose, chatId: initialChatId }) {
       size="xl"
       bodyClassName="p-0"
       headerExtra={
-        <div className="flex items-center gap-2" role="tablist">
-          {["chats", "friends"].map((t) => (
-            <button
-              key={t}
-              type="button"
-              role="tab"
-              aria-selected={tab === t}
-              onClick={() => setTab(t)}
-              className={classNames(
+        <div className="flex items-center gap-2">
+          <TabList
+            idBase="chat"
+            label="Conversations and friends"
+            tabs={[
+              { id: "chats", label: "Chats" },
+              { id: "friends", label: "Friends" }
+            ]}
+            value={tab}
+            onChange={setTab}
+            className="flex items-center gap-2"
+            tabClassName={(selected) =>
+              classNames(
                 "rounded-full border px-4 py-1 text-2xs font-bold uppercase tracking-wider transition",
-                tab === t ? "border-neutral-300 text-neutral-500" : "border-transparent text-pmred"
-              )}
-            >
-              {t}
-            </button>
-          ))}
+                selected ? "border-neutral-300 text-neutral-500" : "border-transparent text-pmred"
+              )
+            }
+          />
           <span className="ml-2 hidden text-2xs uppercase tracking-wider text-neutral-500 sm:inline">
             You appear {state.settings.availableToChat ? "online" : "offline"}
           </span>
@@ -130,7 +133,7 @@ export default function ChatModal({ open, onClose, chatId: initialChatId }) {
               className="h-9 w-full rounded-full border border-neutral-200 pl-9 pr-3 text-xs focus:border-pmred focus:outline-none"
             />
           </div>
-          <ul className="min-h-0 flex-1 overflow-y-auto">
+          <ul className="min-h-0 flex-1 overflow-y-auto" {...tabPanelProps("chat", tab)}>
             {tab === "chats"
               ? matchingChats.map((chat) => {
                   const last = chat.messages[chat.messages.length - 1];
@@ -208,7 +211,7 @@ export default function ChatModal({ open, onClose, chatId: initialChatId }) {
         >
           {active ? (
             <>
-              <div className="flex items-center gap-3 border-b border-neutral-200 px-5 py-3">
+              <div className="flex flex-wrap items-center gap-3 border-b border-neutral-200 px-5 py-3">
                 <button
                   type="button"
                   onClick={() => setActiveId(null)}
@@ -219,13 +222,13 @@ export default function ChatModal({ open, onClose, chatId: initialChatId }) {
                 </button>
                 <Avatar src={active.avatar} online={active.online} />
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-semibold">{active.name}</p>
+                  <p className="truncate text-sm font-semibold">{active.name}</p>
                   <p className="text-2xs uppercase tracking-wider text-neutral-500">
                     {active.online ? "Online" : "Offline"}
                   </p>
                 </div>
                 {confirmDelete === active.id ? (
-                  <span className="flex items-center gap-3 text-xs text-neutral-600">
+                  <span className="flex basis-full items-center justify-end gap-3 text-xs text-neutral-600 sm:basis-auto">
                     Delete conversation?
                     <button
                       type="button"

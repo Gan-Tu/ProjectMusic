@@ -36,7 +36,7 @@ export default function CartDrawer({ open, onClose }) {
   async function checkout() {
     if (busy) return;
     setBusy(true);
-    const result = await actions.checkout(method);
+    const result = await actions.checkout(method, null, state.cart);
     setBusy(false);
     if (!result.ok) {
       toast.error(result.error);
@@ -152,6 +152,7 @@ export default function CartDrawer({ open, onClose }) {
             </span>
             <button
               type="button"
+              disabled={busy}
               onClick={() =>
                 setUndo({
                   id: Date.now(),
@@ -159,7 +160,7 @@ export default function CartDrawer({ open, onClose }) {
                   run: actions.clearCartWithUndo()
                 })
               }
-              className="text-neutral-500 transition hover:text-pmred"
+              className="text-neutral-500 transition hover:text-pmred disabled:opacity-30"
             >
               Clear cart
             </button>
@@ -196,7 +197,7 @@ export default function CartDrawer({ open, onClose }) {
                       <button
                         type="button"
                         aria-label="Decrease quantity"
-                        disabled={line.qty <= 1}
+                        disabled={busy || line.qty <= 1}
                         onClick={() => actions.stepCartQty(line.key, -1)}
                         className="p-1.5 text-neutral-500 hover:text-pmred disabled:opacity-30"
                       >
@@ -208,17 +209,18 @@ export default function CartDrawer({ open, onClose }) {
                       <button
                         type="button"
                         aria-label="Increase quantity"
-                        disabled={line.qty >= MAX_QTY}
+                        disabled={busy || line.qty >= MAX_QTY}
                         onClick={() => actions.stepCartQty(line.key, 1)}
-                        className="p-1.5 text-neutral-500 hover:text-pmred"
+                        className="p-1.5 text-neutral-500 hover:text-pmred disabled:opacity-30"
                       >
                         <PlusIcon className="h-3.5 w-3.5" />
                       </button>
                     </div>
                     <button
                       type="button"
+                      disabled={busy}
                       onClick={() => actions.removeFromCart(line.key)}
-                      className="flex items-center gap-1 text-2xs font-bold uppercase tracking-wider text-neutral-500 hover:text-pmred"
+                      className="flex items-center gap-1 text-2xs font-bold uppercase tracking-wider text-neutral-500 hover:text-pmred disabled:opacity-30"
                     >
                       <TrashIcon className="h-4 w-4" /> Remove
                     </button>

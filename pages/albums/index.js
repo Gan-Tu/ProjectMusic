@@ -4,6 +4,7 @@ import AlbumCard from "../../components/AlbumCard";
 import CatalogToolbar from "../../components/music/CatalogToolbar";
 import { getMusics } from "../../utils/getFakeTracks";
 import { toAlbumSummary } from "../../utils/albumTracks";
+import { formatNumber } from "../../lib/format";
 
 export default function Albums({ musics }) {
   const [query, setQuery] = useState("");
@@ -17,7 +18,12 @@ export default function Albums({ musics }) {
       description="Explore the complete Projct Music release collection."
     >
       <h1 className="sr-only">Albums</h1>
-      <CatalogToolbar active="Albums" query={query} onSearch={setQuery} count={filtered.length} />
+      <CatalogToolbar
+        active="Albums"
+        query={query}
+        onSearch={setQuery}
+        countLabel={`${formatNumber(filtered.length)} ${filtered.length === 1 ? "release" : "releases"}`}
+      />
       <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
         {filtered.map((musicData, index) => (
           <li key={musicData.id}>

@@ -20,7 +20,7 @@ function CartButton({ count, onClick, className }) {
     <button
       type="button"
       onClick={onClick}
-      aria-label={`Cart${count ? ` (${count} items)` : ""}`}
+      aria-label={`Cart${count ? ` (${count} ${count === 1 ? "item" : "items"})` : ""}`}
       className={classNames(
         "group relative flex items-center text-neutral-500 transition hover:text-pmred",
         className
