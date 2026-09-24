@@ -8,7 +8,7 @@ import { listAlbums } from "../../../../lib/server/content";
 export default apiHandler({
   GET: async (req, res) => {
     const albums = await listAlbums({ placement: "music", tracks: "all" });
-    res.setHeader("Cache-Control", "public, s-maxage=60, stale-while-revalidate=300");
+    res.setHeader("Cache-Control", "public, s-maxage=10, stale-while-revalidate=60");
     res.json({
       albums: albums.map((album) => ({
         id: album.id,

@@ -8,7 +8,7 @@ export default apiHandler({
     const album = await getAlbum(String(req.query.id || ""));
     if (!album) throw new HttpError(404, "Album not found.");
     const { tracks, ...summary } = album;
-    res.setHeader("Cache-Control", "public, s-maxage=60, stale-while-revalidate=300");
+    res.setHeader("Cache-Control", "public, s-maxage=10, stale-while-revalidate=60");
     res.json({ album: summary, tracks });
   }
 });
