@@ -15,6 +15,8 @@ import { usePageVisible } from "../../lib/usePageVisible";
 import { chatTime, classNames } from "../../lib/format";
 import { useNow } from "../../lib/useNow";
 import { getArtistHomePageData } from "../../utils/getFakeArtistsData";
+import { useSessionContext } from "../../lib/SessionProvider";
+import Button from "../ui/Button";
 
 function Avatar({ src, online, size = "h-10 w-10" }) {
   return (
@@ -38,6 +40,7 @@ function Avatar({ src, online, size = "h-10 w-10" }) {
 // the thread on the right (stacked on small screens).
 export default function ChatModal({ open, onClose, chatId: initialChatId }) {
   const { state, actions } = useStore();
+  const [session, sessionDispatch] = useSessionContext();
   const now = useNow(); // seeded messages carry a display `time`; sent ones an ISO `at`
   const [tab, setTab] = useState("chats");
   const [activeId, setActiveId] = useState(initialChatId || null);
@@ -70,9 +73,12 @@ export default function ChatModal({ open, onClose, chatId: initialChatId }) {
     const el = threadRef.current;
     if (el && conversationShown) el.scrollTop = el.scrollHeight;
   }, [activeId, messageCount, conversationShown]);
+  const loggedIn = Boolean(session.user);
   useEffect(() => {
-    if (open && conversationShown && activeId && active?.unread) actions.markChatRead(activeId);
-  }, [open, conversationShown, activeId, active?.unread, actions]);
+    if (loggedIn && open && conversationShown && activeId && active?.unread) {
+      actions.markChatRead(activeId);
+    }
+  }, [loggedIn, open, conversationShown, activeId, active?.unread, actions]);
 
   function openChat(id) {
     setActiveId(id);
@@ -91,6 +97,25 @@ export default function ChatModal({ open, onClose, chatId: initialChatId }) {
     if (!active || !draft.trim()) return;
     actions.sendMessage(active.id, draft);
     setDraft("");
+  }
+
+  // Conversations belong to the logged-in user.
+  if (!loggedIn) {
+    return (
+      <Modal open={open} onClose={onClose} title="Chat">
+        <div className="flex flex-col items-center gap-4 px-6 py-12 text-center">
+          <p className="text-sm text-neutral-600">Log in to read and send messages.</p>
+          <Button
+            onClick={() => {
+              sessionDispatch({ type: "set_user", user: {} });
+              toast.success("Welcome back, Nick!");
+            }}
+          >
+            Log in
+          </Button>
+        </div>
+      </Modal>
+    );
   }
 
   return (

@@ -127,14 +127,16 @@ export default function SettingsModal({ open, onClose, tab: initialTab = "genera
 
   async function accept() {
     if (avatarBusy) return;
-    // Nothing is saved until the profile fields are valid.
+    // Nothing is saved until the profile fields are valid (logged in: they're shown).
     const username = profile.username.trim();
     const email = profile.email.trim();
-    const invalid = !username
-      ? ["username", "Please enter a username."]
-      : !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
-        ? ["email", "Please enter a valid e-mail address."]
-        : null;
+    const invalid = !session.user
+      ? null
+      : !username
+        ? ["username", "Please enter a username."]
+        : !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+          ? ["email", "Please enter a valid e-mail address."]
+          : null;
     if (invalid) {
       setTab("general");
       setEditing(invalid[0]);

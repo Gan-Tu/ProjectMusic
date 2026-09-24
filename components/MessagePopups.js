@@ -2,11 +2,14 @@ import { useEffect, useRef } from "react";
 import toast from "react-hot-toast";
 import { useStore, visibleChats } from "../lib/store";
 import { useUI } from "../lib/ui";
+import { useSessionContext } from "../lib/SessionProvider";
 
 // "Pop up messaging" setting: announce new chat replies while the chat is closed.
 export default function MessagePopups() {
   const { state } = useStore();
   const { activeModal, openModal } = useUI();
+  const [session] = useSessionContext();
+  const loggedIn = Boolean(session.user);
   const seen = useRef(null);
 
   useEffect(() => {
@@ -22,7 +25,7 @@ export default function MessagePopups() {
     for (const { chat, message } of incoming) {
       if (seen.current.has(message.id)) continue;
       seen.current.add(message.id);
-      if (!state.settings.popupMessaging || activeModal === "chat") continue;
+      if (!loggedIn || !state.settings.popupMessaging || activeModal === "chat") continue;
       toast(
         (t) => (
           <button
@@ -42,7 +45,7 @@ export default function MessagePopups() {
         { duration: 5000 }
       );
     }
-  }, [state, activeModal, openModal]);
+  }, [state, activeModal, openModal, loggedIn]);
 
   return null;
 }
