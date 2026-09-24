@@ -4,6 +4,36 @@ import toast from "react-hot-toast";
 import { safeNext, useSessionContext } from "../../lib/SessionProvider";
 import Button from "../ui/Button";
 
+const DEMO = { login: "demo", password: "demo1234" };
+
+// The shared demo member's login, spelled out, with a button that fills the form.
+function DemoAccount() {
+  function fill(event) {
+    const form = event.currentTarget.form;
+    form.elements.login.value = DEMO.login;
+    form.elements.password.value = DEMO.password;
+    form.elements.password.focus();
+  }
+  return (
+    <div className="border border-white/60 px-4 py-3 text-xs leading-6 text-white">
+      <p className="text-2xs font-bold uppercase tracking-[0.2em]">Try the demo account</p>
+      <dl className="mt-1 grid grid-cols-[auto_1fr] gap-x-3">
+        <dt>Username</dt>
+        <dd className="font-mono font-bold">{DEMO.login}</dd>
+        <dt>Password</dt>
+        <dd className="font-mono font-bold">{DEMO.password}</dd>
+      </dl>
+      <button
+        type="button"
+        onClick={fill}
+        className="mt-2 cursor-pointer text-2xs font-bold uppercase tracking-wider underline underline-offset-4 hover:no-underline"
+      >
+        Fill in the demo login
+      </button>
+    </div>
+  );
+}
+
 // Member login (username or email + password). After logging in it continues to
 // `?next=` (a path on this site) or the profile.
 export default function LoginPanel() {
@@ -115,10 +145,7 @@ export default function LoginPanel() {
                 {error}
               </p>
             )}
-            <p className="text-xs leading-6 text-white">
-              Demo account: <strong className="font-bold">demo</strong> /{" "}
-              <strong className="font-bold">demo1234</strong>
-            </p>
+            <DemoAccount />
             <Button
               type="submit"
               variant="light"

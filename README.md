@@ -13,7 +13,7 @@ Live: https://project-music.tugan.app · CRM: https://project-music.tugan.app/cr
 | Who | Where | Login |
 | --- | --- | --- |
 | CRM admin (the only CRM user) | `/crm` | email + password from the `CRM_ADMIN_USERNAME` / `CRM_ADMIN_PASSWORD` environment variables (set on Vercel, never committed) |
-| Demo member (seeded) | `/login` | `demo` / `demo1234` |
+| Demo member (seeded, shared) | `/login` | username `demo`, password `demo1234` |
 
 Anyone can create a member account at `/signup` (new members get the sign-up bonus set
 in CRM → Settings, 1,000 credits by default).

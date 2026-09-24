@@ -11,6 +11,7 @@ undo it. Provisioned on 2026-09-24.
 | Neon integration installation `icfg_1V9Ja0EB3D46XkiohGLtusYA` | Vercel team `tugan-team` | Free plan | No (already installed, reused) |
 | 18 environment variables on Vercel project `project-music` | Production, Preview, Development | $0 | **Yes** (added automatically when the database was connected) |
 | `CRM_ADMIN_USERNAME`, `CRM_ADMIN_PASSWORD` env vars | Production + Preview (password stored as sensitive), Development | $0 | **Yes** (the CRM admin login) |
+| Neon Postgres database `project-music-test-db` (test sandbox) | Vercel Marketplace → Neon, connected to **Development only** with the `TEST_` prefix (`TEST_DATABASE_URL`, …) | **Neon Free** (`free_v3`): **$0/month** | **Yes** (for destructive tests such as "Clear all data" without touching the live data) |
 | Vercel project `project-music` (Hobby) | tugan-team | existing plan, no paid add-ons | No |
 | AWS | — | — | **Nothing provisioned** (not needed: media is URL-only) |
 
@@ -41,6 +42,17 @@ Environment variables added to the Vercel project (values are secrets; only
 `POSTGRES_URL_NO_SSL`, `POSTGRES_USER`, `POSTGRES_HOST`, `POSTGRES_PASSWORD`,
 `POSTGRES_DATABASE`, `POSTGRES_PRISMA_URL`, `NEON_PROJECT_ID`, `NEON_AUTH_BASE_URL`,
 `VITE_NEON_AUTH_URL`
+
+### Test database
+
+- Name: `project-music-test-db`, Vercel store id `store_L4PfLw6o67hyVLmd`, Neon project
+  `rough-leaf-16998787`, region `iad1`, Free plan (same limits as above, counted per
+  project).
+- Connected to the Development environment only, with prefixed variables
+  (`TEST_DATABASE_URL`, `TEST_PGHOST`, …), so production and preview never use it. The
+  code only reads `DATABASE_URL`; point a local run at the sandbox with
+  `DATABASE_URL="$TEST_DATABASE_URL" npm run dev` (values from `.env.local`).
+- Remove it when no longer needed: `vercel integration resource remove project-music-test-db`.
 
 ### What happens at the free-plan limits
 
