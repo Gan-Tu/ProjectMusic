@@ -1,9 +1,9 @@
 import { useEffect, useRef } from "react";
-import toast from "react-hot-toast";
 import { usePlayer } from "../lib/player";
 import { useStore } from "../lib/store";
 import { MEGA_MENU_TABS, useUI } from "../lib/ui";
 import { trackPurchaseItem } from "../lib/pricing";
+import { showCartToast } from "./shop/cart";
 
 function isTypingTarget(el) {
   if (!el) return false;
@@ -74,14 +74,16 @@ export default function KeyboardShortcuts() {
           u.openModal("playlist");
           break;
         case "b":
-        case "B":
+        case "B": {
           if (u.cartCandidate) {
-            a.addToCart(u.cartCandidate, u.cartCandidate.qty || 1);
-            toast.success(`${u.cartCandidate.name} added to your cart`);
+            const requested = u.cartCandidate.qty || 1;
+            const added = a.addToCart(u.cartCandidate, requested);
+            showCartToast(u.cartCandidate, u.openModal, added, requested);
           } else if (p.track) {
             u.openModal("purchase", { item: trackPurchaseItem(p.track) });
           }
           break;
+        }
         case "m":
         case "M": {
           const video = p.activeVideo();

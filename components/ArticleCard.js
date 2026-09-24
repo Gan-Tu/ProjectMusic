@@ -13,7 +13,8 @@ export default function ArticleCard({
   snippet,
   href = "/news",
   category,
-  priority = false
+  priority = false,
+  eager = false // visible on load, but not the one image worth preloading
 }) {
   return (
     <article className="grid h-full grid-cols-[40%_60%] bg-white sm:grid-cols-2">
@@ -28,6 +29,7 @@ export default function ArticleCard({
           sizes="(max-width: 640px) 40vw, (max-width: 1024px) 50vw, 25vw"
           alt={imageAlt || imgAlt || title}
           preload={priority}
+          loading={eager && !priority ? "eager" : undefined}
           className="object-cover transition-transform duration-500 motion-safe:group-hover:scale-105"
         />
       </Link>

@@ -1,5 +1,6 @@
 import toast from "react-hot-toast";
 import { periodDays } from "../../lib/entitlements";
+import { MAX_QTY } from "../../lib/store";
 
 export function makeCartItem(
   product,
@@ -27,13 +28,24 @@ export function makeCartItem(
   };
 }
 
-export function showCartToast(item, openModal, quantity = 1) {
+// Feedback after adding `requested` of an item, of which `added` fit in the cart.
+export function showCartToast(item, openModal, added = 1, requested = added) {
+  if (!added) {
+    toast.error(`Your cart already has the maximum of ${MAX_QTY} × ${item.name}.`);
+    return;
+  }
+  const quantity = added;
   toast.success(
     (notification) => (
       <div className="flex max-w-xs flex-wrap items-center gap-x-4 gap-y-2">
         <span>
-          {quantity > 1 ? `${quantity} × ` : ""}
+          {quantity > 1 || added < requested ? `${quantity} × ` : ""}
           {item.name} added to cart
+          {added < requested && (
+            <span className="mt-1 block text-xs text-neutral-500">
+              That&apos;s the limit of {MAX_QTY} per item.
+            </span>
+          )}
           {item.subtitle && (
             <span className="mt-1 block text-xs text-neutral-500">{item.subtitle}</span>
           )}

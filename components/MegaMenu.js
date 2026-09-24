@@ -41,6 +41,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { useUI, MEGA_MENU_TABS } from "../lib/ui";
 import { classNames } from "../lib/format";
+import { TabList, tabPanelProps } from "./ui/Tabs";
 import { CapIcon, CreditsIcon, CrownIcon, DiscIcon, GemIcon, ShirtIcon, VinylIcon } from "./icons";
 
 function brandIcon(icon) {
@@ -117,32 +118,35 @@ export function MegaMenuTabs() {
   const { megaMenu, setMegaMenuTab, closeMegaMenu } = useUI();
   return (
     <div className="flex h-full items-stretch">
-      <div role="tablist" aria-label="Menu categories" className="flex bg-black">
-        {MEGA_MENU_TABS.map((tab, i) => {
+      <TabList
+        idBase="mega-menu-tabs"
+        label="Menu categories"
+        tabs={MEGA_MENU_TABS.map((tab, i) => {
           const { label, Icon } = TAB_META[tab];
-          const selected = megaMenu.tab === tab;
-          return (
-            <button
-              key={tab}
-              type="button"
-              role="tab"
-              aria-selected={selected}
-              aria-controls="mega-menu-panel"
-              title={`${label} (${i + 1})`}
-              onClick={() => setMegaMenuTab(tab)}
-              className={classNames(
-                "flex w-14 items-center justify-center border-b-2 transition-colors sm:w-[4.5rem]",
-                selected
-                  ? "border-white bg-neutral-950 text-white"
-                  : "border-transparent text-neutral-600 hover:text-neutral-300"
-              )}
-            >
-              <Icon className="h-6 w-6" />
-              <span className="sr-only">{label}</span>
-            </button>
-          );
+          return {
+            id: tab,
+            label,
+            title: `${label} (${i + 1})`,
+            content: (
+              <>
+                <Icon className="h-6 w-6" />
+                <span className="sr-only">{label}</span>
+              </>
+            )
+          };
         })}
-      </div>
+        value={megaMenu.tab}
+        onChange={setMegaMenuTab}
+        className="flex bg-black"
+        tabClassName={(selected) =>
+          classNames(
+            "flex w-14 items-center justify-center border-b-2 transition-colors sm:w-[4.5rem]",
+            selected
+              ? "border-white bg-neutral-950 text-white"
+              : "border-transparent text-neutral-600 hover:text-neutral-300"
+          )
+        }
+      />
       <button
         type="button"
         onClick={closeMegaMenu}
@@ -162,7 +166,10 @@ export default function MegaMenu() {
   const gridRef = useRef(null);
   const items = MENUS[megaMenu.tab];
 
+  // Opening the menu moves focus into the grid; switching categories from the tabs
+  // (arrow keys or a click) leaves focus on the tabs.
   useEffect(() => {
+    if (document.activeElement?.closest('[role="tablist"]')) return;
     gridRef.current?.querySelector("[data-menu-item]")?.focus({ preventScroll: true });
   }, [megaMenu.tab]);
 
@@ -195,47 +202,49 @@ export default function MegaMenu() {
         onKeyDown={onKeyDown}
         className="absolute left-0 top-16 z-50 w-full animate-fade-in bg-neutral-950 shadow-2xl sm:w-[34rem]"
       >
-        <ul ref={gridRef} className="grid grid-cols-4">
-          {items.map(({ label, href, action, Icon, also }) => {
-            const active = isActive({ href, also }, router.asPath);
-            const classes = classNames(
-              "group flex aspect-square w-full flex-col items-center justify-center gap-3 px-0 text-center text-2xs font-semibold uppercase tracking-normal sm:px-1 sm:tracking-wide outline-none transition-colors sm:aspect-[4/3.3] sm:text-xs",
-              active ? "bg-pmred text-white" : "text-white hover:bg-pmred focus-visible:bg-pmred"
-            );
-            const iconClasses = classNames(
-              "h-7 w-7 sm:h-9 sm:w-9",
-              active
-                ? "text-white"
-                : "text-pmred group-hover:text-white group-focus-visible:text-white"
-            );
-            return (
-              <li key={label}>
-                {href ? (
-                  <Link
-                    href={href}
-                    data-menu-item
-                    aria-current={active ? "page" : undefined}
-                    onClick={closeMegaMenu}
-                    className={classes}
-                  >
-                    <Icon className={iconClasses} />
-                    {label}
-                  </Link>
-                ) : (
-                  <button
-                    type="button"
-                    data-menu-item
-                    onClick={() => openModal(action)}
-                    className={classes}
-                  >
-                    <Icon className={iconClasses} />
-                    {label}
-                  </button>
-                )}
-              </li>
-            );
-          })}
-        </ul>
+        <div {...tabPanelProps("mega-menu-tabs", megaMenu.tab)}>
+          <ul ref={gridRef} className="grid grid-cols-4">
+            {items.map(({ label, href, action, Icon, also }) => {
+              const active = isActive({ href, also }, router.asPath);
+              const classes = classNames(
+                "group flex aspect-square w-full flex-col items-center justify-center gap-3 px-0 text-center text-2xs font-semibold uppercase tracking-normal sm:px-1 sm:tracking-wide outline-none transition-colors sm:aspect-[4/3.3] sm:text-xs",
+                active ? "bg-pmred text-white" : "text-white hover:bg-pmred focus-visible:bg-pmred"
+              );
+              const iconClasses = classNames(
+                "h-7 w-7 sm:h-9 sm:w-9",
+                active
+                  ? "text-white"
+                  : "text-pmred group-hover:text-white group-focus-visible:text-white"
+              );
+              return (
+                <li key={label}>
+                  {href ? (
+                    <Link
+                      href={href}
+                      data-menu-item
+                      aria-current={active ? "page" : undefined}
+                      onClick={closeMegaMenu}
+                      className={classes}
+                    >
+                      <Icon className={iconClasses} />
+                      {label}
+                    </Link>
+                  ) : (
+                    <button
+                      type="button"
+                      data-menu-item
+                      onClick={() => openModal(action)}
+                      className={classes}
+                    >
+                      <Icon className={iconClasses} />
+                      {label}
+                    </button>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </div>
       </nav>
     </>
   );

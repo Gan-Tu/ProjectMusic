@@ -1,16 +1,16 @@
-import toast from "react-hot-toast";
 import { HeartIcon } from "@heroicons/react/24/outline";
 import { HeartIcon as HeartSolidIcon } from "@heroicons/react/24/solid";
 import { useStore } from "../../lib/store";
 import { useUI } from "../../lib/ui";
 import { formatLongDate } from "../../lib/format";
 import Button from "../ui/Button";
+import { showCartToast } from "../shop/cart";
 
 export function TicketButton({ event, tier, className = "" }) {
   const { actions } = useStore();
   const { openModal } = useUI();
   function addTicket() {
-    actions.addToCart({
+    const item = {
       id: `ticket:${event.id}`,
       name: event.title,
       subtitle: `${formatLongDate(event.date)} · ${event.address[0]}`,
@@ -19,22 +19,8 @@ export function TicketButton({ event, tier, className = "" }) {
       price: tier?.price ?? event.price,
       credits: tier?.credits ?? event.credits,
       options: { tier: tier?.name || "General admission" }
-    });
-    toast.success((notification) => (
-      <span className="flex items-center gap-4">
-        <span>Ticket added</span>
-        <button
-          type="button"
-          className="cursor-pointer font-semibold text-pmred"
-          onClick={() => {
-            toast.dismiss(notification.id);
-            openModal("cart");
-          }}
-        >
-          View cart
-        </button>
-      </span>
-    ));
+    };
+    showCartToast(item, openModal, actions.addToCart(item));
   }
   return (
     <Button variant="outline" className={`cursor-pointer ${className}`} onClick={addTicket}>

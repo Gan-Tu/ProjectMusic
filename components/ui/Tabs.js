@@ -2,7 +2,8 @@
 // parts of the layout (e.g. tabs in the header, content in the body): arrow keys
 // and Home/End move between tabs, only the selected tab is a Tab stop, and the
 // selected tab points at its panel. Spread `tabPanelProps(idBase, value)` on the
-// element that shows the selected tab's content.
+// element that shows the selected tab's content. A tab shows `content` (e.g. an
+// icon with a screen-reader label) when given, otherwise its `label`.
 export function TabList({ idBase, label, tabs, value, onChange, className, tabClassName }) {
   function onKeyDown(event) {
     const index = tabs.findIndex((t) => t.id === value);
@@ -32,10 +33,11 @@ export function TabList({ idBase, label, tabs, value, onChange, className, tabCl
             aria-selected={selected}
             aria-controls={selected ? `${idBase}-panel` : undefined}
             tabIndex={selected ? 0 : -1}
+            title={t.title}
             onClick={() => onChange(t.id)}
             className={tabClassName(selected)}
           >
-            {t.label}
+            {t.content ?? t.label}
           </button>
         );
       })}

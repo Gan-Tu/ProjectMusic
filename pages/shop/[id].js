@@ -42,8 +42,7 @@ function ProductDetail({ product, category, related }) {
   const isDigital = product.kind === "digital";
 
   function addToCart() {
-    actions.addToCart(item, quantity);
-    showCartToast(item, openModal, quantity);
+    showCartToast(item, openModal, actions.addToCart(item, quantity), quantity);
   }
   async function copyLink() {
     try {

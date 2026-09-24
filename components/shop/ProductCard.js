@@ -17,8 +17,7 @@ export default function ProductCard({ product, priority = false }) {
   const credits = cheapestTier ? cheapestTier.credits : product.credits;
   function addToCart() {
     const item = makeCartItem(product, { tier: cheapestTier });
-    actions.addToCart(item, 1);
-    showCartToast(item, openModal);
+    showCartToast(item, openModal, actions.addToCart(item, 1));
   }
   return (
     <article className="group relative min-w-0 border-b border-r border-neutral-200 bg-white">
