@@ -15,7 +15,6 @@ const REGISTRY = {
   playlist: dynamic(() => import("./PlaylistDrawer")),
   purchase: dynamic(() => import("./PurchaseModal")),
   thankYou: dynamic(() => import("./ThankYouModal")),
-  contact: dynamic(() => import("./ContactModal")),
   reset: dynamic(() => import("./ResetDemoModal"))
 };
 

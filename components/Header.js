@@ -143,7 +143,10 @@ export default function Header({ curMenu }) {
                 href="/profile"
                 className="hidden items-center gap-4 text-xs font-extrabold uppercase tracking-wider md:flex"
               >
-                <span className="hidden max-w-24 leading-tight xl:block">{user.name}</span>
+                {/* Visually hidden below xl, but it still names the link for screen readers. */}
+                <span className="sr-only max-w-24 leading-tight xl:not-sr-only xl:block">
+                  {user.name}
+                </span>
                 <span className="relative h-11 w-11 overflow-hidden bg-neutral-100">
                   <Image src={user.avatar} alt="" fill sizes="44px" className="object-cover" />
                 </span>

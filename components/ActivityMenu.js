@@ -26,28 +26,31 @@ export default function ActivityMenu() {
         anchor="bottom end"
         className="z-[60] w-[22rem] bg-white shadow-2xl ring-1 ring-black/5 transition duration-200 ease-out [--anchor-gap:1.25rem] data-closed:translate-y-1 data-closed:opacity-0"
       >
-        <div className="flex items-center justify-between border-b border-neutral-200 px-5 py-3">
-          <span className="text-xs font-bold uppercase tracking-wider">Notifications</span>
-          <button
-            type="button"
-            onClick={actions.markNotificationsRead}
-            disabled={!unread}
-            className="text-2xs font-semibold uppercase tracking-wider text-pmred disabled:text-neutral-300"
-          >
-            Mark all read
-          </button>
-        </div>
-        <div className="max-h-[26rem] overflow-y-auto">
-          <CloseButton as="div">
-            <NotificationList />
-          </CloseButton>
-        </div>
-        <CloseButton
-          onClick={() => openModal("notifications")}
-          className="block w-full border-t border-neutral-200 py-3 text-center text-2xs font-semibold uppercase tracking-wider text-neutral-500 hover:text-pmred"
-        >
-          View all
-        </CloseButton>
+        {({ close }) => (
+          <>
+            <div className="flex items-center justify-between border-b border-neutral-200 px-5 py-3">
+              <span className="text-xs font-bold uppercase tracking-wider">Notifications</span>
+              <button
+                type="button"
+                onClick={actions.markNotificationsRead}
+                disabled={!unread}
+                className="text-2xs font-semibold uppercase tracking-wider text-pmred disabled:text-neutral-300"
+              >
+                Mark all read
+              </button>
+            </div>
+            {/* Following a notification closes the menu; dismissing one keeps it open. */}
+            <div className="max-h-[26rem] overflow-y-auto">
+              <NotificationList onNavigate={() => close()} />
+            </div>
+            <CloseButton
+              onClick={() => openModal("notifications")}
+              className="block w-full border-t border-neutral-200 py-3 text-center text-2xs font-semibold uppercase tracking-wider text-neutral-500 hover:text-pmred"
+            >
+              View all
+            </CloseButton>
+          </>
+        )}
       </PopoverPanel>
     </Popover>
   );

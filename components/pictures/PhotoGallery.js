@@ -104,6 +104,8 @@ export default function PhotoGallery({ photos, polaroids = false }) {
                 alt={item.caption}
                 fill
                 preload={index === 0}
+                // The rest of the first row (up to four columns) is visible on load too.
+                loading={index > 0 && index < 4 ? "eager" : undefined}
                 sizes="(max-width: 767px) 50vw, (max-width: 1023px) 33vw, 25vw"
                 className="object-cover transition duration-500 group-hover:scale-105 motion-reduce:transition-none"
               />
