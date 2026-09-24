@@ -6,6 +6,7 @@ import { HeartIcon as HeartSolidIcon } from "@heroicons/react/24/solid";
 import { useStore } from "../../lib/store";
 import { useSessionContext } from "../../lib/SessionProvider";
 import { classNames, pad2, timeAgo } from "../../lib/format";
+import { useNow } from "../../lib/useNow";
 import { getSeedComments } from "../../utils/getFakeComments";
 import UndoBar from "../ui/UndoBar";
 
@@ -73,6 +74,7 @@ function CommentItem({
   canModerate,
   compact,
   dark,
+  now,
   onReply,
   onDeleted
 }) {
@@ -134,7 +136,7 @@ function CommentItem({
               dark ? "text-neutral-400" : "text-neutral-500"
             )}
           >
-            {comment.label || timeAgo(comment.at)}
+            {comment.label || timeAgo(comment.at, now || undefined)}
             {comment.editedAt && " · edited"}
           </span>
         </p>
@@ -272,6 +274,7 @@ function Thread({
   const [session, dispatch] = useSessionContext();
   const user = session.user;
   const comments = useThreadComments(threadId, { seed, seedCount });
+  const now = useNow(); // one clock per thread keeps "5 minutes ago" labels current
   const [draft, setDraft] = useState("");
   const [showAll, setShowAll] = useState(false);
   const [undo, setUndo] = useState(null);
@@ -410,6 +413,7 @@ function Thread({
               canModerate={canModerate}
               compact={compact}
               dark={dark}
+              now={now}
               onReply={reply}
               onDeleted={(entry) => setUndo({ ...entry, id: Date.now() })}
             />

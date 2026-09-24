@@ -11,6 +11,7 @@ import { XMarkIcon } from "@heroicons/react/20/solid";
 import { useStore } from "../lib/store";
 import { useUI } from "../lib/ui";
 import { classNames, timeAgo } from "../lib/format";
+import { useNow } from "../lib/useNow";
 
 const TYPE_ICONS = {
   message: EnvelopeIcon,
@@ -44,6 +45,7 @@ export default function NotificationList({ onNavigate, limit }) {
   const { state, actions } = useStore();
   const { openModal } = useUI();
   const items = limit ? state.notifications.slice(0, limit) : state.notifications;
+  const now = useNow(); // keeps "5 minutes ago" labels current
 
   if (!items.length) {
     return (
@@ -69,7 +71,7 @@ export default function NotificationList({ onNavigate, limit }) {
                 <Highlighted notification={n} />
               </span>
               <span className="text-2xs font-semibold uppercase tracking-wider text-neutral-500 group-hover:text-white/80">
-                {n.label || timeAgo(n.at)}
+                {n.label || timeAgo(n.at, now || undefined)}
               </span>
             </span>
             {!n.read && (
