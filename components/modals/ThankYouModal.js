@@ -22,7 +22,7 @@ export default function ThankYouModal({ open, onClose, title = "Thank you", mess
             </>
           )}
           {orderId && (
-            <p className="mt-3 text-[11px] normal-case tracking-normal text-neutral-400">
+            <p className="mt-3 text-xs normal-case tracking-normal text-neutral-400">
               Order {orderId}
             </p>
           )}

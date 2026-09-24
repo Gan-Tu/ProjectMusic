@@ -3,19 +3,15 @@ import toast from "react-hot-toast";
 import Modal from "../ui/Modal";
 import { useStore } from "../../lib/store";
 import { useUI } from "../../lib/ui";
+import { tierLine } from "../../lib/pricing";
 import { formatCredits, formatNumber, formatUSD } from "../../lib/format";
 
 // Music is sold as stream access (credits) or stream + download (credits or card),
 // like the mock; any other item has a single "buy" tier with its own prices.
+// Items with tiers (music: stream / stream + download) use them; anything else
+// is a single "buy" tier at its own prices.
 function tiersFor(item) {
   if (item.tiers?.length) return item.tiers;
-  if (item.kind === "music") {
-    const base = item.credits ?? 50;
-    return [
-      { id: "stream", label: "Stream access", credits: base, price: null },
-      { id: "download", label: "Stream and download", credits: base * 2, price: item.price ?? 0.99 }
-    ];
-  }
   return [{ id: "buy", label: "Buy", credits: item.credits ?? null, price: item.price ?? null }];
 }
 
@@ -29,15 +25,7 @@ export default function PurchaseModal({ open, onClose, item }) {
   const qty = item.qty || 1;
 
   function buy(tier, method) {
-    const line = {
-      ...item,
-      id: tier.id === "buy" ? item.id : `${item.id}:${tier.id}`,
-      name: tier.id === "buy" ? item.name : `${item.name} (${tier.label})`,
-      credits: tier.credits,
-      price: tier.price,
-      qty
-    };
-    delete line.tiers;
+    const line = { ...(item.tiers?.length ? tierLine(item, tier.id) : item), qty };
     const result = actions.checkout(method, [line]);
     if (!result.ok) {
       toast.error(result.error);
@@ -83,7 +71,7 @@ export default function PurchaseModal({ open, onClose, item }) {
                 ? formatCredits(primary.credits * qty)
                 : formatUSD(primary.price * qty)}
             </span>
-            <span className="text-[10px] font-bold uppercase tracking-wider">{primary.label}</span>
+            <span className="text-2xs font-bold uppercase tracking-wider">{primary.label}</span>
             <button
               type="button"
               onClick={() => buy(primary, primaryMethod)}
@@ -103,7 +91,7 @@ export default function PurchaseModal({ open, onClose, item }) {
           )}
           {others.map((tier) => (
             <div key={tier.id} className="px-6 py-4 text-center">
-              <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-800">
+              <p className="text-2xs font-bold uppercase tracking-wider text-neutral-800">
                 {tier.label}
               </p>
               <p className="mt-1 flex items-center justify-center gap-2 text-sm font-bold text-pmred">
@@ -117,7 +105,7 @@ export default function PurchaseModal({ open, onClose, item }) {
                   </button>
                 )}
                 {tier.credits != null && tier.price != null && (
-                  <span className="text-[10px] font-normal uppercase text-neutral-400">or</span>
+                  <span className="text-2xs font-normal uppercase text-neutral-400">or</span>
                 )}
                 {tier.price != null && (
                   <button
@@ -131,7 +119,7 @@ export default function PurchaseModal({ open, onClose, item }) {
               </p>
             </div>
           ))}
-          <p className="border-t border-neutral-100 px-6 py-3 text-center text-[10px] uppercase tracking-wider text-neutral-400">
+          <p className="border-t border-neutral-100 px-6 py-3 text-center text-2xs uppercase tracking-wider text-neutral-400">
             Balance {formatNumber(state.credits)} credits
           </p>
         </div>

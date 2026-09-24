@@ -10,7 +10,7 @@ export default function PictureCategory({ category, photos }) {
         <div>
           <Link
             href="/pictures"
-            className="cursor-pointer text-[10px] font-bold uppercase tracking-wider text-pmred"
+            className="cursor-pointer text-2xs font-bold uppercase tracking-wider text-pmred"
           >
             ← All pictures
           </Link>

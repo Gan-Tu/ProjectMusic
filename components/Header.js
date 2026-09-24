@@ -27,7 +27,7 @@ function CartButton({ count, onClick, className }) {
     >
       <ShoppingCartIcon className="h-6 w-6 transition group-hover:scale-110" />
       {count > 0 && (
-        <span className="absolute -right-3 -top-2.5 min-w-5 rounded-full bg-pmred px-1.5 text-center text-[10px] font-bold leading-5 text-white">
+        <span className="absolute -right-3 -top-2.5 min-w-5 rounded-full bg-pmred px-1.5 text-center text-2xs font-bold leading-5 text-white">
           {count}
         </span>
       )}
@@ -102,7 +102,7 @@ export default function Header({ curMenu }) {
                 <span className="text-sm font-extrabold text-pmred">
                   {formatNumber(state.credits)}
                 </span>
-                <span className="text-[10px] font-semibold uppercase tracking-wider text-neutral-600">
+                <span className="text-2xs font-semibold uppercase tracking-wider text-neutral-600">
                   Credits
                 </span>
               </button>
@@ -112,7 +112,7 @@ export default function Header({ curMenu }) {
                 title="Your points"
               >
                 <span className="text-sm font-extrabold">{formatNumber(state.points)}</span>
-                <span className="text-[10px] font-semibold uppercase tracking-wider text-neutral-600">
+                <span className="text-2xs font-semibold uppercase tracking-wider text-neutral-600">
                   Points
                 </span>
               </Link>

@@ -20,7 +20,7 @@ export default function Home({ videos, albums, queue, artists }) {
         <h2 className="text-xs font-extrabold uppercase tracking-[0.2em]">On rotation</h2>
         <Link
           href="/videos"
-          className="text-[11px] font-bold uppercase tracking-widest text-pmred hover:text-white"
+          className="text-xs font-bold uppercase tracking-widest text-pmred hover:text-white"
         >
           All videos <span aria-hidden="true">↗</span>
         </Link>
@@ -34,7 +34,7 @@ export default function Home({ videos, albums, queue, artists }) {
           </h2>
           <Link
             href="/artists"
-            className="ml-4 shrink-0 text-[11px] font-bold uppercase tracking-widest text-pmred hover:text-white"
+            className="ml-4 shrink-0 text-xs font-bold uppercase tracking-widest text-pmred hover:text-white"
           >
             All artists <span aria-hidden="true">↗</span>
           </Link>
@@ -54,7 +54,7 @@ export default function Home({ videos, albums, queue, artists }) {
                 className="object-cover transition duration-500 group-hover:scale-105 motion-reduce:transition-none motion-reduce:transform-none"
               />
               <div className="absolute inset-0 bg-black/15 transition-colors group-hover:bg-pmred/30" />
-              <span className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/80 to-transparent p-4 pt-10 text-[11px] font-extrabold uppercase tracking-widest md:p-6 md:pt-12">
+              <span className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/80 to-transparent p-4 pt-10 text-xs font-extrabold uppercase tracking-widest md:p-6 md:pt-12">
                 {artist.name}
               </span>
             </Link>

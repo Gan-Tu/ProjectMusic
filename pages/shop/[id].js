@@ -65,7 +65,7 @@ function ProductDetail({ product, category, related }) {
     <AppContainer title={product.name} curMenu="Shop" description={product.description}>
       <nav
         aria-label="Breadcrumb"
-        className="flex flex-wrap items-center gap-3 border-b border-neutral-200 bg-neutral-50 px-5 py-5 text-[10px] font-semibold uppercase tracking-wider sm:px-10"
+        className="flex flex-wrap items-center gap-3 border-b border-neutral-200 bg-neutral-50 px-5 py-5 text-2xs font-semibold uppercase tracking-wider sm:px-10"
       >
         <Link href="/shop" className="cursor-pointer text-neutral-500 hover:text-pmred">
           Shop
@@ -116,7 +116,7 @@ function ProductDetail({ product, category, related }) {
           aria-labelledby="product-name"
           className="flex flex-col justify-center px-6 py-9 sm:px-10 lg:px-14 lg:py-12"
         >
-          <p className="mb-4 text-[10px] font-semibold uppercase tracking-[0.24em] text-neutral-500">
+          <p className="mb-4 text-2xs font-semibold uppercase tracking-[0.24em] text-neutral-500">
             {isDigital ? "More music. More possibilities." : "The Projct Music collection"}
           </p>
           <h1
@@ -149,7 +149,7 @@ function ProductDetail({ product, category, related }) {
           <div className="my-7 border-y border-neutral-200 py-6">
             <div className="flex flex-wrap items-end gap-6">
               <fieldset>
-                <legend className="mb-3 text-[10px] font-bold uppercase tracking-wider">
+                <legend className="mb-3 text-2xs font-bold uppercase tracking-wider">
                   Quantity
                 </legend>
                 <div className="flex h-10 items-center rounded-full border border-neutral-200">
@@ -177,7 +177,7 @@ function ProductDetail({ product, category, related }) {
                 </div>
               </fieldset>
               {product.sizes && (
-                <label className="flex flex-col gap-3 text-[10px] font-bold uppercase tracking-wider">
+                <label className="flex flex-col gap-3 text-2xs font-bold uppercase tracking-wider">
                   Size
                   <select
                     value={size}
@@ -191,7 +191,7 @@ function ProductDetail({ product, category, related }) {
                 </label>
               )}
               {product.colors && (
-                <label className="flex flex-col gap-3 text-[10px] font-bold uppercase tracking-wider">
+                <label className="flex flex-col gap-3 text-2xs font-bold uppercase tracking-wider">
                   Color
                   <select
                     value={color}
@@ -206,7 +206,7 @@ function ProductDetail({ product, category, related }) {
               )}
             </div>
             {product.tiers?.length > 1 && (
-              <label className="mt-5 flex max-w-xs flex-col gap-3 text-[10px] font-bold uppercase tracking-wider">
+              <label className="mt-5 flex max-w-xs flex-col gap-3 text-2xs font-bold uppercase tracking-wider">
                 Choose your plan
                 <select
                   value={tierId}
@@ -235,7 +235,7 @@ function ProductDetail({ product, category, related }) {
               </Button>
             </div>
           </div>
-          <h2 className="mb-3 text-[10px] font-bold uppercase tracking-[0.15em]">
+          <h2 className="mb-3 text-2xs font-bold uppercase tracking-[0.15em]">
             Product description
           </h2>
           <p className="max-w-xl text-sm font-light leading-7 text-neutral-500">
@@ -244,7 +244,7 @@ function ProductDetail({ product, category, related }) {
           {product.subtitle && (
             <p className="mt-4 text-xs font-semibold text-neutral-600">{product.subtitle}</p>
           )}
-          <p className="mt-5 flex items-center gap-2 text-[10px] text-neutral-500">
+          <p className="mt-5 flex items-center gap-2 text-2xs text-neutral-500">
             <CheckIcon className="h-4 w-4 text-pmred" />
             {isDigital
               ? "Available in your account after purchase"
@@ -253,7 +253,7 @@ function ProductDetail({ product, category, related }) {
                 : "In stock · Carefully packed for your collection"}
           </p>
           <div className="mt-7 flex items-center gap-3 border-t border-neutral-100 pt-5">
-            <span className="mr-1 text-[10px] font-bold uppercase tracking-wider text-neutral-500">
+            <span className="mr-1 text-2xs font-bold uppercase tracking-wider text-neutral-500">
               Share
             </span>
             <button
@@ -303,7 +303,7 @@ function ProductDetail({ product, category, related }) {
                 </span>
                 <span className="text-xs">{formatUSD(entry.price)}</span>
                 {entry.id === tierId && (
-                  <span className="text-[9px] font-bold uppercase tracking-widest">Selected</span>
+                  <span className="text-2xs font-bold uppercase tracking-widest">Selected</span>
                 )}
               </button>
             ))}

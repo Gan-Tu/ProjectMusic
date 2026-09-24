@@ -46,7 +46,7 @@ export default function ChatModal({ open, onClose, chatId: initialChatId }) {
   const friends = useMemo(() => getArtistHomePageData().slice(0, 24), []);
 
   const q = query.trim().toLowerCase();
-  const visibleChats = chats.filter((c) => c.name.toLowerCase().includes(q));
+  const matchingChats = chats.filter((c) => c.name.toLowerCase().includes(q));
   const visibleFriends = friends.filter((f) => f.name.toLowerCase().includes(q));
 
   const messageCount = active?.messages.length || 0;
@@ -95,14 +95,14 @@ export default function ChatModal({ open, onClose, chatId: initialChatId }) {
               aria-selected={tab === t}
               onClick={() => setTab(t)}
               className={classNames(
-                "rounded-full border px-4 py-1 text-[10px] font-bold uppercase tracking-wider transition",
+                "rounded-full border px-4 py-1 text-2xs font-bold uppercase tracking-wider transition",
                 tab === t ? "border-neutral-300 text-neutral-400" : "border-transparent text-pmred"
               )}
             >
               {t}
             </button>
           ))}
-          <span className="ml-2 hidden text-[10px] uppercase tracking-wider text-neutral-400 sm:inline">
+          <span className="ml-2 hidden text-2xs uppercase tracking-wider text-neutral-400 sm:inline">
             You appear {state.settings.availableToChat ? "online" : "offline"}
           </span>
         </div>
@@ -127,7 +127,7 @@ export default function ChatModal({ open, onClose, chatId: initialChatId }) {
           </div>
           <ul className="min-h-0 flex-1 overflow-y-auto">
             {tab === "chats"
-              ? visibleChats.map((chat) => {
+              ? matchingChats.map((chat) => {
                   const last = chat.messages[chat.messages.length - 1];
                   const selected = chat.id === activeId;
                   return (
@@ -153,7 +153,7 @@ export default function ChatModal({ open, onClose, chatId: initialChatId }) {
                             </span>
                             <span
                               className={classNames(
-                                "text-[10px]",
+                                "text-2xs",
                                 selected ? "text-white/80" : "text-neutral-400"
                               )}
                             >
@@ -172,7 +172,7 @@ export default function ChatModal({ open, onClose, chatId: initialChatId }) {
                           </span>
                         </span>
                         {chat.unread > 0 && !selected && (
-                          <span className="rounded-full bg-pmred px-1.5 text-[10px] font-bold text-white">
+                          <span className="rounded-full bg-pmred px-1.5 text-2xs font-bold text-white">
                             {chat.unread}
                           </span>
                         )}
@@ -210,7 +210,7 @@ export default function ChatModal({ open, onClose, chatId: initialChatId }) {
                 <Avatar src={active.avatar} online={active.online} />
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-semibold">{active.name}</p>
-                  <p className="text-[10px] uppercase tracking-wider text-neutral-400">
+                  <p className="text-2xs uppercase tracking-wider text-neutral-400">
                     {active.online ? "Online" : "Offline"}
                   </p>
                 </div>
@@ -226,14 +226,14 @@ export default function ChatModal({ open, onClose, chatId: initialChatId }) {
                         setActiveId(null);
                         toast.success(`Conversation with ${active.name} deleted`);
                       }}
-                      className="text-[10px] font-bold uppercase tracking-wider text-pmred"
+                      className="text-2xs font-bold uppercase tracking-wider text-pmred"
                     >
                       Delete
                     </button>
                     <button
                       type="button"
                       onClick={() => setConfirmDelete(null)}
-                      className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 hover:text-neutral-800"
+                      className="text-2xs font-bold uppercase tracking-wider text-neutral-400 hover:text-neutral-800"
                     >
                       Cancel
                     </button>
@@ -288,7 +288,7 @@ export default function ChatModal({ open, onClose, chatId: initialChatId }) {
                       {m.time && (
                         <span
                           className={classNames(
-                            "mt-1 block text-[10px]",
+                            "mt-1 block text-2xs",
                             m.from === "me" ? "text-white/70" : "text-neutral-400"
                           )}
                         >

@@ -68,7 +68,7 @@ export default function NotificationList({ onNavigate, limit }) {
               <span className="text-sm font-light leading-snug text-neutral-700 group-hover:text-white [&_span]:group-hover:text-white">
                 <Highlighted notification={n} />
               </span>
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-neutral-400 group-hover:text-white/80">
+              <span className="text-2xs font-semibold uppercase tracking-wider text-neutral-400 group-hover:text-white/80">
                 {n.label || timeAgo(n.at)}
               </span>
             </span>

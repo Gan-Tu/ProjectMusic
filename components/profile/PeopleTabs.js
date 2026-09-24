@@ -23,7 +23,7 @@ export default function PeopleTabs({ tabs, active }) {
           scroll={false}
           aria-current={active === tab ? "page" : undefined}
           className={classNames(
-            "cursor-pointer whitespace-nowrap border-b-2 py-5 text-[11px] font-bold uppercase tracking-widest transition-colors hover:text-pmred",
+            "cursor-pointer whitespace-nowrap border-b-2 py-5 text-xs font-bold uppercase tracking-widest transition-colors hover:text-pmred",
             active === tab ? "border-pmred text-pmred" : "border-transparent text-neutral-500"
           )}
         >

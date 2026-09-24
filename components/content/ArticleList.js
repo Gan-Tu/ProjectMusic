@@ -45,7 +45,7 @@ function FilteredArticles({ posts, section, active }) {
         </div>
       ) : (
         filtered.length > 0 && (
-          <p className="bg-neutral-50 py-10 text-center text-[10px] uppercase tracking-[0.2em] text-neutral-400">
+          <p className="bg-neutral-50 py-10 text-center text-2xs uppercase tracking-[0.2em] text-neutral-400">
             You&apos;re all caught up
           </p>
         )
@@ -83,7 +83,7 @@ export default function ArticleList({ posts, section }) {
               shallow
               scroll={false}
               aria-current={active === category ? "page" : undefined}
-              className={`rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider transition ${active === category ? "bg-pmred text-white" : "text-neutral-500 hover:bg-neutral-100"}`}
+              className={`rounded-full px-3 py-1.5 text-2xs font-bold uppercase tracking-wider transition ${active === category ? "bg-pmred text-white" : "text-neutral-500 hover:bg-neutral-100"}`}
             >
               {category || "All"}
             </Link>

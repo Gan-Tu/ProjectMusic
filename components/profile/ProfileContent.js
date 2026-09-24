@@ -86,7 +86,7 @@ export default function ProfileContent({ tab, albums, photos, videos, topArtists
           >
             <Icon className="mt-4 h-7 w-7 shrink-0 text-pmred group-hover:text-white group-focus-visible:text-white" />
             <div>
-              <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-pmred group-hover:text-white/70 group-focus-visible:text-white/70">
+              <p className="text-2xs font-bold uppercase tracking-[0.2em] text-pmred group-hover:text-white/70 group-focus-visible:text-white/70">
                 {label}
               </p>
               <h2 className="mt-1 text-sm font-extrabold uppercase tracking-wide">{title}</h2>
@@ -225,10 +225,7 @@ function Playlist() {
     );
   return (
     <>
-      <Button
-        className="mb-5 cursor-pointer"
-        onClick={() => player.playQueue(state.playlist)}
-      >
+      <Button className="mb-5 cursor-pointer" onClick={() => player.playQueue(state.playlist)}>
         <PlayIcon className="h-4 w-4" />
         Play all
       </Button>
@@ -304,7 +301,7 @@ function Purchases() {
               {order.method === "credits"
                 ? `${formatNumber(order.totalCredits)} credits`
                 : formatUSD(order.totalUsd)}
-              <span className="mt-1 block text-right text-[10px] font-normal uppercase text-neutral-400">
+              <span className="mt-1 block text-right text-2xs font-normal uppercase text-neutral-400">
                 Paid with {order.method}
               </span>
             </p>
@@ -382,19 +379,19 @@ function Rewards() {
             {target === "credits" ? (
               <button
                 onClick={() => openModal("credits")}
-                className="mt-4 cursor-pointer text-[10px] font-bold uppercase text-pmred"
+                className="mt-4 cursor-pointer text-2xs font-bold uppercase text-pmred"
               >
                 View credits →
               </button>
             ) : target ? (
               <Link
                 href={target}
-                className="mt-4 inline-block cursor-pointer text-[10px] font-bold uppercase text-pmred"
+                className="mt-4 inline-block cursor-pointer text-2xs font-bold uppercase text-pmred"
               >
                 Explore →
               </Link>
             ) : (
-              <span className="mt-4 inline-block text-[10px] font-bold uppercase text-pmred">
+              <span className="mt-4 inline-block text-2xs font-bold uppercase text-pmred">
                 {state.points >= 20000 ? "Unlocked" : "20,000 points"}
               </span>
             )}
@@ -422,7 +419,7 @@ function Statistics({ artists }) {
         <div className="flex h-52 items-end gap-3 border-b border-neutral-200 px-2">
           {days.map(([day, value]) => (
             <div key={day} className="flex h-full min-w-0 flex-1 flex-col justify-end text-center">
-              <span className="mb-2 text-[10px] text-neutral-500">{value}</span>
+              <span className="mb-2 text-2xs text-neutral-500">{value}</span>
               <div
                 aria-label={`${day}: ${value} plays`}
                 className="bg-pmred transition-colors hover:bg-black"
@@ -433,7 +430,7 @@ function Statistics({ artists }) {
         </div>
         <div className="mt-3 flex gap-3 px-2">
           {days.map(([day]) => (
-            <span key={day} className="flex-1 text-center text-[10px] uppercase text-neutral-500">
+            <span key={day} className="flex-1 text-center text-2xs uppercase text-neutral-500">
               {day}
             </span>
           ))}
@@ -481,7 +478,7 @@ function Statistics({ artists }) {
                 >
                   <div className="h-full bg-pmred" style={{ width: `${92 - index * 13}%` }} />
                 </div>
-                <p className="mt-2 text-[10px] text-neutral-400">{92 - index * 13} plays</p>
+                <p className="mt-2 text-2xs text-neutral-400">{92 - index * 13} plays</p>
               </div>
             </li>
           ))}
@@ -518,9 +515,7 @@ function Feedback() {
           className="mt-3 block w-full resize-y border border-neutral-200 bg-neutral-50 p-5 text-sm leading-6 outline-none focus:border-pmred"
         />
         <div className="mt-4 flex items-center justify-between gap-3">
-          <p className="text-[10px] text-neutral-400">
-            {text.length} / 2,000 · Saved on this device
-          </p>
+          <p className="text-2xs text-neutral-400">{text.length} / 2,000 · Saved on this device</p>
           <Button type="submit" disabled={!text.trim()} className="cursor-pointer">
             Send feedback
           </Button>
@@ -532,7 +527,7 @@ function Feedback() {
           {state.feedback.map((entry) => (
             <article key={entry.id} className="group border-b border-neutral-200 py-5">
               <div className="flex items-center justify-between gap-4">
-                <time className="text-[10px] text-pmred">{formatLongDate(entry.at)}</time>
+                <time className="text-2xs text-pmred">{formatLongDate(entry.at)}</time>
                 <button
                   type="button"
                   onClick={() => {
@@ -554,7 +549,7 @@ function Feedback() {
                     ));
                   }}
                   aria-label="Delete this feedback"
-                  className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 transition hover:text-pmred"
+                  className="text-2xs font-bold uppercase tracking-wider text-neutral-400 transition hover:text-pmred"
                 >
                   Delete
                 </button>

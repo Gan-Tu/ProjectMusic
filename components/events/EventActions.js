@@ -52,7 +52,7 @@ export function InterestedButton({ event, className = "" }) {
       onClick={() => actions.toggleRsvp(event.id)}
       aria-pressed={interested}
       aria-label={`Interested in ${event.title}`}
-      className={`flex min-h-10 cursor-pointer items-center justify-center gap-2 text-[10px] font-semibold uppercase tracking-wider ${className}`}
+      className={`flex min-h-10 cursor-pointer items-center justify-center gap-2 text-2xs font-semibold uppercase tracking-wider ${className}`}
     >
       {interested ? <HeartSolidIcon className="h-4 w-4" /> : <HeartIcon className="h-4 w-4" />}
       {interested ? "Interested" : "I'm interested"}

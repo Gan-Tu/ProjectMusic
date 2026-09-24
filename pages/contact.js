@@ -63,7 +63,7 @@ export default function ContactPage() {
               className={`flex min-h-32 flex-col items-center justify-center gap-4 px-2 py-7 transition-colors hover:bg-pmred hover:text-white ${name === "YouTube" ? "bg-pmred text-white" : "bg-white text-pmred"}`}
             >
               <FontAwesomeIcon icon={icon} className="h-7 w-7" />
-              <span className="text-[10px] font-bold uppercase tracking-wider">{name}</span>
+              <span className="text-2xs font-bold uppercase tracking-wider">{name}</span>
             </Link>
           ))}
         </div>

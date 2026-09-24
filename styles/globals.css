@@ -4,6 +4,13 @@
   --color-pmred: #ff0646;
   --color-pmred-dark: #d6003a;
 
+  /* Slightly larger small text than Tailwind's defaults (xs: 12px -> 13px), plus a
+     2xs step for the small uppercase labels used throughout the design. */
+  --text-2xs: 0.6875rem;
+  --text-2xs--line-height: 1rem;
+  --text-xs: 0.8125rem;
+  --text-xs--line-height: 1.125rem;
+
   --font-sans:
     "Gotham Pro", "Gotham Light", var(--font-montserrat), ui-sans-serif, system-ui, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";

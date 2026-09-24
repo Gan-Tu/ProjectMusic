@@ -8,6 +8,7 @@ import { usePlayer } from "../lib/player";
 import { useStore } from "../lib/store";
 import { useUI } from "../lib/ui";
 import { classNames, formatTime } from "../lib/format";
+import { trackPurchaseItem } from "../lib/pricing";
 import { Equalizer, PlayButton, TrackProgress } from "./music/TrackControls";
 import { shareAlbum } from "./music/share";
 import CommentThread, { useThreadComments } from "./comments/CommentThread";
@@ -21,15 +22,7 @@ export default function MusicPlayerCard({ musicData, track, queue, priority = fa
   const liked = !!state.likes[track.id];
   const saved = state.playlist.some((item) => item.id === track.id);
   const comments = useThreadComments(`album:${musicData.id}`);
-  const item = {
-    id: `stream:${musicData.id}`,
-    name: musicData.name,
-    subtitle: musicData.artist,
-    image: musicData.img_url,
-    kind: "music",
-    credits: 50,
-    price: 0.99
-  };
+  const item = trackPurchaseItem(track);
 
   return (
     <article className="h-full border-b border-neutral-200">
@@ -76,13 +69,13 @@ export default function MusicPlayerCard({ musicData, track, queue, priority = fa
               </p>
             </div>
             {player.isTrackPlaying(track.id) && <Equalizer />}
-            <span className="ml-1 text-[10px] tabular-nums sm:text-xs">
+            <span className="ml-1 text-2xs tabular-nums sm:text-xs">
               {formatTime(track.duration)}
             </span>
           </div>
           <div
             className={classNames(
-              "mt-3 flex flex-wrap items-center justify-end gap-x-3 border-t pt-2 text-[9px] font-semibold uppercase tracking-wide sm:gap-x-4",
+              "mt-3 flex flex-wrap items-center justify-end gap-x-3 border-t pt-2 text-2xs font-semibold uppercase tracking-wide sm:gap-x-4",
               active ? "border-white/25 text-white" : "border-neutral-200 text-neutral-500"
             )}
           >

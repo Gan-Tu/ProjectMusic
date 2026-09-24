@@ -64,14 +64,12 @@ const CAPTIONS = {
 export function getPhotos(category) {
   const artists = getArtistHomePageData();
   if (category === "artists")
-    return artists
-      .slice(0, 18)
-      .map((artist) => ({
-        id: `artist-photo-${artist.id}`,
-        src: artist.imgUrl,
-        caption: artist.name,
-        location: artist.location
-      }));
+    return artists.slice(0, 18).map((artist) => ({
+      id: `artist-photo-${artist.id}`,
+      src: artist.imgUrl,
+      caption: artist.name,
+      location: artist.location
+    }));
   if (!CAPTIONS[category]) return [];
   return CAPTIONS[category].map((caption, index) => ({
     id: `${category}-${index + 1}`,

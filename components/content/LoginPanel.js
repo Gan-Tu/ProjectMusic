@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
-import { useSessionContext, DEFAULT_USER } from "../../lib/SessionProvider";
+import { useSessionContext } from "../../lib/SessionProvider";
 import Button from "../ui/Button";
 
 export default function LoginPanel() {
@@ -14,7 +14,7 @@ export default function LoginPanel() {
     if (!data.get("username").trim() || !data.get("password").trim())
       return toast.error("Enter a username and password to continue.");
     setBusy(true);
-    dispatch({ type: "set_user", user: { ...DEFAULT_USER } });
+    dispatch({ type: "set_user", user: {} });
     toast.success("Welcome back, Nick.");
     try {
       await router.push("/profile");
@@ -24,7 +24,7 @@ export default function LoginPanel() {
   }
   return (
     <section className="bg-pmred px-7 py-10 text-white sm:px-10 sm:py-12">
-      <p className="mb-6 text-[10px] font-bold uppercase tracking-[0.2em] text-white/70">
+      <p className="mb-6 text-2xs font-bold uppercase tracking-[0.2em] text-white/70">
         Already part of the crew?
       </p>
       <h2 className="text-3xl font-extrabold uppercase tracking-wide">Login</h2>

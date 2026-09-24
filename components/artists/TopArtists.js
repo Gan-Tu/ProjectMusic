@@ -11,7 +11,7 @@ export default function TopArtists({ artists }) {
         {artists.map((artist, index) => (
           <li
             key={artist.id}
-            className="flex min-w-0 items-baseline gap-3 text-[10px] font-bold uppercase tracking-wide"
+            className="flex min-w-0 items-baseline gap-3 text-2xs font-bold uppercase tracking-wide"
           >
             <span className="font-normal text-pmred">{pad2(index + 1)}</span>
             <Link

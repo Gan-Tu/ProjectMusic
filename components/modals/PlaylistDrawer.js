@@ -123,10 +123,7 @@ export default function PlaylistDrawer({ open, onClose }) {
               variant="outline"
               onClick={() => {
                 if (!player.shuffle) player.toggleShuffle();
-                player.playQueue(
-                  state.playlist,
-                  Math.floor(Math.random() * state.playlist.length)
-                );
+                player.playQueue(state.playlist, Math.floor(Math.random() * state.playlist.length));
               }}
             >
               Shuffle
@@ -152,7 +149,7 @@ export default function PlaylistDrawer({ open, onClose }) {
                   </span>
                 ));
               }}
-              className="ml-auto text-[10px] font-bold uppercase tracking-wider text-neutral-400 hover:text-pmred"
+              className="ml-auto text-2xs font-bold uppercase tracking-wider text-neutral-400 hover:text-pmred"
             >
               Clear
             </button>

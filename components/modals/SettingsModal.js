@@ -44,7 +44,7 @@ function EditableRow({ label, value, type = "text", editing, onEdit, onChange, d
       <button
         type="button"
         onClick={onEdit}
-        className="text-[10px] font-bold uppercase tracking-wider text-pmred hover:text-pmred-dark"
+        className="text-2xs font-bold uppercase tracking-wider text-pmred hover:text-pmred-dark"
       >
         {editing ? "Done" : "Edit"}
       </button>
@@ -142,7 +142,7 @@ export default function SettingsModal({ open, onClose, tab: initialTab = "genera
               aria-selected={tab === t.id}
               onClick={() => setTab(t.id)}
               className={classNames(
-                "rounded-full border px-4 py-1 text-[10px] font-bold uppercase tracking-wider transition",
+                "rounded-full border px-4 py-1 text-2xs font-bold uppercase tracking-wider transition",
                 tab === t.id
                   ? "border-neutral-300 text-neutral-400"
                   : "border-transparent text-pmred hover:border-pmred/30"
@@ -157,7 +157,7 @@ export default function SettingsModal({ open, onClose, tab: initialTab = "genera
         <button
           type="button"
           onClick={() => openModal("reset")}
-          className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 transition hover:text-pmred"
+          className="text-2xs font-bold uppercase tracking-wider text-neutral-400 transition hover:text-pmred"
         >
           Reset demo data
         </button>
@@ -216,7 +216,7 @@ export default function SettingsModal({ open, onClose, tab: initialTab = "genera
                     />
                   )}
                 </span>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-pmred">
+                <span className="text-2xs font-bold uppercase tracking-wider text-pmred">
                   Upload your photo
                 </span>
                 <input type="file" accept="image/*" className="sr-only" onChange={onAvatar} />
@@ -256,7 +256,7 @@ export default function SettingsModal({ open, onClose, tab: initialTab = "genera
                       onClick={() =>
                         set({ blockedUsers: draft.blockedUsers.filter((x) => x !== name) })
                       }
-                      className="text-[10px] font-bold uppercase tracking-wider text-pmred hover:text-pmred-dark"
+                      className="text-2xs font-bold uppercase tracking-wider text-pmred hover:text-pmred-dark"
                     >
                       Remove
                     </button>

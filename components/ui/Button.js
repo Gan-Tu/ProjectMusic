@@ -16,7 +16,7 @@ const VARIANTS = {
 };
 
 const SIZES = {
-  xs: "px-3 py-0.5 text-[10px]",
+  xs: "px-3 py-0.5 text-2xs",
   sm: "px-4 py-1 text-xs",
   md: "px-6 py-2 text-xs",
   lg: "px-8 py-3 text-sm"

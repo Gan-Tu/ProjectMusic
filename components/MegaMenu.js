@@ -199,7 +199,7 @@ export default function MegaMenu() {
           {items.map(({ label, href, action, Icon, also }) => {
             const active = isActive({ href, also }, router.asPath);
             const classes = classNames(
-              "group flex aspect-square w-full flex-col items-center justify-center gap-3 px-1 text-center text-[10px] font-semibold uppercase tracking-wide outline-none transition-colors sm:aspect-[4/3.3] sm:text-xs",
+              "group flex aspect-square w-full flex-col items-center justify-center gap-3 px-0 text-center text-2xs font-semibold uppercase tracking-normal sm:px-1 sm:tracking-wide outline-none transition-colors sm:aspect-[4/3.3] sm:text-xs",
               active ? "bg-pmred text-white" : "text-white hover:bg-pmred focus-visible:bg-pmred"
             );
             const iconClasses = classNames(

@@ -33,7 +33,7 @@ export default function ArticleCard({
       </Link>
       <div className="flex min-w-0 flex-col justify-center px-4 py-7 sm:px-7 sm:py-10 xl:px-10">
         {category && (
-          <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.18em] text-pmred">
+          <p className="mb-3 text-2xs font-bold uppercase tracking-[0.18em] text-pmred">
             {category}
           </p>
         )}
@@ -42,7 +42,7 @@ export default function ArticleCard({
             {title}
           </Link>
         </h2>
-        <p className="mt-3 text-[11px] leading-relaxed text-neutral-400">
+        <p className="mt-3 text-xs leading-relaxed text-neutral-400">
           {date}
           <span className="block font-medium text-pmred">{author}</span>
         </p>

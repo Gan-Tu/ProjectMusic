@@ -1,5 +1,6 @@
 import { getMusics } from "./getFakeTracks";
 import { getEvents } from "./getFakeEvents";
+import { creditPack } from "../lib/pricing";
 
 export const CATEGORIES = [
   { slug: "credits", label: "Credits", icon: "coins" },
@@ -131,7 +132,7 @@ export function getProducts() {
     merch("Cognac Leather Belt", "accessories", "accessory-5", 59, { sizes: ["S", "M", "L"] })
   ];
   const creditPacks = [2000, 500, 1000, 5000, 10000, 25000].map((amount) => {
-    const price = amount / 100;
+    const { price } = creditPack(amount);
     return {
       ...digital(
         `credits-${amount}`,

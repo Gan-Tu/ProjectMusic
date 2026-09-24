@@ -52,14 +52,14 @@ export default function Profile({ albums, topArtists, photos, videos }) {
           <div className="mt-8 flex gap-3">
             <Button
               className="cursor-pointer"
-              onClick={() => dispatch({ type: "set_user", user: DEFAULT_USER })}
+              onClick={() => dispatch({ type: "set_user", user: {} })}
             >
               Login
             </Button>
             <Button
               className="cursor-pointer"
               variant="outline"
-              onClick={() => dispatch({ type: "set_user", user: DEFAULT_USER })}
+              onClick={() => dispatch({ type: "set_user", user: {} })}
             >
               Sign up
             </Button>
@@ -78,7 +78,7 @@ export default function Profile({ albums, topArtists, photos, videos }) {
           <div className="flex flex-wrap items-center justify-between gap-6 bg-neutral-900 px-5 py-5 sm:px-10">
             <nav
               aria-label="Your account"
-              className="flex items-center gap-6 text-[10px] font-bold uppercase tracking-wider"
+              className="flex items-center gap-6 text-2xs font-bold uppercase tracking-wider"
             >
               <Link href="/profile" className="cursor-pointer text-white">
                 Profile
@@ -109,7 +109,7 @@ export default function Profile({ albums, topArtists, photos, videos }) {
                 ["Credits", formatNumber(state.credits)]
               ].map(([label, value]) => (
                 <div key={label} className="flex flex-col">
-                  <dt className="order-2 mt-1 text-[9px] font-bold uppercase tracking-wide text-neutral-400">
+                  <dt className="order-2 mt-1 text-2xs font-bold uppercase tracking-wide text-neutral-400">
                     {label}
                   </dt>
                   <dd
@@ -143,7 +143,7 @@ export default function Profile({ albums, topArtists, photos, videos }) {
               />
               <div className="absolute inset-0 bg-linear-to-r from-black/20 to-black/70" />
               <div className="relative">
-                <p className="mb-3 text-[9px] font-bold uppercase tracking-[0.25em] text-pmred">
+                <p className="mb-3 text-2xs font-bold uppercase tracking-[0.25em] text-pmred">
                   Truth Studios / Los Angeles
                 </p>
                 <h1 className="max-w-sm break-words text-3xl font-extrabold uppercase leading-[0.95] tracking-tight sm:text-6xl">

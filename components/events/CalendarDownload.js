@@ -56,7 +56,7 @@ export default function CalendarDownload({ event }) {
     <button
       type="button"
       onClick={download}
-      className="flex min-h-10 cursor-pointer items-center gap-2 text-[10px] font-bold uppercase tracking-widest hover:text-pmred"
+      className="flex min-h-10 cursor-pointer items-center gap-2 text-2xs font-bold uppercase tracking-widest hover:text-pmred"
     >
       <CalendarDaysIcon className="h-4 w-4" />
       Add to calendar

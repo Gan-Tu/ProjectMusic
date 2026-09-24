@@ -59,7 +59,7 @@ export default function CartDrawer({ open, onClose }) {
         )}
       </dl>
       <fieldset className="grid grid-cols-2 gap-2">
-        <legend className="mb-2 text-[10px] font-bold uppercase tracking-wider text-neutral-500">
+        <legend className="mb-2 text-2xs font-bold uppercase tracking-wider text-neutral-500">
           Pay with
         </legend>
         {[
@@ -77,7 +77,7 @@ export default function CartDrawer({ open, onClose }) {
             aria-pressed={method === option.id}
             onClick={() => setMethod(option.id)}
             className={classNames(
-              "rounded-full border px-3 py-2 text-[11px] font-bold uppercase tracking-wider transition disabled:cursor-not-allowed disabled:opacity-30",
+              "rounded-full border px-3 py-2 text-xs font-bold uppercase tracking-wider transition disabled:cursor-not-allowed disabled:opacity-30",
               method === option.id
                 ? "border-pmred bg-pmred text-white"
                 : "border-neutral-300 text-neutral-500 hover:border-pmred"
@@ -131,7 +131,7 @@ export default function CartDrawer({ open, onClose }) {
         </div>
       ) : (
         <>
-          <div className="flex items-center justify-between border-b border-neutral-200 px-6 py-3 text-[10px] font-bold uppercase tracking-wider">
+          <div className="flex items-center justify-between border-b border-neutral-200 px-6 py-3 text-2xs font-bold uppercase tracking-wider">
             <span className="text-neutral-400">
               {totals.count} item{totals.count === 1 ? "" : "s"}
             </span>
@@ -163,7 +163,7 @@ export default function CartDrawer({ open, onClose }) {
           <ul className="divide-y divide-neutral-200">
             {state.cart.map((line) => (
               <li key={line.key} className="flex gap-4 px-6 py-5">
-                <span className="relative flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden bg-pmred text-center text-[10px] font-bold uppercase text-white">
+                <span className="relative flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden bg-pmred text-center text-2xs font-bold uppercase text-white">
                   {line.image ? (
                     <Image src={line.image} alt="" fill sizes="80px" className="object-cover" />
                   ) : (
@@ -214,7 +214,7 @@ export default function CartDrawer({ open, onClose }) {
                     <button
                       type="button"
                       onClick={() => actions.removeFromCart(line.key)}
-                      className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-neutral-400 hover:text-pmred"
+                      className="flex items-center gap-1 text-2xs font-bold uppercase tracking-wider text-neutral-400 hover:text-pmred"
                     >
                       <TrashIcon className="h-4 w-4" /> Remove
                     </button>

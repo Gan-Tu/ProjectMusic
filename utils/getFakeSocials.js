@@ -238,24 +238,20 @@ export function getSocialPage(network) {
       break;
     case "facebook":
       content = {
-        posts: images
-          .slice(0, 8)
-          .map((post, i) => ({
-            ...post,
-            image: i % 3 === 1 ? null : post.image,
-            caption: `${post.caption} ${["A little look at what we've been working on. Thanks for being part of the community.", "Good people, good music, and a little room to experiment. That's what it's all about.", "There is nothing better than hearing an idea come to life. Come spend a day in the studio with us."][i % 3]}`
-          }))
+        posts: images.slice(0, 8).map((post, i) => ({
+          ...post,
+          image: i % 3 === 1 ? null : post.image,
+          caption: `${post.caption} ${["A little look at what we've been working on. Thanks for being part of the community.", "Good people, good music, and a little room to experiment. That's what it's all about.", "There is nothing better than hearing an idea come to life. Come spend a day in the studio with us."][i % 3]}`
+        }))
       };
       break;
     case "tumblr":
       content = {
-        posts: images
-          .slice(0, 9)
-          .map((post, i) => ({
-            ...post,
-            type: ["photo", "quote", "text"][i % 3],
-            title: ["Notes from the live room", "On making things", "The studio journal"][i % 3]
-          }))
+        posts: images.slice(0, 9).map((post, i) => ({
+          ...post,
+          type: ["photo", "quote", "text"][i % 3],
+          title: ["Notes from the live room", "On making things", "The studio journal"][i % 3]
+        }))
       };
       break;
     case "pinterest":

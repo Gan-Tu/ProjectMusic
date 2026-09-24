@@ -4,31 +4,18 @@ import Modal from "../ui/Modal";
 import Button from "../ui/Button";
 import { useStore } from "../../lib/store";
 import { classNames, formatNumber, formatUSD } from "../../lib/format";
+import { CREDIT_PACKS, creditPackItem } from "../../lib/pricing";
 
-export const CREDIT_PACKS = [
-  { credits: 100, price: 0.99 },
-  { credits: 500, price: 4.99 },
-  { credits: 1000, price: 9.99 },
-  { credits: 2000, price: 19.99 }
-];
+const PACKS = CREDIT_PACKS.slice(0, 4);
 
 function packItem(pack) {
-  return {
-    id: `credits-${pack.credits}`,
-    name: `${formatNumber(pack.credits)} Credits`,
-    kind: "digital",
-    price: pack.price,
-    credits: null,
-    grantsCredits: pack.credits,
-    qty: 1
-  };
+  return { ...creditPackItem(pack), qty: 1 };
 }
 
 export default function CreditsModal({ open, onClose }) {
   const { state, actions } = useStore();
   const [pack, setPack] = useState(null);
   const [password, setPassword] = useState("");
-  const [quick, setQuick] = useState(false);
   const [done, setDone] = useState(false);
 
   function purchase(selected = pack) {
@@ -40,6 +27,8 @@ export default function CreditsModal({ open, onClose }) {
     setDone(true);
   }
 
+  // "Quick purchase" is a saved preference: skip the confirmation step.
+  const quick = Boolean(state.settings.quickCreditPurchase);
   function choose(selected) {
     setPack(selected);
     if (quick) purchase(selected);
@@ -48,7 +37,7 @@ export default function CreditsModal({ open, onClose }) {
   const balance = (
     <div className="ml-auto flex flex-col items-end leading-tight">
       <span className="text-lg font-extrabold text-pmred">{formatNumber(state.credits)}</span>
-      <span className="text-[10px] font-semibold uppercase tracking-wider text-neutral-400">
+      <span className="text-2xs font-semibold uppercase tracking-wider text-neutral-400">
         Credits
       </span>
     </div>
@@ -118,7 +107,7 @@ export default function CreditsModal({ open, onClose }) {
             <input
               type="checkbox"
               checked={quick}
-              onChange={(e) => setQuick(e.target.checked)}
+              onChange={(e) => actions.updateSettings({ quickCreditPurchase: e.target.checked })}
               className="mt-0.5 h-4 w-4 accent-pmred"
             />
             <span>
@@ -131,7 +120,7 @@ export default function CreditsModal({ open, onClose }) {
         </form>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {CREDIT_PACKS.map((p) => (
+          {PACKS.map((p) => (
             <button
               key={p.credits}
               type="button"
@@ -140,7 +129,7 @@ export default function CreditsModal({ open, onClose }) {
             >
               <span className="flex flex-col items-center border-r border-neutral-200 pr-5 group-hover:border-white/40">
                 <span className="text-2xl font-bold">{formatNumber(p.credits)}</span>
-                <span className="text-[10px] text-neutral-400 group-hover:text-white">Credits</span>
+                <span className="text-2xs text-neutral-400 group-hover:text-white">Credits</span>
               </span>
               <span
                 className={classNames(

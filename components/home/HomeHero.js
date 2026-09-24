@@ -53,11 +53,11 @@ export default function HomeHero({ videos }) {
           sizes="(max-width: 768px) 100vw, 50vw"
           className="object-cover transition duration-500 group-hover:scale-[1.025] motion-reduce:transition-none motion-reduce:transform-none"
         />
-        <span className="absolute top-5 right-0 bg-pmred px-4 py-3 text-[10px] font-extrabold uppercase tracking-[0.14em]">
+        <span className="absolute top-5 right-0 bg-pmred px-4 py-3 text-2xs font-extrabold uppercase tracking-[0.14em]">
           {index === 0 ? "Most recent video" : "Featured video"}
         </span>
         <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/90 via-black/30 to-transparent px-6 pt-24 pb-6 md:p-8 md:pt-24">
-          <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.25em] text-white/75">
+          <p className="mb-2 text-2xs font-bold uppercase tracking-[0.25em] text-white/75">
             Projct Music / In focus
           </p>
           <h1 className="text-2xl font-extrabold uppercase tracking-tight md:text-4xl">

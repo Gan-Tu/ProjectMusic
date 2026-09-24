@@ -31,7 +31,7 @@ export default function VideoCard({ video, active = false, compact = false }) {
             <PlayIcon className="ml-0.5 size-5" aria-hidden="true" />
           </span>
         </span>
-        <span className="absolute right-2 bottom-2 bg-black/75 px-1.5 py-0.5 text-[10px] font-semibold text-white">
+        <span className="absolute right-2 bottom-2 bg-black/75 px-1.5 py-0.5 text-2xs font-semibold text-white">
           {formatTime(video.duration)}
         </span>
         {active && <span className="absolute inset-x-0 bottom-0 h-1 bg-pmred" />}
@@ -39,7 +39,7 @@ export default function VideoCard({ video, active = false, compact = false }) {
       <div className="px-3 py-4">
         <h3
           className={classNames(
-            "truncate text-[11px] font-extrabold uppercase tracking-wider group-hover:text-pmred",
+            "truncate text-xs font-extrabold uppercase tracking-wider group-hover:text-pmred",
             active ? "text-pmred" : "text-white"
           )}
         >

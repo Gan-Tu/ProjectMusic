@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import CommentThread from "../comments/CommentThread";
+import { useEffect, useState, useMemo } from "react";
+import CommentThread, { useThreadComments } from "../comments/CommentThread";
 import Image from "next/image";
 import {
   ArrowPathRoundedSquareIcon,
@@ -17,6 +17,21 @@ import { usePlayer } from "../../lib/player";
 import { formatLongDate, formatNumber } from "../../lib/format";
 
 // `likeKey` overrides the default "social:<id>" key (e.g. tracks share music likes).
+// Seeded comments of a photo post (shared by its tile count and its lightbox thread).
+function conversationSeed(post) {
+  return post.conversation.map((comment, i) => ({
+    id: `${post.id}#c${i}`,
+    author: comment.author,
+    text: comment.text,
+    label: formatLongDate(post.date)
+  }));
+}
+
+function CommentCount({ post }) {
+  const seed = useMemo(() => conversationSeed(post), [post]);
+  return useThreadComments(`social:${post.id}`, { seed }).length;
+}
+
 export function LikeButton({ id, likeKey, count = 0, label = "Like", inverse = false }) {
   const { state, actions } = useStore();
   const key = likeKey || `social:${id}`;
@@ -137,14 +152,14 @@ export function PhotoFeed({ posts, pinterest = false }) {
                   </span>
                   <span className="flex items-center gap-2">
                     <ChatBubbleOvalLeftIcon className="h-5 w-5" />
-                    {item.comments}
+                    <CommentCount post={item} />
                   </span>
                 </div>
               </div>
               {pinterest && (
                 <div className="bg-white px-4 py-3">
                   <p className="text-xs font-semibold">{item.board}</p>
-                  <p className="mt-1 text-[11px] text-neutral-500">Truth Studios</p>
+                  <p className="mt-1 text-xs text-neutral-500">Truth Studios</p>
                 </div>
               )}
             </button>
@@ -187,7 +202,7 @@ export function PhotoFeed({ posts, pinterest = false }) {
               </div>
               <div className="flex flex-col px-6 py-6 sm:px-8">
                 <p className="text-xs font-bold uppercase tracking-wider">@truthstudios</p>
-                <time dateTime={post.date} className="mt-2 text-[11px] text-neutral-500">
+                <time dateTime={post.date} className="mt-2 text-xs text-neutral-500">
                   {formatLongDate(post.date)}
                 </time>
                 <p className="mt-6 text-sm leading-7 text-neutral-700">
@@ -200,12 +215,7 @@ export function PhotoFeed({ posts, pinterest = false }) {
                   compact
                   title="Comments"
                   threadId={`social:${post.id}`}
-                  seed={post.conversation.map((comment, i) => ({
-                    id: `${post.id}#c${i}`,
-                    author: comment.author,
-                    text: comment.text,
-                    label: formatLongDate(post.date)
-                  }))}
+                  seed={conversationSeed(post)}
                   className="mt-5"
                 />
                 <div className="mt-auto flex items-center justify-between gap-4 pt-8">
@@ -268,11 +278,11 @@ export function TwitterFeed({ posts }) {
               <div>
                 <time
                   dateTime={item.date}
-                  className="text-[10px] text-neutral-500 group-hover:text-white/80 group-focus-visible:text-white/80"
+                  className="text-2xs text-neutral-500 group-hover:text-white/80 group-focus-visible:text-white/80"
                 >
                   {formatLongDate(item.date)}
                 </time>
-                <p className="mt-1 text-[10px] font-medium text-neutral-400 group-hover:text-white/70 group-focus-visible:text-white/70">
+                <p className="mt-1 text-2xs font-medium text-neutral-400 group-hover:text-white/70 group-focus-visible:text-white/70">
                   @truthstudios
                 </p>
               </div>
@@ -281,7 +291,7 @@ export function TwitterFeed({ posts }) {
             <p className="my-6 text-sm leading-6">
               <RichText text={item.text} />
             </p>
-            <div className="mt-auto flex items-center gap-5 text-[10px] text-neutral-400 group-hover:text-white/80 group-focus-visible:text-white/80">
+            <div className="mt-auto flex items-center gap-5 text-2xs text-neutral-400 group-hover:text-white/80 group-focus-visible:text-white/80">
               <span className="flex items-center gap-1">
                 <ChatBubbleOvalLeftIcon className="h-3.5 w-3.5" />
                 {item.replies}
@@ -349,8 +359,8 @@ export function JournalFeed({ posts, tumblr = false }) {
               </div>
             )}
             <div className="p-6 sm:p-8">
-              <p className="text-[10px] font-semibold uppercase tracking-wider">Truth Studios</p>
-              <time dateTime={post.date} className="mt-1 block text-[10px] text-neutral-400">
+              <p className="text-2xs font-semibold uppercase tracking-wider">Truth Studios</p>
+              <time dateTime={post.date} className="mt-1 block text-2xs text-neutral-400">
                 {formatLongDate(post.date)}
               </time>
               {tumblr && (
@@ -450,7 +460,7 @@ export function VideoFeed({ posts, network }) {
                   <PlayIcon className="ml-1 h-6 w-6 fill-current" />
                 </span>
               </span>
-              <span className="absolute bottom-3 right-3 bg-black/70 px-2 py-1 text-[10px] text-white">
+              <span className="absolute bottom-3 right-3 bg-black/70 px-2 py-1 text-2xs text-white">
                 {post.duration}
               </span>
             </div>
@@ -458,7 +468,7 @@ export function VideoFeed({ posts, network }) {
               <h2 className="text-xs font-bold uppercase tracking-wider text-white group-hover:text-pmred">
                 {post.title}
               </h2>
-              <p className="mt-2 text-[11px] text-neutral-400">
+              <p className="mt-2 text-xs text-neutral-400">
                 {formatNumber(post.views)} views · {formatLongDate(post.date)}
               </p>
             </div>

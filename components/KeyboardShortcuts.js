@@ -3,6 +3,7 @@ import toast from "react-hot-toast";
 import { usePlayer } from "../lib/player";
 import { useStore } from "../lib/store";
 import { MEGA_MENU_TABS, useUI } from "../lib/ui";
+import { trackPurchaseItem } from "../lib/pricing";
 
 function isTypingTarget(el) {
   if (!el) return false;
@@ -71,17 +72,7 @@ export default function KeyboardShortcuts() {
             a.addToCart(u.cartCandidate, u.cartCandidate.qty || 1);
             toast.success(`${u.cartCandidate.name} added to your cart`);
           } else if (p.track) {
-            u.openModal("purchase", {
-              item: {
-                id: `stream:${p.track.id}`,
-                name: p.track.title,
-                subtitle: p.track.artist,
-                image: p.track.cover,
-                kind: "music",
-                credits: 50,
-                price: 0.99
-              }
-            });
+            u.openModal("purchase", { item: trackPurchaseItem(p.track) });
           }
           break;
         case "m":

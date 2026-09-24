@@ -51,7 +51,7 @@ export default function WikipediaArticle({ article }) {
               className="object-cover"
             />
           </div>
-          <p className="my-3 text-center text-[10px] text-neutral-500">
+          <p className="my-3 text-center text-2xs text-neutral-500">
             From the studio photo archive
           </p>
           <dl className="space-y-3">
@@ -122,7 +122,7 @@ export default function WikipediaArticle({ article }) {
               </li>
             ))}
           </ol>
-          <p className="mt-8 text-[10px] text-neutral-400">
+          <p className="mt-8 text-2xs text-neutral-400">
             Last edited 22 September 2026 · Projct Music studio archive
           </p>
         </section>

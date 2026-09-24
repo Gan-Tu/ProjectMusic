@@ -108,7 +108,7 @@ export default function PhotoGallery({ photos, polaroids = false }) {
                 className="object-cover transition duration-500 group-hover:scale-105 motion-reduce:transition-none"
               />
               {!polaroids && (
-                <span className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/80 to-transparent p-4 pt-12 text-left text-[10px] font-bold uppercase tracking-wider text-white">
+                <span className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/80 to-transparent p-4 pt-12 text-left text-2xs font-bold uppercase tracking-wider text-white">
                   {item.caption}
                 </span>
               )}

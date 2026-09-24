@@ -24,7 +24,7 @@ function TrackProgress() {
           style={{ width: `${duration ? Math.min(100, (currentTime / duration) * 100) : 0}%` }}
         />
       </div>
-      <p className="mt-1 text-[10px] text-white/75">
+      <p className="mt-1 text-2xs text-white/75">
         {formatTime(currentTime)} / {formatTime(duration)}
       </p>
     </div>
@@ -80,12 +80,12 @@ export function TrackList({ tracks, singleColumn = false }) {
                     {track.title}
                   </span>
                   <span
-                    className={`mt-1 block truncate text-[11px] ${active ? "text-white/75" : "text-neutral-500"}`}
+                    className={`mt-1 block truncate text-xs ${active ? "text-white/75" : "text-neutral-500"}`}
                   >
                     {track.artist}
                   </span>
                 </span>
-                <span className={`text-[10px] ${active ? "text-white/75" : "text-neutral-400"}`}>
+                <span className={`text-2xs ${active ? "text-white/75" : "text-neutral-400"}`}>
                   {formatTime(track.duration)}
                 </span>
               </button>
@@ -107,7 +107,7 @@ export function TrackList({ tracks, singleColumn = false }) {
                     actions.addToPlaylist(track);
                     toast.success("Added to your playlist");
                   }}
-                  className={`flex min-h-10 cursor-pointer items-center gap-1 text-[10px] uppercase tracking-wider disabled:cursor-default ${active ? "text-white" : "text-neutral-500 hover:text-pmred"}`}
+                  className={`flex min-h-10 cursor-pointer items-center gap-1 text-2xs uppercase tracking-wider disabled:cursor-default ${active ? "text-white" : "text-neutral-500 hover:text-pmred"}`}
                 >
                   {saved ? (
                     <CheckIcon className="h-3.5 w-3.5" />
@@ -129,7 +129,7 @@ export function MyspaceProfile({ friends, tracks }) {
   return (
     <div className="grid bg-neutral-50 lg:grid-cols-[340px_1fr]">
       <aside className="border-b border-neutral-200 p-6 lg:border-r lg:p-8">
-        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-pmred">
+        <p className="text-2xs font-bold uppercase tracking-[0.2em] text-pmred">
           A place for friends
         </p>
         <div className="relative mt-5 aspect-square">

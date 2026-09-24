@@ -38,7 +38,7 @@ export default function ArtistProfile({ artist, topArtists, albums, photos, even
             ["Sessions", artist.sessions]
           ].map(([label, value]) => (
             <div key={label}>
-              <dt className="text-[9px] font-semibold uppercase tracking-widest text-neutral-400">
+              <dt className="text-2xs font-semibold uppercase tracking-widest text-neutral-400">
                 {label}
               </dt>
               <dd className="mt-1 text-xl font-bold">{formatCompact(value)}</dd>
@@ -59,7 +59,7 @@ export default function ArtistProfile({ artist, topArtists, albums, photos, even
             />
           </div>
           <div className="min-w-0">
-            <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-pmred">
+            <p className="text-2xs font-bold uppercase tracking-[0.25em] text-pmred">
               Artist / {artist.location}
             </p>
             <h1 className="mt-3 break-words text-4xl font-extrabold uppercase leading-none tracking-tight sm:text-5xl">
@@ -122,7 +122,7 @@ export default function ArtistProfile({ artist, topArtists, albums, photos, even
               "Good people, honest music, long nights. Thanks for being part of the journey."
             ].map((post, index) => (
               <article key={post} className="border-b border-neutral-200 py-6">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-pmred">
+                <p className="text-2xs font-bold uppercase tracking-wider text-pmred">
                   {artist.name}{" "}
                   <span className="ml-3 font-normal text-neutral-400">
                     {formatLongDate(`2026-09-${pad2(22 - index * 4)}`)}
@@ -184,13 +184,13 @@ export default function ArtistProfile({ artist, topArtists, albums, photos, even
             <p className="text-base leading-8 text-neutral-500">{artist.bio}</p>
             <dl className="mt-8 grid gap-6 border-t border-neutral-200 pt-6 sm:grid-cols-2">
               <div>
-                <dt className="text-[10px] font-bold uppercase tracking-widest text-pmred">
+                <dt className="text-2xs font-bold uppercase tracking-widest text-pmred">
                   Based in
                 </dt>
                 <dd className="mt-2 text-sm">{artist.location}</dd>
               </div>
               <div>
-                <dt className="text-[10px] font-bold uppercase tracking-widest text-pmred">
+                <dt className="text-2xs font-bold uppercase tracking-widest text-pmred">
                   Community
                 </dt>
                 <dd className="mt-2 text-sm">Projct Music / Truth Studios</dd>

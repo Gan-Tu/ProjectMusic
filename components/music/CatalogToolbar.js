@@ -25,7 +25,7 @@ export default function CatalogToolbar({ active, query, onSearch, count }) {
             {label}
           </Link>
         ))}
-        <span className="text-[10px] font-normal tracking-normal text-neutral-400">
+        <span className="text-2xs font-normal tracking-normal text-neutral-400">
           {count} releases
         </span>
       </nav>

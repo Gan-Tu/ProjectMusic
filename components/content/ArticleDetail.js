@@ -81,7 +81,7 @@ export default function ArticleDetail({ post, related, section }) {
                 <Link
                   href={{ pathname: `/${section}`, query: { tag } }}
                   key={tag}
-                  className="rounded-full bg-neutral-100 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wide text-neutral-500 hover:bg-pmred hover:text-white"
+                  className="rounded-full bg-neutral-100 px-3 py-1.5 text-2xs font-semibold uppercase tracking-wide text-neutral-500 hover:bg-pmred hover:text-white"
                 >
                   {tag}
                 </Link>

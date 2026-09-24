@@ -5,7 +5,7 @@ import AppContainer from "../components/AppContainer";
 import LoginPanel from "../components/content/LoginPanel";
 import { TextField, Toggle } from "../components/ui/Form";
 import Button from "../components/ui/Button";
-import { useSessionContext, DEFAULT_USER } from "../lib/SessionProvider";
+import { useSessionContext } from "../lib/SessionProvider";
 import { useStore } from "../lib/store";
 
 const networks = [
@@ -46,7 +46,7 @@ export default function SignupPage() {
     setBusy(true);
     // Keep the single demo identity; never store a password or personal form details.
     actions.subscribe("socialConnections", connections);
-    dispatch({ type: "set_user", user: { ...DEFAULT_USER } });
+    dispatch({ type: "set_user", user: {} });
     toast.success("You’re in. Welcome to Projct, Nick!");
     try {
       await router.push("/profile");

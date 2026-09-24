@@ -13,7 +13,7 @@ export default function NewReleases({ albums, queue }) {
         </h2>
         <Link
           href="/albums"
-          className="text-[11px] font-bold uppercase tracking-widest text-pmred hover:underline"
+          className="text-xs font-bold uppercase tracking-widest text-pmred hover:underline"
         >
           All music <span aria-hidden="true">↗</span>
         </Link>

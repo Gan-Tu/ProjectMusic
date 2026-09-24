@@ -32,7 +32,7 @@ export default function ActivityMenu() {
             type="button"
             onClick={actions.markNotificationsRead}
             disabled={!unread}
-            className="text-[10px] font-semibold uppercase tracking-wider text-pmred disabled:text-neutral-300"
+            className="text-2xs font-semibold uppercase tracking-wider text-pmred disabled:text-neutral-300"
           >
             Mark all read
           </button>
@@ -44,7 +44,7 @@ export default function ActivityMenu() {
         </div>
         <CloseButton
           onClick={() => openModal("notifications")}
-          className="block w-full border-t border-neutral-200 py-3 text-center text-[10px] font-semibold uppercase tracking-wider text-neutral-500 hover:text-pmred"
+          className="block w-full border-t border-neutral-200 py-3 text-center text-2xs font-semibold uppercase tracking-wider text-neutral-500 hover:text-pmred"
         >
           View all
         </CloseButton>

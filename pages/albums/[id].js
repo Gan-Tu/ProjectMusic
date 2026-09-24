@@ -13,6 +13,7 @@ import { usePlayer } from "../../lib/player";
 import { useStore } from "../../lib/store";
 import { useUI, useCartCandidate } from "../../lib/ui";
 import { formatTime } from "../../lib/format";
+import { albumPurchaseItem, tierLine } from "../../lib/pricing";
 import { getMusics, getMusicById, getAlbumTracks } from "../../utils/getFakeTracks";
 import { toAlbumSummary } from "../../utils/albumTracks";
 
@@ -20,19 +21,8 @@ export default function AlbumDetail({ album, tracks, more }) {
   const player = usePlayer();
   const { actions } = useStore();
   const { openModal } = useUI();
-  const item = useMemo(
-    () => ({
-      id: `album:${album.id}`,
-      name: album.name,
-      subtitle: `${album.artist} · Digital album`,
-      image: album.img_url,
-      kind: "music",
-      price: 9.99,
-      credits: 900
-    }),
-    [album]
-  );
-  useCartCandidate(item);
+  const item = useMemo(() => albumPurchaseItem(album), [album]);
+  useCartCandidate(tierLine(item, "download"));
   const totalTime = tracks.reduce((total, track) => total + track.duration, 0);
   return (
     <AppContainer
@@ -45,7 +35,7 @@ export default function AlbumDetail({ album, tracks, more }) {
           <div className="px-6 sm:px-10">
             <Link
               href="/albums"
-              className="cursor-pointer text-[10px] font-bold uppercase tracking-widest text-neutral-400 hover:text-pmred"
+              className="cursor-pointer text-2xs font-bold uppercase tracking-widest text-neutral-400 hover:text-pmred"
             >
               ← All releases
             </Link>
@@ -61,10 +51,7 @@ export default function AlbumDetail({ album, tracks, more }) {
               {tracks.length === 1 ? "track" : "tracks"} · {formatTime(totalTime)}
             </p>
             <div className="my-6 flex flex-wrap gap-2">
-              <Button
-                className="cursor-pointer"
-                onClick={() => player.playQueue(tracks)}
-              >
+              <Button className="cursor-pointer" onClick={() => player.playQueue(tracks)}>
                 Play all
               </Button>
               <Button
@@ -91,7 +78,7 @@ export default function AlbumDetail({ album, tracks, more }) {
               <AlbumTrackRow key={track.id} track={track} queue={tracks} number={index + 1} />
             ))}
           </ol>
-          <div className="mt-6 flex flex-wrap items-center gap-6 px-6 text-[10px] font-bold uppercase tracking-widest text-neutral-500 sm:px-10">
+          <div className="mt-6 flex flex-wrap items-center gap-6 px-6 text-2xs font-bold uppercase tracking-widest text-neutral-500 sm:px-10">
             <button
               type="button"
               onClick={() => shareAlbum(album.id)}

@@ -91,7 +91,7 @@ export default function VideoStage({ video, videos, related }) {
                   <PlayIcon className="ml-1 size-7 md:size-10" />
                 </button>
                 <div className="pointer-events-none absolute inset-x-0 bottom-0 hidden bg-linear-to-t from-black/80 to-transparent px-20 pt-20 pb-8 md:block">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-white/65">
+                  <p className="text-2xs font-bold uppercase tracking-[0.25em] text-white/65">
                     Projct Music presents
                   </p>
                   <p className="mt-2 text-xl font-extrabold uppercase tracking-wide">
@@ -168,7 +168,7 @@ export default function VideoStage({ video, videos, related }) {
               </span>
               <span className="mt-1 block truncate text-xs text-neutral-300">{video.title}</span>
             </span>
-            <span className="flex flex-col items-center gap-1 text-[9px] uppercase tracking-wider text-neutral-400">
+            <span className="flex flex-col items-center gap-1 text-2xs uppercase tracking-wider text-neutral-400">
               <ChevronDownIcon
                 className={classNames("size-4 transition-transform", creditsOpen && "rotate-180")}
               />
@@ -184,7 +184,7 @@ export default function VideoStage({ video, videos, related }) {
             <dl className="space-y-5">
               {video.credits.map((credit) => (
                 <div key={credit.role}>
-                  <dt className="text-[10px] uppercase tracking-widest text-neutral-500">
+                  <dt className="text-2xs uppercase tracking-widest text-neutral-500">
                     {credit.role}
                   </dt>
                   <dd className="mt-1 text-xs text-neutral-200">{credit.name}</dd>
@@ -193,7 +193,7 @@ export default function VideoStage({ video, videos, related }) {
             </dl>
             <Link
               href={`/artists/${video.artistId}`}
-              className="mt-7 inline-block text-[10px] font-bold uppercase tracking-widest text-pmred hover:text-white"
+              className="mt-7 inline-block text-2xs font-bold uppercase tracking-widest text-pmred hover:text-white"
             >
               Artist profile ↗
             </Link>
@@ -218,13 +218,13 @@ export default function VideoStage({ video, videos, related }) {
           >
             {video.title}
           </h1>
-          <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-[11px] text-neutral-400">
+          <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-xs text-neutral-400">
             <span>{formatNumber(video.views)} views</span>
             <time dateTime={video.date}>{formatLongDate(video.date)}</time>
             <span>{formatTime(video.duration)}</span>
           </div>
           <p className="mt-6 max-w-2xl text-sm leading-7 text-neutral-400">{video.description}</p>
-          <p className="mt-4 text-[10px] text-neutral-500">
+          <p className="mt-4 text-2xs text-neutral-500">
             Demo collection · Playback uses sample footage.
           </p>
         </div>
@@ -276,9 +276,7 @@ export default function VideoStage({ video, videos, related }) {
           >
             More videos
           </h2>
-          <span className="text-[10px] uppercase tracking-widest text-neutral-500">
-            Keep watching
-          </span>
+          <span className="text-2xs uppercase tracking-widest text-neutral-500">Keep watching</span>
         </div>
         <div className="grid grid-cols-2 lg:grid-cols-4">
           {related.map((item) => (

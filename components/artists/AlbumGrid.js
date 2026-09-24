@@ -71,7 +71,7 @@ export default function AlbumGrid({ albums }) {
                   actions.addToPlaylist(track);
                   toast.success("Added to your playlist");
                 }}
-                className="mt-2 inline-flex cursor-pointer items-center gap-1 py-1 text-[10px] font-semibold uppercase tracking-wide text-neutral-500 hover:text-pmred"
+                className="mt-2 inline-flex cursor-pointer items-center gap-1 py-1 text-2xs font-semibold uppercase tracking-wide text-neutral-500 hover:text-pmred"
               >
                 <PlusIcon className="h-3 w-3" /> Playlist
               </button>

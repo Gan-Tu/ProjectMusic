@@ -29,7 +29,7 @@ export default function MessagesMenu() {
       >
         <EnvelopeIcon className="h-6 w-6 transition group-hover:scale-110" />
         {unread > 0 && (
-          <span className="absolute -right-3 -top-2.5 min-w-5 rounded-full bg-pmred px-1.5 text-center text-[10px] font-bold leading-5 text-white">
+          <span className="absolute -right-3 -top-2.5 min-w-5 rounded-full bg-pmred px-1.5 text-center text-2xs font-bold leading-5 text-white">
             {unread}
           </span>
         )}
@@ -60,7 +60,7 @@ export default function MessagesMenu() {
                         {chat.name}
                       </span>
                       {chat.unread > 0 && (
-                        <span className="rounded-full bg-pmred px-1.5 text-[10px] font-bold text-white group-hover:bg-white group-hover:text-pmred">
+                        <span className="rounded-full bg-pmred px-1.5 text-2xs font-bold text-white group-hover:bg-white group-hover:text-pmred">
                           {chat.unread}
                         </span>
                       )}
@@ -75,7 +75,7 @@ export default function MessagesMenu() {
                         ? `${last.from === "me" ? "You: " : ""}${last.text}`
                         : "No messages yet"}
                     </span>
-                    <span className="text-[10px] font-semibold uppercase tracking-wider text-neutral-400 group-hover:text-white/80">
+                    <span className="text-2xs font-semibold uppercase tracking-wider text-neutral-400 group-hover:text-white/80">
                       {last ? last.time || "Just now" : "New"}
                     </span>
                   </span>
@@ -86,7 +86,7 @@ export default function MessagesMenu() {
         </ul>
         <CloseButton
           onClick={() => openModal("chat")}
-          className="block w-full border-t border-neutral-200 py-3 text-center text-[10px] font-semibold uppercase tracking-wider text-neutral-500 hover:text-pmred"
+          className="block w-full border-t border-neutral-200 py-3 text-center text-2xs font-semibold uppercase tracking-wider text-neutral-500 hover:text-pmred"
         >
           Open inbox
         </CloseButton>

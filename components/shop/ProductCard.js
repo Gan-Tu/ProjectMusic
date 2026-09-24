@@ -30,17 +30,17 @@ export default function ProductCard({ product, priority = false }) {
           <ProductVisual product={product} priority={priority} />
         </div>
         <div className="min-h-28 px-4 py-5 sm:px-6">
-          <p className="mb-2 text-[9px] font-semibold uppercase tracking-[0.18em] text-neutral-500">
+          <p className="mb-2 text-2xs font-semibold uppercase tracking-[0.18em] text-neutral-500">
             {product.category.replaceAll("-", " ")}
           </p>
           <h3 className="pr-5 text-xs font-bold uppercase leading-relaxed tracking-wide transition-colors group-hover:text-pmred">
             {product.name}
           </h3>
           <p className="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1 text-sm font-bold text-pmred">
-            {product.tiers?.length > 1 && <span className="text-[10px] font-medium">From</span>}
+            {product.tiers?.length > 1 && <span className="text-2xs font-medium">From</span>}
             {price != null && formatUSD(price)}
             {credits != null && (
-              <span className="text-[10px] font-medium text-neutral-500">
+              <span className="text-2xs font-medium text-neutral-500">
                 {price != null ? "or " : ""}
                 {formatCredits(credits)}
               </span>

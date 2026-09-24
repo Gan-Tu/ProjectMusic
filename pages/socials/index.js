@@ -15,7 +15,7 @@ export default function SocialsPage({ profiles }) {
       description="The sounds, stories and people of Truth Studios. Follow the studio across our social channels."
     >
       <div className="border-b border-neutral-200 px-6 py-10 sm:px-12">
-        <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.24em] text-pmred">
+        <p className="mb-3 text-2xs font-bold uppercase tracking-[0.24em] text-pmred">
           Truth Studios · Los Angeles
         </p>
         <h1 className="text-xl font-extrabold uppercase tracking-[0.16em]">Follow / Like</h1>
@@ -42,7 +42,7 @@ export default function SocialsPage({ profiles }) {
                 <ArrowUpRightIcon className="h-3.5 w-3.5" />
               </h2>
               <p className="mt-1.5 truncate text-xs text-neutral-500">{profile.handle}</p>
-              <p className="mt-1 text-[10px] text-neutral-500">
+              <p className="mt-1 text-2xs text-neutral-500">
                 {formatNumber(profile.followers + (state.follows[`social:${profile.id}`] ? 1 : 0))}{" "}
                 followers
               </p>

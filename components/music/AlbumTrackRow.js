@@ -21,7 +21,7 @@ export default function AlbumTrackRow({ track, queue, number }) {
     >
       <span
         className={classNames(
-          "w-5 text-[10px] tabular-nums",
+          "w-5 text-2xs tabular-nums",
           active ? "text-white/70" : "text-neutral-400"
         )}
       >
@@ -30,7 +30,7 @@ export default function AlbumTrackRow({ track, queue, number }) {
       <PlayButton track={track} queue={queue} className={active ? "text-white" : "text-pmred"} />
       <span className="min-w-0 flex-1 truncate text-xs font-semibold">{track.title}</span>
       {player.isTrackPlaying(track.id) && <Equalizer />}
-      <span className="px-1 text-[10px] tabular-nums">{formatTime(track.duration)}</span>
+      <span className="px-1 text-2xs tabular-nums">{formatTime(track.duration)}</span>
       <button
         type="button"
         aria-label={`Like ${track.title}`}

@@ -29,7 +29,7 @@ export default function EventDetail({ event }) {
         <div className="relative w-full px-6 py-10 sm:px-12 sm:py-14">
           <Link
             href="/events"
-            className="cursor-pointer text-[10px] font-bold uppercase tracking-widest text-white/70 hover:text-white"
+            className="cursor-pointer text-2xs font-bold uppercase tracking-widest text-white/70 hover:text-white"
           >
             ← All events
           </Link>
@@ -78,7 +78,7 @@ export default function EventDetail({ event }) {
                       className="object-cover transition duration-300 group-hover:scale-105"
                     />
                   </div>
-                  <p className="mt-3 text-[10px] font-bold uppercase tracking-wider group-hover:text-pmred">
+                  <p className="mt-3 text-2xs font-bold uppercase tracking-wider group-hover:text-pmred">
                     {artist.name}
                   </p>
                 </Link>
@@ -104,7 +104,7 @@ export default function EventDetail({ event }) {
                 href={directions}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-4 inline-flex cursor-pointer items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-pmred"
+                className="mt-4 inline-flex cursor-pointer items-center gap-2 text-2xs font-bold uppercase tracking-widest text-pmred"
               >
                 Get directions <ArrowUpRightIcon className="h-3 w-3" />
               </a>
@@ -130,7 +130,7 @@ export default function EventDetail({ event }) {
                   <span className="text-xl font-light text-pmred">{formatUSD(tier.price)}</span>
                 </div>
                 <p className="mt-3 text-xs leading-6 text-neutral-500">{tier.description}</p>
-                <p className="mt-1 text-[10px] text-neutral-400">
+                <p className="mt-1 text-2xs text-neutral-400">
                   or {formatCredits(tier.credits)} credits
                 </p>
                 <TicketButton event={event} tier={tier} className="mt-6" />

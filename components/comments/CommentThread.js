@@ -37,7 +37,7 @@ function Avatar({ src, name, compact }) {
           unoptimized={src.startsWith("data:")}
         />
       ) : (
-        <span className="flex h-full w-full items-center justify-center text-[10px] font-bold uppercase text-neutral-500">
+        <span className="flex h-full w-full items-center justify-center text-2xs font-bold uppercase text-neutral-500">
           {name?.slice(0, 2)}
         </span>
       )}
@@ -51,7 +51,7 @@ function ActionButton({ children, onClick, danger, dark, ...props }) {
       type="button"
       onClick={onClick}
       className={classNames(
-        "text-[10px] font-bold uppercase tracking-wider transition",
+        "text-2xs font-bold uppercase tracking-wider transition",
         danger
           ? "text-pmred hover:text-pmred-dark"
           : dark
@@ -65,16 +65,29 @@ function ActionButton({ children, onClick, danger, dark, ...props }) {
   );
 }
 
-function CommentItem({ comment, threadId, canModerate, compact, dark, onReply }) {
+function CommentItem({ comment, threadId, loggedIn, canModerate, compact, dark, onReply }) {
   const { state, actions } = useStore();
   const [mode, setMode] = useState("view"); // "view" | "edit" | "confirm"
   const [draft, setDraft] = useState(comment.text);
+  // Text the edit started from, to notice changes saved meanwhile (e.g. in another tab).
+  const [editBase, setEditBase] = useState(comment.text);
   const likeId = `comment:${comment.id}`;
   const liked = Boolean(state.likes[likeId]);
   const likes = (comment.likes || 0) + (liked ? 1 : 0);
-  const canDelete = comment.mine || canModerate;
+  // Editing and deleting need an active session (moderation also needs the admin role).
+  const canEdit = loggedIn && comment.mine;
+  const canDelete = loggedIn && (comment.mine || canModerate);
+  const editing = mode === "edit" && canEdit;
+  const confirming = mode === "confirm" && canDelete;
+
+  function startEdit() {
+    setDraft(comment.text);
+    setEditBase(comment.text);
+    setMode("edit");
+  }
 
   function remove() {
+    if (!canDelete) return;
     const undo = actions.deleteComment(threadId, comment);
     setMode("view");
     toast(
@@ -99,7 +112,16 @@ function CommentItem({ comment, threadId, canModerate, compact, dark, onReply })
 
   function save(e) {
     e?.preventDefault();
+    if (!canEdit) {
+      setMode("view");
+      return;
+    }
     if (!draft.trim()) return;
+    if (comment.text !== editBase) {
+      setEditBase(comment.text);
+      toast("This comment was changed elsewhere. Review it, then save again to overwrite.");
+      return;
+    }
     if (draft.trim() !== comment.text) {
       actions.editComment(threadId, comment.id, draft);
       toast.success("Comment updated");
@@ -113,13 +135,13 @@ function CommentItem({ comment, threadId, canModerate, compact, dark, onReply })
       <div className="min-w-0 flex-1">
         <p className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
           <span className="text-xs font-bold text-pmred">{comment.author}</span>
-          <span className="text-[10px] uppercase tracking-wider text-neutral-400">
+          <span className="text-2xs uppercase tracking-wider text-neutral-400">
             {comment.label || timeAgo(comment.at)}
             {comment.editedAt && " · edited"}
           </span>
         </p>
 
-        {mode === "edit" ? (
+        {editing ? (
           <form onSubmit={save} className="mt-2 space-y-2">
             <textarea
               value={draft}
@@ -169,7 +191,7 @@ function CommentItem({ comment, threadId, canModerate, compact, dark, onReply })
           </p>
         )}
 
-        {mode === "confirm" ? (
+        {confirming ? (
           <div
             role="alertdialog"
             aria-label="Confirm delete"
@@ -187,7 +209,7 @@ function CommentItem({ comment, threadId, canModerate, compact, dark, onReply })
             </ActionButton>
           </div>
         ) : (
-          mode === "view" && (
+          !editing && (
             <div className="mt-2 flex flex-wrap items-center gap-4">
               <button
                 type="button"
@@ -195,7 +217,7 @@ function CommentItem({ comment, threadId, canModerate, compact, dark, onReply })
                 aria-label={liked ? "Unlike comment" : "Like comment"}
                 onClick={() => actions.toggleLike(likeId)}
                 className={classNames(
-                  "flex items-center gap-1 text-[10px] font-bold transition",
+                  "flex items-center gap-1 text-2xs font-bold transition",
                   liked ? "text-pmred" : "text-neutral-400 hover:text-pmred"
                 )}
               >
@@ -209,8 +231,8 @@ function CommentItem({ comment, threadId, canModerate, compact, dark, onReply })
               <ActionButton dark={dark} onClick={() => onReply(comment.author)}>
                 Reply
               </ActionButton>
-              {comment.mine && (
-                <ActionButton dark={dark} onClick={() => setMode("edit")}>
+              {canEdit && (
+                <ActionButton dark={dark} onClick={startEdit}>
                   Edit
                 </ActionButton>
               )}
@@ -294,7 +316,7 @@ function Thread({
             <button
               type="submit"
               disabled={!draft.trim()}
-              className="rounded-full bg-pmred px-4 text-[10px] font-bold uppercase tracking-wider text-white transition hover:bg-pmred-dark disabled:opacity-40"
+              className="rounded-full bg-pmred px-4 text-2xs font-bold uppercase tracking-wider text-white transition hover:bg-pmred-dark disabled:opacity-40"
             >
               Post
             </button>
@@ -319,7 +341,7 @@ function Thread({
               )}
             />
             <div className="mt-2 flex items-center justify-between gap-3">
-              <span className="text-[10px] text-neutral-400">
+              <span className="text-2xs text-neutral-400">
                 {draft.length}/{MAX_LENGTH} · Ctrl/⌘ + Enter to post
               </span>
               <button
@@ -352,7 +374,7 @@ function Thread({
       <h2
         className={classNames(
           "font-extrabold uppercase tracking-widest",
-          compact ? "mb-3 text-[10px]" : "mb-6 text-sm"
+          compact ? "mb-3 text-2xs" : "mb-6 text-sm"
         )}
       >
         {title} <span className="text-pmred">{pad2(comments.length)}</span>
@@ -372,6 +394,7 @@ function Thread({
               key={comment.id}
               comment={comment}
               threadId={threadId}
+              loggedIn={Boolean(user)}
               canModerate={canModerate}
               compact={compact}
               dark={dark}
@@ -386,7 +409,7 @@ function Thread({
         <button
           type="button"
           onClick={() => setShowAll((v) => !v)}
-          className="mt-3 text-[10px] font-bold uppercase tracking-wider text-pmred"
+          className="mt-3 text-2xs font-bold uppercase tracking-wider text-pmred"
         >
           {showAll ? "Show fewer" : `Show all ${comments.length} comments`}
         </button>

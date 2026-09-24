@@ -33,7 +33,7 @@ export default function Shop({ products, categories }) {
       {!category && (
         <section className="grid bg-pmred md:grid-cols-2" aria-label="Featured collection">
           <div className="flex flex-col items-start justify-center px-6 py-10 text-white motion-safe:animate-fade-in sm:px-12 md:py-16 lg:px-20">
-            <p className="mb-6 text-[10px] font-bold uppercase tracking-[0.3em]">
+            <p className="mb-6 text-2xs font-bold uppercase tracking-[0.3em]">
               The studio collection / 01
             </p>
             <h1 className="text-5xl font-black uppercase leading-[0.95] tracking-[-0.055em] sm:text-6xl lg:text-7xl">
@@ -84,7 +84,7 @@ export default function Shop({ products, categories }) {
                 {visible.length} products · Music. Culture. Community.
               </p>
             </div>
-            <label className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-wider">
+            <label className="flex items-center gap-3 text-2xs font-bold uppercase tracking-wider">
               Sort by
               <select
                 aria-label="Sort products"
@@ -117,7 +117,7 @@ export default function Shop({ products, categories }) {
                   scroll={false}
                   aria-current={active ? "page" : undefined}
                   className={classNames(
-                    "shrink-0 cursor-pointer rounded-full border px-4 py-2 text-[10px] font-bold uppercase tracking-wider transition-colors",
+                    "shrink-0 cursor-pointer rounded-full border px-4 py-2 text-2xs font-bold uppercase tracking-wider transition-colors",
                     active
                       ? "border-pmred bg-pmred text-white"
                       : "border-neutral-200 text-neutral-500 hover:border-pmred hover:text-pmred"

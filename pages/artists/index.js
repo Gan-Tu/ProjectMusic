@@ -80,7 +80,7 @@ export default function ArtistsHome({ artistsData }) {
               aria-pressed={letter === value}
               onClick={() => setLetter(value)}
               className={classNames(
-                "min-w-8 cursor-pointer rounded-full px-2 py-2 text-[11px] font-bold transition-colors disabled:cursor-default disabled:text-neutral-300",
+                "min-w-8 cursor-pointer rounded-full px-2 py-2 text-xs font-bold transition-colors disabled:cursor-default disabled:text-neutral-300",
                 letter === value
                   ? "bg-black text-white"
                   : "text-neutral-500 enabled:hover:text-pmred"
@@ -131,7 +131,7 @@ export default function ArtistsHome({ artistsData }) {
                 >
                   {artist.name}
                 </Link>
-                <p className="mt-3 text-[10px] uppercase tracking-wide text-neutral-500">
+                <p className="mt-3 text-2xs uppercase tracking-wide text-neutral-500">
                   {artist.location}
                 </p>
                 <button
@@ -139,7 +139,7 @@ export default function ArtistsHome({ artistsData }) {
                   aria-label={`${state.follows[`artist:${artist.id}`] ? "Unfollow" : "Follow"} ${artist.name}`}
                   aria-pressed={!!state.follows[`artist:${artist.id}`]}
                   onClick={() => actions.toggleFollow(`artist:${artist.id}`)}
-                  className="mt-4 cursor-pointer rounded-full border border-pmred px-4 py-1.5 text-[9px] font-bold uppercase tracking-wider text-pmred transition-colors hover:bg-pmred hover:text-white"
+                  className="mt-4 cursor-pointer rounded-full border border-pmred px-4 py-1.5 text-2xs font-bold uppercase tracking-wider text-pmred transition-colors hover:bg-pmred hover:text-white"
                 >
                   {state.follows[`artist:${artist.id}`] ? "Following" : "+ Follow"}
                 </button>
@@ -158,7 +158,7 @@ export default function ArtistsHome({ artistsData }) {
               >
                 <Link
                   href={`/artists/${artist.id}`}
-                  className="cursor-pointer text-[11px] font-bold uppercase tracking-wide hover:text-pmred"
+                  className="cursor-pointer text-xs font-bold uppercase tracking-wide hover:text-pmred"
                 >
                   {artist.name}
                 </Link>

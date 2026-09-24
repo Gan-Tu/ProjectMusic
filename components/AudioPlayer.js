@@ -30,7 +30,7 @@ function Progress({ fallbackDuration }) {
   const bufferedPct = duration ? Math.max(pct, (buffered / duration) * 100) : 0;
 
   return (
-    <div className="flex items-center gap-3 text-[11px] font-medium tabular-nums">
+    <div className="flex items-center gap-3 text-xs font-medium tabular-nums">
       <span className="w-10 text-right text-white">{formatTime(currentTime)}</span>
       <input
         type="range"
@@ -177,7 +177,7 @@ export default function AudioPlayer() {
           >
             <ArrowPathRoundedSquareIcon className="h-5 w-5" />
             {repeat === "one" && (
-              <span className="absolute -right-1.5 -top-1.5 text-[9px] font-bold">1</span>
+              <span className="absolute -right-1.5 -top-1.5 text-2xs font-bold">1</span>
             )}
           </IconButton>
           <IconButton
