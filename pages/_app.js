@@ -11,6 +11,7 @@ import AudioPlayer from "../components/AudioPlayer";
 import ModalHost from "../components/modals/ModalHost";
 import KeyboardShortcuts from "../components/KeyboardShortcuts";
 import MessagePopups from "../components/MessagePopups";
+import ErrorBoundary from "../components/ErrorBoundary";
 
 // Font Awesome's CSS is imported above; don't let it inject a <style> at runtime.
 fontAwesomeConfig.autoAddCss = false;
@@ -24,34 +25,36 @@ const montserrat = Montserrat({
 
 function MyApp({ Component, pageProps }) {
   return (
-    <SessionProvider>
-      <StoreProvider>
-        <PlayerProvider>
-          <UIProvider>
-            <style jsx global>{`
-              :root {
-                --font-montserrat: ${montserrat.style.fontFamily};
-              }
-            `}</style>
-            <Toaster
-              position="top-center"
-              containerStyle={{ top: 80 }}
-              toastOptions={{
-                className: "!rounded-none !text-sm !font-medium",
-                success: { iconTheme: { primary: "#ff0646", secondary: "#fff" } }
-              }}
-            />
-            <div className="flex min-h-dvh flex-col">
-              <Component {...pageProps} />
-              <AudioPlayer />
-            </div>
-            <ModalHost />
-            <KeyboardShortcuts />
-            <MessagePopups />
-          </UIProvider>
-        </PlayerProvider>
-      </StoreProvider>
-    </SessionProvider>
+    <ErrorBoundary>
+      <SessionProvider>
+        <StoreProvider>
+          <PlayerProvider>
+            <UIProvider>
+              <style jsx global>{`
+                :root {
+                  --font-montserrat: ${montserrat.style.fontFamily};
+                }
+              `}</style>
+              <Toaster
+                position="top-center"
+                containerStyle={{ top: 80 }}
+                toastOptions={{
+                  className: "!rounded-none !text-sm !font-medium",
+                  success: { iconTheme: { primary: "#ff0646", secondary: "#fff" } }
+                }}
+              />
+              <div className="flex min-h-dvh flex-col">
+                <Component {...pageProps} />
+                <AudioPlayer />
+              </div>
+              <ModalHost />
+              <KeyboardShortcuts />
+              <MessagePopups />
+            </UIProvider>
+          </PlayerProvider>
+        </StoreProvider>
+      </SessionProvider>
+    </ErrorBoundary>
   );
 }
 

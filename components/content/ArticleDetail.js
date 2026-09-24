@@ -43,9 +43,9 @@ export default function ArticleDetail({ post, related, section }) {
         </div>
         <div className="mx-auto grid max-w-6xl gap-12 px-6 py-12 md:grid-cols-[minmax(0,1fr)_240px] md:px-10 md:py-16">
           <div className="min-w-0">
-            <p className="mb-8 text-xs text-neutral-400">
+            <p className="mb-8 text-xs text-neutral-600">
               Posted on {post.date}
-              <span className="ml-3 font-semibold text-pmred">{post.author}</span>
+              <span className="ml-3 font-semibold text-pmred-dark">{post.author}</span>
             </p>
             <p className="mb-8 text-xl font-light leading-relaxed text-neutral-800">
               {post.snippet}

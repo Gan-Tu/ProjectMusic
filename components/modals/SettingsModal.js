@@ -80,7 +80,7 @@ function readAvatar(file) {
 export default function SettingsModal({ open, onClose, tab: initialTab = "general" }) {
   const { state, actions } = useStore();
   const { openModal } = useUI();
-  const [session, dispatch] = useSessionContext();
+  const [session] = useSessionContext();
   const [tab, setTab] = useState(initialTab);
   const [draft, setDraft] = useState(() => ({ ...state.settings }));
   const [profile, setProfile] = useState(() => ({
@@ -108,10 +108,15 @@ export default function SettingsModal({ open, onClose, tab: initialTab = "genera
         .filter((key) => profile[key] !== initial.profile[key])
         .map((key) => [key, profile[key]])
     );
-    if (session.user && Object.keys(profilePatch).length) {
-      dispatch({ type: "update_user", patch: profilePatch });
+    const saved =
+      !session.user || !Object.keys(profilePatch).length || session.updateProfile(profilePatch);
+    if (saved) {
+      toast.success(profile.password ? "Settings and password updated" : "Settings saved");
+    } else {
+      toast.error(
+        "Profile updated for this visit only: this browser won't save it (storage is full or blocked)."
+      );
     }
-    toast.success(profile.password ? "Settings and password updated" : "Settings saved");
     onClose();
   }
 

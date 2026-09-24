@@ -42,9 +42,9 @@ export default function ArticleCard({
             {title}
           </Link>
         </h2>
-        <p className="mt-3 text-xs leading-relaxed text-neutral-400">
+        <p className="mt-3 text-xs leading-relaxed text-neutral-600">
           {date}
-          <span className="block font-medium text-pmred">{author}</span>
+          <span className="block font-medium text-pmred-dark">{author}</span>
         </p>
         <p className="my-5 border-y border-neutral-200 py-4 text-xs font-light leading-relaxed text-neutral-500 sm:text-sm">
           {snippet}
