@@ -23,7 +23,26 @@ const montserrat = Montserrat({
   display: "swap"
 });
 
-function MyApp({ Component, pageProps }) {
+const TOAST_OPTIONS = {
+  className: "!rounded-none !text-sm !font-medium",
+  success: { iconTheme: { primary: "var(--color-pmred)", secondary: "#fff" } }
+};
+
+function MyApp({ Component, pageProps, router }) {
+  // The CRM (/crm) is its own app: no member session, store, player or site chrome.
+  if (router.pathname.startsWith("/crm")) {
+    return (
+      <>
+        <style jsx global>{`
+          :root {
+            --font-montserrat: ${montserrat.style.fontFamily};
+          }
+        `}</style>
+        <Toaster position="top-center" containerStyle={{ top: 72 }} toastOptions={TOAST_OPTIONS} />
+        <Component {...pageProps} />
+      </>
+    );
+  }
   return (
     <ErrorBoundary>
       <SessionProvider>
@@ -38,10 +57,7 @@ function MyApp({ Component, pageProps }) {
               <Toaster
                 position="top-center"
                 containerStyle={{ top: 80 }}
-                toastOptions={{
-                  className: "!rounded-none !text-sm !font-medium",
-                  success: { iconTheme: { primary: "var(--color-pmred)", secondary: "#fff" } }
-                }}
+                toastOptions={TOAST_OPTIONS}
               />
               <div className="flex min-h-dvh flex-col">
                 <Component {...pageProps} />
