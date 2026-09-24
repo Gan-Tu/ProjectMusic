@@ -57,6 +57,8 @@ export function TrackList({ tracks, singleColumn = false }) {
                 fill
                 sizes="128px"
                 preload={index === 0}
+                // The first rows (two columns on desktop) are on screen when the page opens.
+                loading={index > 0 && index < 6 ? "eager" : undefined}
                 className="object-cover transition-transform duration-500 group-hover:scale-105 motion-reduce:transform-none"
               />
               <span className="absolute inset-0 flex items-center justify-center bg-black/25 text-white">
