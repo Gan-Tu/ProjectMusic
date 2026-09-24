@@ -610,7 +610,7 @@ const MUSICS_DATA_RAW = [
     url: "https://open.spotify.com/album/5YLmrfqNRJK66Gl4QVLwHW",
     id: "5YLmrfqNRJK66Gl4QVLwHW",
     img_url: "https://i.scdn.co/image/ab67616d00001e0223d16c92a1a279ce0bbb92f6",
-    name: "La \u00daltima Misi\u00f3n",
+    name: "La Última Misión",
     release_date: "2022-09-30"
   },
   {
@@ -770,7 +770,7 @@ const MUSICS_DATA_RAW = [
     url: "https://open.spotify.com/album/1ydhMijrPqgwuIxX4z90AT",
     id: "1ydhMijrPqgwuIxX4z90AT",
     img_url: "https://i.scdn.co/image/ab67616d00001e02241d214aea10578a6f22ca81",
-    name: "Heartbeat (From the \u201cLyle, Lyle, Crocodile\u201d Original Motion Picture Soundtrack)",
+    name: "Heartbeat (From the “Lyle, Lyle, Crocodile” Original Motion Picture Soundtrack)",
     release_date: "2022-09-30"
   },
   {

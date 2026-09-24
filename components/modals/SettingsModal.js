@@ -6,6 +6,7 @@ import Button from "../ui/Button";
 import { Toggle } from "../ui/Form";
 import { useStore } from "../../lib/store";
 import { useSessionContext } from "../../lib/SessionProvider";
+import { useUI } from "../../lib/ui";
 import { classNames, pad2 } from "../../lib/format";
 
 const TABS = [
@@ -78,6 +79,7 @@ function readAvatar(file) {
 
 export default function SettingsModal({ open, onClose, tab: initialTab = "general" }) {
   const { state, actions } = useStore();
+  const { openModal } = useUI();
   const [session, dispatch] = useSessionContext();
   const [tab, setTab] = useState(initialTab);
   const [draft, setDraft] = useState(() => ({ ...state.settings }));
@@ -150,6 +152,15 @@ export default function SettingsModal({ open, onClose, tab: initialTab = "genera
             </button>
           ))}
         </div>
+      }
+      footerStart={
+        <button
+          type="button"
+          onClick={() => openModal("reset")}
+          className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 transition hover:text-pmred"
+        >
+          Reset demo data
+        </button>
       }
       footer={
         <>

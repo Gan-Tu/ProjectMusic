@@ -37,7 +37,7 @@ export const ALBUM_META = {
   "5StqoKbQqzkAgH3OtPPQED": { artist: "John Debney", totalTracks: 28, albumType: "album" },
   "12SeHsAQpLMRPd52a5BpSe": { artist: "Jean Dawson", totalTracks: 1, albumType: "single" },
   "5z6BFXI711HbSAXDjgOAHE": {
-    artist: "Sara Bareilles, Stephen Sondheim, \u2018Into The Woods\u2019 2022 Broadway Cast",
+    artist: "Sara Bareilles, Stephen Sondheim, ‘Into The Woods’ 2022 Broadway Cast",
     totalTracks: 25,
     albumType: "album"
   },
@@ -74,7 +74,7 @@ export const ALBUM_META = {
   "7fe4Mem3wWgY6zkTFuKUI9": { artist: "Muni Long", totalTracks: 18, albumType: "album" },
   "7qFvB2y0azbdCp9j1dyRai": { artist: "Lakeyah", totalTracks: 10, albumType: "album" },
   "7HkcjdEaCl3g9uD3MaJLrf": {
-    artist: "Polim\u00e1 Westcoast, J Balvin",
+    artist: "Polimá Westcoast, J Balvin",
     totalTracks: 1,
     albumType: "single"
   },
@@ -89,7 +89,7 @@ export const ALBUM_META = {
   "6TzgWk5HZItbFmMT7hH4bU": { artist: "Alex G", totalTracks: 13, albumType: "album" },
   "3uSh69KCgMerblCUeYohUl": { artist: "Freddie Gibbs", totalTracks: 1, albumType: "single" },
   "2ew2njzdzMchb0J1ocVLPH": {
-    artist: "Kany Garc\u00eda, Christian Nodal",
+    artist: "Kany García, Christian Nodal",
     totalTracks: 1,
     albumType: "single"
   },

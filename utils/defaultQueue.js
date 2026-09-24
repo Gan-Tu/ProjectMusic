@@ -47,7 +47,7 @@ const DEFAULT_ALBUMS = [
   },
   {
     id: "5YLmrfqNRJK66Gl4QVLwHW",
-    name: "La \u00daltima Misi\u00f3n",
+    name: "La Última Misión",
     artist: "Wisin & Yandel",
     img_url: "https://i.scdn.co/image/ab67616d00001e0223d16c92a1a279ce0bbb92f6",
     totalTracks: 21
