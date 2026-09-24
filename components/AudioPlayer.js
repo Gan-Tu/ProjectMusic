@@ -121,6 +121,7 @@ function MobileOptions({ player }) {
           <button
             type="button"
             onClick={player.toggleShuffle}
+            aria-label="Shuffle"
             aria-pressed={shuffle}
             className={classNames(
               "rounded-full border px-3 py-1 text-2xs font-bold uppercase tracking-wider transition",
