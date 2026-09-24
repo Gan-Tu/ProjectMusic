@@ -19,13 +19,13 @@ export default function CatalogToolbar({ active, query, onSearch, count }) {
             aria-current={active === label ? "page" : undefined}
             className={classNames(
               "cursor-pointer py-2 transition hover:text-pmred",
-              active === label ? "text-pmred" : "text-neutral-400"
+              active === label ? "text-pmred" : "text-neutral-500"
             )}
           >
             {label}
           </Link>
         ))}
-        <span className="text-2xs font-normal tracking-normal text-neutral-400">
+        <span className="text-2xs font-normal tracking-normal text-neutral-500">
           {count} releases
         </span>
       </nav>

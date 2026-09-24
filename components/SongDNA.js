@@ -39,7 +39,7 @@ export default function SongDNA({ trackId, dark = false, className }) {
       title="Song DNA: tempo, key and energy"
       className={classNames(
         "inline-flex items-center gap-1.5 whitespace-nowrap text-2xs font-semibold uppercase tracking-wider",
-        dark ? "text-white/60" : "text-neutral-400",
+        dark ? "text-white/60" : "text-neutral-500",
         className
       )}
     >

@@ -122,7 +122,7 @@ export default function WikipediaArticle({ article }) {
               </li>
             ))}
           </ol>
-          <p className="mt-8 text-2xs text-neutral-400">
+          <p className="mt-8 text-2xs text-neutral-500">
             Last edited 22 September 2026 · Projct Music studio archive
           </p>
         </section>

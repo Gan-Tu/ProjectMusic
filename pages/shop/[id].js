@@ -78,7 +78,7 @@ function ProductDetail({ product, category, related }) {
           {category.label}
         </Link>
         <ChevronRightIcon className="h-3 w-3 text-neutral-400" />
-        <span className="text-pmred" aria-current="page">
+        <span className="text-pmred-dark" aria-current="page">
           {product.name}
         </span>
       </nav>
@@ -294,7 +294,7 @@ function ProductDetail({ product, category, related }) {
                   "flex min-w-0 cursor-pointer flex-col items-center justify-center gap-3 border-r border-t border-neutral-200 px-3 py-7 transition-colors lg:flex-1",
                   entry.id === tierId
                     ? "bg-pmred text-white"
-                    : "bg-neutral-50 text-pmred hover:bg-pmred/10"
+                    : "bg-neutral-50 text-pmred-dark hover:bg-pmred/10"
                 )}
               >
                 <DigitalIcon category={product.category} className="h-9 w-9" />

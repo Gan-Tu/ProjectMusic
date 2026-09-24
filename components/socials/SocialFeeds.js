@@ -169,13 +169,13 @@ export function PhotoFeed({ posts, pinterest = false }) {
           {limit < posts.length ? (
             <Button
               variant="outline"
-              className="cursor-pointer"
+              className="cursor-pointer bg-white"
               onClick={() => setLimit(posts.length)}
             >
               Load more photographs
             </Button>
           ) : (
-            <p className={`text-xs ${pinterest ? "text-neutral-500" : "text-neutral-400"}`}>
+            <p className={`text-xs ${pinterest ? "text-neutral-600" : "text-neutral-400"}`}>
               You&apos;re all caught up. More from the studio soon.
             </p>
           )}
@@ -282,7 +282,7 @@ export function TwitterFeed({ posts }) {
                 >
                   {formatLongDate(item.date)}
                 </time>
-                <p className="mt-1 text-2xs font-medium text-neutral-400 group-hover:text-white/70 group-focus-visible:text-white/70">
+                <p className="mt-1 text-2xs font-medium text-neutral-500 group-hover:text-white/70 group-focus-visible:text-white/70">
                   @truthstudios
                 </p>
               </div>
@@ -291,7 +291,7 @@ export function TwitterFeed({ posts }) {
             <p className="my-6 text-sm leading-6">
               <RichText text={item.text} />
             </p>
-            <div className="mt-auto flex items-center gap-5 text-2xs text-neutral-400 group-hover:text-white/80 group-focus-visible:text-white/80">
+            <div className="mt-auto flex items-center gap-5 text-2xs text-neutral-500 group-hover:text-white/80 group-focus-visible:text-white/80">
               <span className="flex items-center gap-1">
                 <ChatBubbleOvalLeftIcon className="h-3.5 w-3.5" />
                 {item.replies}
@@ -360,7 +360,7 @@ export function JournalFeed({ posts, tumblr = false }) {
             )}
             <div className="p-6 sm:p-8">
               <p className="text-2xs font-semibold uppercase tracking-wider">Truth Studios</p>
-              <time dateTime={post.date} className="mt-1 block text-2xs text-neutral-400">
+              <time dateTime={post.date} className="mt-1 block text-2xs text-neutral-500">
                 {formatLongDate(post.date)}
               </time>
               {tumblr && (
@@ -383,7 +383,7 @@ export function JournalFeed({ posts, tumblr = false }) {
           </article>
         ))}
       </div>
-      <p className="py-6 text-center text-xs text-neutral-400">
+      <p className="py-6 text-center text-xs text-neutral-500">
         You&apos;re up to date with the studio.
       </p>
     </div>

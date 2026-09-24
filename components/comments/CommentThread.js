@@ -56,8 +56,8 @@ function ActionButton({ children, onClick, danger, dark, ...props }) {
         danger
           ? "text-pmred hover:text-pmred-dark"
           : dark
-            ? "text-neutral-500 hover:text-white"
-            : "text-neutral-400 hover:text-neutral-800"
+            ? "text-neutral-400 hover:text-white"
+            : "text-neutral-500 hover:text-neutral-800"
       )}
       {...props}
     >
@@ -128,7 +128,12 @@ function CommentItem({
       <div className="min-w-0 flex-1">
         <p className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
           <span className="text-xs font-bold text-pmred">{comment.author}</span>
-          <span className="text-2xs uppercase tracking-wider text-neutral-400">
+          <span
+            className={classNames(
+              "text-2xs uppercase tracking-wider",
+              dark ? "text-neutral-400" : "text-neutral-500"
+            )}
+          >
             {comment.label || timeAgo(comment.at)}
             {comment.editedAt && " · edited"}
           </span>
@@ -211,7 +216,11 @@ function CommentItem({
                 onClick={() => actions.toggleLike(likeId)}
                 className={classNames(
                   "flex items-center gap-1 text-2xs font-bold transition",
-                  liked ? "text-pmred" : "text-neutral-400 hover:text-pmred"
+                  liked
+                    ? "text-pmred"
+                    : dark
+                      ? "text-neutral-400 hover:text-pmred"
+                      : "text-neutral-500 hover:text-pmred"
                 )}
               >
                 {liked ? (
@@ -335,7 +344,7 @@ function Thread({
               )}
             />
             <div className="mt-2 flex items-center justify-between gap-3">
-              <span className="text-2xs text-neutral-400">
+              <span className={dark ? "text-2xs text-neutral-400" : "text-2xs text-neutral-500"}>
                 {draft.length}/{MAX_LENGTH} · Ctrl/⌘ + Enter to post
               </span>
               <button
@@ -407,7 +416,9 @@ function Thread({
           ))}
         </ul>
       ) : (
-        <p className="mt-4 text-sm text-neutral-400">Be the first to add your voice.</p>
+        <p className={classNames("mt-4 text-sm", dark ? "text-neutral-400" : "text-neutral-500")}>
+          Be the first to add your voice.
+        </p>
       )}
       {comments.length > limit && (
         <button

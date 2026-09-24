@@ -46,7 +46,7 @@ function FilteredArticles({ posts, section, active }) {
         </div>
       ) : (
         filtered.length > 0 && (
-          <p className="bg-neutral-50 py-10 text-center text-2xs uppercase tracking-[0.2em] text-neutral-400">
+          <p className="bg-neutral-50 py-10 text-center text-2xs uppercase tracking-[0.2em] text-neutral-500">
             You&apos;re all caught up
           </p>
         )

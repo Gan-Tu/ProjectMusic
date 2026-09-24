@@ -167,7 +167,7 @@ export default function CommunityForm({ volunteer = false }) {
         </p>
       )}
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <p className="max-w-xs text-xs leading-relaxed text-neutral-400">
+        <p className="max-w-xs text-xs leading-relaxed text-neutral-500">
           Demo only. Your submission is saved on this device.
         </p>
         <div className="flex gap-3">

@@ -47,7 +47,7 @@ export default function NotificationList({ onNavigate, limit }) {
 
   if (!items.length) {
     return (
-      <p className="px-6 py-10 text-center text-sm text-neutral-400">You&apos;re all caught up.</p>
+      <p className="px-6 py-10 text-center text-sm text-neutral-500">You&apos;re all caught up.</p>
     );
   }
 
@@ -68,7 +68,7 @@ export default function NotificationList({ onNavigate, limit }) {
               <span className="text-sm font-light leading-snug text-neutral-700 group-hover:text-white [&_span]:group-hover:text-white">
                 <Highlighted notification={n} />
               </span>
-              <span className="text-2xs font-semibold uppercase tracking-wider text-neutral-400 group-hover:text-white/80">
+              <span className="text-2xs font-semibold uppercase tracking-wider text-neutral-500 group-hover:text-white/80">
                 {n.label || timeAgo(n.at)}
               </span>
             </span>
@@ -106,7 +106,7 @@ export default function NotificationList({ onNavigate, limit }) {
               onClick={() => actions.dismissNotification(n.id)}
               aria-label="Dismiss notification"
               title="Dismiss"
-              className="absolute right-2 top-2 rounded-full p-1 text-neutral-300 opacity-0 transition hover:bg-white hover:text-pmred focus-visible:opacity-100 group-hover/item:opacity-100"
+              className="absolute right-2 top-2 rounded-full p-1 text-neutral-500 opacity-0 transition hover:bg-white hover:text-pmred focus-visible:opacity-100 group-hover/item:opacity-100"
             >
               <XMarkIcon className="h-4 w-4" />
             </button>

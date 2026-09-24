@@ -130,14 +130,14 @@ export default function EventDetail({ event }) {
                   <span className="text-xl font-light text-pmred">{formatUSD(tier.price)}</span>
                 </div>
                 <p className="mt-3 text-xs leading-6 text-neutral-500">{tier.description}</p>
-                <p className="mt-1 text-2xs text-neutral-400">
+                <p className="mt-1 text-2xs text-neutral-500">
                   or {formatCredits(tier.credits)} credits
                 </p>
                 <TicketButton event={event} tier={tier} className="mt-6" />
               </li>
             ))}
           </ul>
-          <p className="mt-6 text-xs leading-6 text-neutral-400">
+          <p className="mt-6 text-xs leading-6 text-neutral-500">
             Demo tickets only. Your selection is saved in your cart; no real booking or payment is
             made.
           </p>

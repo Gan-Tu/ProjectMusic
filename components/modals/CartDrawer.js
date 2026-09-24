@@ -16,7 +16,7 @@ function Price({ item }) {
         <span className="font-semibold text-pmred">{formatUSD(item.price * item.qty)}</span>
       )}
       {item.credits != null && (
-        <span className="text-xs text-neutral-400">{formatCredits(item.credits * item.qty)}</span>
+        <span className="text-xs text-neutral-500">{formatCredits(item.credits * item.qty)}</span>
       )}
     </span>
   );
@@ -115,7 +115,7 @@ export default function CartDrawer({ open, onClose }) {
         Checkout {method === "card" ? formatUSD(totals.usd) : formatCredits(totals.credits)}
       </Button>
       {!totals.cardPayable && !totals.creditsPayable && (
-        <p className="text-xs text-neutral-400">
+        <p className="text-xs text-neutral-500">
           Some items can only be paid by card and others only with credits. Check them out
           separately.
         </p>
@@ -137,7 +137,7 @@ export default function CartDrawer({ open, onClose }) {
         <div className="flex h-full flex-col items-center justify-center gap-4 px-8 text-center">
           <ShoppingCartIcon className="h-12 w-12 text-neutral-200" />
           <p className="text-sm font-bold uppercase tracking-wider">Your cart is empty</p>
-          <p className="text-xs text-neutral-400">
+          <p className="text-xs text-neutral-500">
             T-shirts, vinyl, tickets, credits and more are waiting in the shop.
           </p>
           <Button href="/shop" variant="outline" onClick={onClose}>
@@ -147,7 +147,7 @@ export default function CartDrawer({ open, onClose }) {
       ) : (
         <>
           <div className="flex items-center justify-between border-b border-neutral-200 px-6 py-3 text-2xs font-bold uppercase tracking-wider">
-            <span className="text-neutral-400">
+            <span className="text-neutral-500">
               {totals.count} item{totals.count === 1 ? "" : "s"}
             </span>
             <button
@@ -159,7 +159,7 @@ export default function CartDrawer({ open, onClose }) {
                   run: actions.clearCartWithUndo()
                 })
               }
-              className="text-neutral-400 transition hover:text-pmred"
+              className="text-neutral-500 transition hover:text-pmred"
             >
               Clear cart
             </button>
@@ -179,7 +179,7 @@ export default function CartDrawer({ open, onClose }) {
                     <div className="min-w-0">
                       <p className="truncate text-sm font-bold uppercase">{line.name}</p>
                       {line.subtitle && (
-                        <p className="truncate text-xs text-neutral-400">{line.subtitle}</p>
+                        <p className="truncate text-xs text-neutral-500">{line.subtitle}</p>
                       )}
                       {line.options && Object.keys(line.options).length > 0 && (
                         <p className="text-xs text-neutral-500">
@@ -197,7 +197,7 @@ export default function CartDrawer({ open, onClose }) {
                         type="button"
                         aria-label="Decrease quantity"
                         disabled={line.qty <= 1}
-                        onClick={() => actions.updateCartQty(line.key, line.qty - 1)}
+                        onClick={() => actions.stepCartQty(line.key, -1)}
                         className="p-1.5 text-neutral-500 hover:text-pmred disabled:opacity-30"
                       >
                         <MinusIcon className="h-3.5 w-3.5" />
@@ -209,7 +209,7 @@ export default function CartDrawer({ open, onClose }) {
                         type="button"
                         aria-label="Increase quantity"
                         disabled={line.qty >= MAX_QTY}
-                        onClick={() => actions.updateCartQty(line.key, line.qty + 1)}
+                        onClick={() => actions.stepCartQty(line.key, 1)}
                         className="p-1.5 text-neutral-500 hover:text-pmred"
                       >
                         <PlusIcon className="h-3.5 w-3.5" />
@@ -218,7 +218,7 @@ export default function CartDrawer({ open, onClose }) {
                     <button
                       type="button"
                       onClick={() => actions.removeFromCart(line.key)}
-                      className="flex items-center gap-1 text-2xs font-bold uppercase tracking-wider text-neutral-400 hover:text-pmred"
+                      className="flex items-center gap-1 text-2xs font-bold uppercase tracking-wider text-neutral-500 hover:text-pmred"
                     >
                       <TrashIcon className="h-4 w-4" /> Remove
                     </button>

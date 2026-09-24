@@ -75,7 +75,7 @@ export default function MessagesMenu() {
                         ? `${last.from === "me" ? "You: " : ""}${last.text}`
                         : "No messages yet"}
                     </span>
-                    <span className="text-2xs font-semibold uppercase tracking-wider text-neutral-400 group-hover:text-white/80">
+                    <span className="text-2xs font-semibold uppercase tracking-wider text-neutral-500 group-hover:text-white/80">
                       {last ? last.time || "Just now" : "New"}
                     </span>
                   </span>

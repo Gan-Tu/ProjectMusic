@@ -31,7 +31,7 @@ export default function EventsHome({ eventData }) {
             aria-pressed={!month}
             className={classNames(
               "cursor-pointer py-2",
-              !month ? "text-pmred" : "text-neutral-400"
+              !month ? "text-pmred" : "text-neutral-500"
             )}
           >
             All events
@@ -40,7 +40,7 @@ export default function EventsHome({ eventData }) {
             type="button"
             onClick={selectThisMonth}
             aria-pressed={!!month}
-            className={classNames("cursor-pointer py-2", month ? "text-pmred" : "text-neutral-400")}
+            className={classNames("cursor-pointer py-2", month ? "text-pmred" : "text-neutral-500")}
           >
             This month
           </button>

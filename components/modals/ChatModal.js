@@ -9,6 +9,7 @@ import {
 } from "@heroicons/react/24/outline";
 import Modal from "../ui/Modal";
 import { useStore, visibleChats } from "../../lib/store";
+import { useMediaQuery } from "../../lib/useMediaQuery";
 import { classNames } from "../../lib/format";
 import { getArtistHomePageData } from "../../utils/getFakeArtistsData";
 
@@ -55,9 +56,13 @@ export default function ChatModal({ open, onClose, chatId: initialChatId }) {
     if (el) el.scrollTop = el.scrollHeight;
   }, [activeId, messageCount]);
 
+  // Replies count as read only while the conversation is on screen: phones hide it
+  // behind the Friends tab (from md up, list and conversation sit side by side).
+  const sideBySide = useMediaQuery("(min-width: 48rem)");
+  const conversationShown = tab === "chats" || sideBySide;
   useEffect(() => {
-    if (open && activeId && active?.unread) actions.markChatRead(activeId);
-  }, [open, activeId, active?.unread, actions]);
+    if (open && conversationShown && activeId && active?.unread) actions.markChatRead(activeId);
+  }, [open, conversationShown, activeId, active?.unread, actions]);
 
   function openChat(id) {
     setActiveId(id);
@@ -96,13 +101,13 @@ export default function ChatModal({ open, onClose, chatId: initialChatId }) {
               onClick={() => setTab(t)}
               className={classNames(
                 "rounded-full border px-4 py-1 text-2xs font-bold uppercase tracking-wider transition",
-                tab === t ? "border-neutral-300 text-neutral-400" : "border-transparent text-pmred"
+                tab === t ? "border-neutral-300 text-neutral-500" : "border-transparent text-pmred"
               )}
             >
               {t}
             </button>
           ))}
-          <span className="ml-2 hidden text-2xs uppercase tracking-wider text-neutral-400 sm:inline">
+          <span className="ml-2 hidden text-2xs uppercase tracking-wider text-neutral-500 sm:inline">
             You appear {state.settings.availableToChat ? "online" : "offline"}
           </span>
         </div>
@@ -154,7 +159,7 @@ export default function ChatModal({ open, onClose, chatId: initialChatId }) {
                             <span
                               className={classNames(
                                 "text-2xs",
-                                selected ? "text-white/80" : "text-neutral-400"
+                                selected ? "text-white" : "text-neutral-500"
                               )}
                             >
                               {last?.time || (last ? "Now" : "")}
@@ -163,7 +168,7 @@ export default function ChatModal({ open, onClose, chatId: initialChatId }) {
                           <span
                             className={classNames(
                               "block truncate text-xs",
-                              selected ? "text-white/90" : "text-neutral-500"
+                              selected ? "text-white" : "text-neutral-500"
                             )}
                           >
                             {last
@@ -208,14 +213,14 @@ export default function ChatModal({ open, onClose, chatId: initialChatId }) {
                   type="button"
                   onClick={() => setActiveId(null)}
                   aria-label="Back to conversations"
-                  className="text-neutral-400 hover:text-pmred md:hidden"
+                  className="text-neutral-500 hover:text-pmred md:hidden"
                 >
                   <ArrowLeftIcon className="h-5 w-5" />
                 </button>
                 <Avatar src={active.avatar} online={active.online} />
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-semibold">{active.name}</p>
-                  <p className="text-2xs uppercase tracking-wider text-neutral-400">
+                  <p className="text-2xs uppercase tracking-wider text-neutral-500">
                     {active.online ? "Online" : "Offline"}
                   </p>
                 </div>
@@ -238,7 +243,7 @@ export default function ChatModal({ open, onClose, chatId: initialChatId }) {
                     <button
                       type="button"
                       onClick={() => setConfirmDelete(null)}
-                      className="text-2xs font-bold uppercase tracking-wider text-neutral-400 hover:text-neutral-800"
+                      className="text-2xs font-bold uppercase tracking-wider text-neutral-500 hover:text-neutral-800"
                     >
                       Cancel
                     </button>
@@ -249,7 +254,7 @@ export default function ChatModal({ open, onClose, chatId: initialChatId }) {
                     onClick={() => setConfirmDelete(active.id)}
                     aria-label={`Delete conversation with ${active.name}`}
                     title="Delete conversation"
-                    className="rounded-full p-1.5 text-neutral-400 transition hover:bg-neutral-100 hover:text-pmred"
+                    className="rounded-full p-1.5 text-neutral-500 transition hover:bg-neutral-100 hover:text-pmred"
                   >
                     <TrashIcon className="h-5 w-5" />
                   </button>
@@ -260,7 +265,7 @@ export default function ChatModal({ open, onClose, chatId: initialChatId }) {
                 className="min-h-0 flex-1 space-y-3 overflow-y-auto bg-neutral-50 px-5 py-5"
               >
                 {active.messages.length === 0 && (
-                  <p className="pt-10 text-center text-xs text-neutral-400">
+                  <p className="pt-10 text-center text-xs text-neutral-500">
                     Start the conversation with {active.name}.
                   </p>
                 )}
@@ -278,7 +283,7 @@ export default function ChatModal({ open, onClose, chatId: initialChatId }) {
                         onClick={() => actions.deleteMessage(active.id, m.id)}
                         aria-label="Delete message"
                         title="Delete message"
-                        className="rounded-full p-1 text-neutral-300 opacity-0 transition hover:text-pmred focus-visible:opacity-100 group-hover:opacity-100"
+                        className="rounded-full p-1 text-neutral-500 opacity-0 transition hover:text-pmred focus-visible:opacity-100 group-hover:opacity-100"
                       >
                         <TrashIcon className="h-4 w-4" />
                       </button>
@@ -294,7 +299,7 @@ export default function ChatModal({ open, onClose, chatId: initialChatId }) {
                         <span
                           className={classNames(
                             "mt-1 block text-2xs",
-                            m.from === "me" ? "text-white/70" : "text-neutral-400"
+                            m.from === "me" ? "text-white" : "text-neutral-500"
                           )}
                         >
                           {m.time}
@@ -328,7 +333,7 @@ export default function ChatModal({ open, onClose, chatId: initialChatId }) {
           ) : (
             <div className="flex flex-1 flex-col items-center justify-center gap-2 text-center">
               <p className="text-sm font-semibold uppercase tracking-wider">Your messages</p>
-              <p className="max-w-xs text-xs text-neutral-400">
+              <p className="max-w-xs text-xs text-neutral-500">
                 Pick a conversation, or start a new one from your friends list.
               </p>
             </div>

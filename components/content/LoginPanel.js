@@ -24,11 +24,11 @@ export default function LoginPanel() {
   }
   return (
     <section className="bg-pmred px-7 py-10 text-white sm:px-10 sm:py-12">
-      <p className="mb-6 text-2xs font-bold uppercase tracking-[0.2em] text-white/70">
+      <p className="mb-6 text-2xs font-bold uppercase tracking-[0.2em] text-white">
         Already part of the crew?
       </p>
       <h2 className="text-3xl font-extrabold uppercase tracking-wide">Login</h2>
-      <p className="mt-4 text-sm font-light leading-7 text-white/90">
+      <p className="mt-4 text-sm font-light leading-7 text-white">
         Your music. Your people.
         <br />
         Right where you left them.
@@ -59,7 +59,7 @@ export default function LoginPanel() {
             className="mt-2 w-full border-b border-white/50 bg-transparent px-0 py-3 text-sm placeholder:text-white/60 focus:border-white focus:outline-none"
           />
         </label>
-        <p className="text-xs leading-6 text-white/80">
+        <p className="text-xs leading-6 text-white">
           Demo access: any username and password opens Nick Breton&apos;s profile. Use made-up
           details.
         </p>

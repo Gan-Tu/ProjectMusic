@@ -181,7 +181,7 @@ export default function SettingsModal({ open, onClose, tab: initialTab = "genera
               className={classNames(
                 "rounded-full border px-4 py-1 text-2xs font-bold uppercase tracking-wider transition",
                 tab === t.id
-                  ? "border-neutral-300 text-neutral-400"
+                  ? "border-neutral-300 text-neutral-500"
                   : "border-transparent text-pmred hover:border-pmred/30"
               )}
             >
@@ -194,7 +194,7 @@ export default function SettingsModal({ open, onClose, tab: initialTab = "genera
         <button
           type="button"
           onClick={() => openModal("reset")}
-          className="text-2xs font-bold uppercase tracking-wider text-neutral-400 transition hover:text-pmred"
+          className="text-2xs font-bold uppercase tracking-wider text-neutral-500 transition hover:text-pmred"
         >
           Reset demo data
         </button>
@@ -296,7 +296,7 @@ export default function SettingsModal({ open, onClose, tab: initialTab = "genera
                 ))}
               </ul>
             ) : (
-              <p className="py-6 text-sm text-neutral-400">You haven&apos;t blocked anyone.</p>
+              <p className="py-6 text-sm text-neutral-500">You haven&apos;t blocked anyone.</p>
             )}
             <form onSubmit={blockUser} className="mt-4 flex gap-3">
               <input

@@ -106,7 +106,7 @@ export default function HomeHero({ videos }) {
             <p className="mt-1 text-xs leading-relaxed text-neutral-400">{video.subtitle}</p>
             <p className="mt-2 text-xs text-white">
               {formatTime(video.duration)}{" "}
-              <span className="ml-2 text-neutral-500">/ {pad2(featured.length)} videos</span>
+              <span className="ml-2 text-neutral-400">/ {pad2(featured.length)} videos</span>
             </p>
           </div>
         </Link>

@@ -39,8 +39,8 @@ export default function VideoCard({ video, active = false, compact = false }) {
       <div className="px-3 py-4">
         <h3
           className={classNames(
-            "truncate text-xs font-extrabold uppercase tracking-wider group-hover:text-pmred",
-            active ? "text-pmred" : "text-white"
+            "truncate text-xs font-extrabold uppercase tracking-wider group-hover:text-pmred-light",
+            active ? "text-pmred-light" : "text-white"
           )}
         >
           {video.artist}

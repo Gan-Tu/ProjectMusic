@@ -80,7 +80,7 @@ export default function AboutPage() {
           “The best part of making music is that moment when an idea becomes something everyone in
           the room can feel.”
         </blockquote>
-        <figcaption className="mt-8 text-xs font-bold uppercase tracking-widest text-pmred">
+        <figcaption className="mt-8 text-xs font-bold uppercase tracking-widest text-pmred-light">
           Nick Breton / Truth Studios
         </figcaption>
       </figure>

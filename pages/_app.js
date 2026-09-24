@@ -40,7 +40,7 @@ function MyApp({ Component, pageProps }) {
                 containerStyle={{ top: 80 }}
                 toastOptions={{
                   className: "!rounded-none !text-sm !font-medium",
-                  success: { iconTheme: { primary: "#ff0646", secondary: "#fff" } }
+                  success: { iconTheme: { primary: "var(--color-pmred)", secondary: "#fff" } }
                 }}
               />
               <div className="flex min-h-dvh flex-col">

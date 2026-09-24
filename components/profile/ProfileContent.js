@@ -212,7 +212,7 @@ function Empty({ title, text, href, action }) {
       <RectangleStackIcon className="mx-auto mb-5 h-9 w-9 text-pmred" />
       <h3 className="text-sm font-bold uppercase tracking-wide">{title}</h3>
       <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-neutral-500">{text}</p>
-      <Button href={href} className="mt-6 cursor-pointer" variant="outline">
+      <Button href={href} className="mt-6 cursor-pointer bg-white" variant="outline">
         {action}
       </Button>
     </div>
@@ -268,13 +268,13 @@ function Playlist() {
               <p className="truncate text-xs font-bold uppercase">{track.title}</p>
               <p className="mt-1 truncate text-xs text-neutral-500">{track.artist}</p>
             </div>
-            <span className="hidden text-xs text-neutral-400 sm:block">
+            <span className="hidden text-xs text-neutral-500 sm:block">
               {track.duration ? formatTime(track.duration) : "—"}
             </span>
             <button
               onClick={() => actions.removeFromPlaylist(track.id)}
               aria-label={`Remove ${track.title} from playlist`}
-              className="cursor-pointer p-2 text-neutral-400 hover:text-pmred"
+              className="cursor-pointer p-2 text-neutral-500 hover:text-pmred"
             >
               <TrashIcon className="h-4 w-4" />
             </button>
@@ -363,7 +363,7 @@ function Purchases() {
               {order.method === "credits"
                 ? `${formatNumber(order.totalCredits)} credits`
                 : formatUSD(order.totalUsd)}
-              <span className="mt-1 block text-right text-2xs font-normal uppercase text-neutral-400">
+              <span className="mt-1 block text-right text-2xs font-normal uppercase text-neutral-500">
                 Paid with {order.method}
               </span>
             </p>
@@ -424,7 +424,7 @@ function Rewards() {
       <div className="mb-10 max-w-2xl">
         <p className="text-5xl font-light text-pmred">
           {formatNumber(state.points)}
-          <span className="ml-3 text-xs font-bold uppercase tracking-widest text-neutral-400">
+          <span className="ml-3 text-xs font-bold uppercase tracking-widest text-neutral-500">
             Points
           </span>
         </p>
@@ -516,7 +516,7 @@ function Statistics({ artists }) {
           <div key={genre} className="mb-5">
             <p className="mb-2 flex justify-between text-xs">
               <span>{genre}</span>
-              <span className="text-neutral-400">{value}%</span>
+              <span className="text-neutral-500">{value}%</span>
             </p>
             <div className="h-1.5 bg-neutral-100">
               <div className="h-full bg-pmred" style={{ width: `${value}%` }} />
@@ -547,7 +547,7 @@ function Statistics({ artists }) {
                 >
                   <div className="h-full bg-pmred" style={{ width: `${92 - index * 13}%` }} />
                 </div>
-                <p className="mt-2 text-2xs text-neutral-400">{92 - index * 13} plays</p>
+                <p className="mt-2 text-2xs text-neutral-500">{92 - index * 13} plays</p>
               </div>
             </li>
           ))}
@@ -584,7 +584,7 @@ function Feedback() {
           className="mt-3 block w-full resize-y border border-neutral-200 bg-neutral-50 p-5 text-sm leading-6 outline-none focus:border-pmred"
         />
         <div className="mt-4 flex items-center justify-between gap-3">
-          <p className="text-2xs text-neutral-400">{text.length} / 2,000 · Saved on this device</p>
+          <p className="text-2xs text-neutral-500">{text.length} / 2,000 · Saved on this device</p>
           <Button type="submit" disabled={!text.trim()} className="cursor-pointer">
             Send feedback
           </Button>
@@ -618,7 +618,7 @@ function Feedback() {
                     ));
                   }}
                   aria-label="Delete this feedback"
-                  className="text-2xs font-bold uppercase tracking-wider text-neutral-400 transition hover:text-pmred"
+                  className="text-2xs font-bold uppercase tracking-wider text-neutral-500 transition hover:text-pmred"
                 >
                   Delete
                 </button>

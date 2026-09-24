@@ -40,7 +40,7 @@ function TrackRow({ track, current, playing, onPlay, onRemove }) {
         <span
           className={classNames(
             "block truncate text-xs",
-            current ? "text-white/80" : "text-neutral-400"
+            current ? "text-white" : "text-neutral-500"
           )}
         >
           {track.artist}
@@ -53,7 +53,7 @@ function TrackRow({ track, current, playing, onPlay, onRemove }) {
           aria-label={`Remove ${track.title}`}
           className={classNames(
             "p-1 transition",
-            current ? "text-white/80 hover:text-white" : "text-neutral-300 hover:text-pmred"
+            current ? "text-white" : "text-neutral-500 hover:text-pmred"
           )}
         >
           <XMarkIcon className="h-4 w-4" />
@@ -90,7 +90,7 @@ export default function PlaylistDrawer({ open, onClose }) {
               "flex-1 border-b-2 py-3 transition",
               tab === t.id
                 ? "border-pmred text-pmred"
-                : "border-transparent text-neutral-400 hover:text-neutral-700"
+                : "border-transparent text-neutral-500 hover:text-neutral-700"
             )}
           >
             {t.label}
@@ -148,7 +148,7 @@ export default function PlaylistDrawer({ open, onClose }) {
                   run: () => saved.forEach((track) => actions.addToPlaylist(track))
                 });
               }}
-              className="ml-auto text-2xs font-bold uppercase tracking-wider text-neutral-400 hover:text-pmred"
+              className="ml-auto text-2xs font-bold uppercase tracking-wider text-neutral-500 hover:text-pmred"
             >
               Clear
             </button>
@@ -172,7 +172,7 @@ export default function PlaylistDrawer({ open, onClose }) {
         <div className="flex flex-col items-center gap-3 px-8 py-16 text-center">
           <MusicalNoteIcon className="h-10 w-10 text-neutral-200" />
           <p className="text-sm font-bold uppercase tracking-wider">Your playlist is empty</p>
-          <p className="text-xs text-neutral-400">
+          <p className="text-xs text-neutral-500">
             Use the red + in the player (or on any track) to save songs here.
           </p>
           <Button href="/musics" variant="outline" onClick={onClose}>

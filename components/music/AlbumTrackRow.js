@@ -26,7 +26,7 @@ export default function AlbumTrackRow({ track, queue, number }) {
       <span
         className={classNames(
           "w-5 text-2xs tabular-nums",
-          active ? "text-white/70" : "text-neutral-400"
+          active ? "text-white" : "text-neutral-500"
         )}
       >
         {pad2(number)}

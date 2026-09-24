@@ -161,7 +161,7 @@ export default function SignupPage() {
                     />
                   ))}
                 </div>
-                <p id="password-hint" className="mt-2 text-xs text-neutral-400">
+                <p id="password-hint" className="mt-2 text-xs text-neutral-500">
                   {password
                     ? ["Add more characters", "Getting started", "Fair", "Good", "Strong"][strength]
                     : "Use 8+ characters. Mix letters, numbers and symbols."}
@@ -173,7 +173,7 @@ export default function SignupPage() {
             <legend className="pr-4 text-xs font-bold uppercase tracking-widest">
               Social connections
             </legend>
-            <p className="mb-6 text-xs leading-6 text-neutral-400">
+            <p className="mb-6 text-xs leading-6 text-neutral-500">
               Demo switches only. No external accounts are connected.
             </p>
             <div className="grid gap-x-8 sm:grid-cols-2 xl:grid-cols-3">

@@ -15,9 +15,9 @@ export default function LoginPage() {
         <div className="w-full max-w-md">
           <LoginPanel />
         </div>
-        <p className="mt-7 text-sm text-neutral-500">
+        <p className="mt-7 text-sm text-neutral-600">
           New here?{" "}
-          <Link href="/signup" className="font-semibold text-pmred hover:underline">
+          <Link href="/signup" className="font-semibold text-pmred-dark hover:underline">
             Join the community
           </Link>
         </p>

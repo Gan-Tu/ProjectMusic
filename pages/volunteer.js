@@ -3,7 +3,7 @@ import Image from "next/image";
 import AppContainer from "../components/AppContainer";
 const CommunityForm = dynamic(() => import("../components/content/CommunityForm"), {
   ssr: false,
-  loading: () => <p className="py-20 text-sm text-neutral-400">Loading form…</p>
+  loading: () => <p className="py-20 text-sm text-neutral-500">Loading form…</p>
 });
 
 export default function VolunteerPage() {

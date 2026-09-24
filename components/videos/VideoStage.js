@@ -163,7 +163,7 @@ export default function VideoStage({ video, videos, related }) {
               className="size-11 shrink-0 object-cover"
             />
             <span className="min-w-0 grow">
-              <span className="block text-xs font-extrabold uppercase tracking-wider text-pmred">
+              <span className="block text-xs font-extrabold uppercase tracking-wider text-pmred-light">
                 {video.artist}
               </span>
               <span className="mt-1 block truncate text-xs text-neutral-300">{video.title}</span>
@@ -184,7 +184,7 @@ export default function VideoStage({ video, videos, related }) {
             <dl className="space-y-5">
               {video.credits.map((credit) => (
                 <div key={credit.role}>
-                  <dt className="text-2xs uppercase tracking-widest text-neutral-500">
+                  <dt className="text-2xs uppercase tracking-widest text-neutral-400">
                     {credit.role}
                   </dt>
                   <dd className="mt-1 text-xs text-neutral-200">{credit.name}</dd>
@@ -224,7 +224,7 @@ export default function VideoStage({ video, videos, related }) {
             <span>{formatTime(video.duration)}</span>
           </div>
           <p className="mt-6 max-w-2xl text-sm leading-7 text-neutral-400">{video.description}</p>
-          <p className="mt-4 text-2xs text-neutral-500">
+          <p className="mt-4 text-2xs text-neutral-400">
             Demo collection · Playback uses sample footage.
           </p>
         </div>
@@ -276,7 +276,7 @@ export default function VideoStage({ video, videos, related }) {
           >
             More videos
           </h2>
-          <span className="text-2xs uppercase tracking-widest text-neutral-500">Keep watching</span>
+          <span className="text-2xs uppercase tracking-widest text-neutral-400">Keep watching</span>
         </div>
         <div className="grid grid-cols-2 lg:grid-cols-4">
           {related.map((item) => (

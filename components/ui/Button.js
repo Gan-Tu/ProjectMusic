@@ -8,11 +8,12 @@ const VARIANTS = {
   outline: "border-2 border-pmred text-pmred hover:bg-pmred hover:text-white",
   // light grey outline pill ("CANCEL", "CLOSE")
   muted:
-    "border border-neutral-300 text-neutral-400 hover:border-neutral-500 hover:text-neutral-600",
+    "border border-neutral-300 text-neutral-500 hover:border-neutral-500 hover:text-neutral-600",
   // white outline on dark backgrounds
   light: "border border-white/70 text-white hover:bg-white hover:text-black",
   dark: "bg-black text-white hover:bg-neutral-800 border-2 border-black",
-  ghost: "text-pmred hover:bg-pmred/10"
+  // borderless red text on light grey bands ("LOAD MORE"); the darker red stays readable
+  ghost: "text-pmred-dark hover:bg-pmred/10"
 };
 
 const SIZES = {

@@ -56,7 +56,7 @@ export default function Modal({
                 type="button"
                 onClick={onClose}
                 aria-label="Close"
-                className="absolute right-4 top-5 z-20 rounded-full p-1.5 text-neutral-400 transition hover:bg-neutral-100 hover:text-pmred"
+                className="absolute right-4 top-5 z-20 rounded-full p-1.5 text-neutral-500 transition hover:bg-neutral-100 hover:text-pmred"
               >
                 <XMarkIcon className="h-5 w-5" />
               </button>

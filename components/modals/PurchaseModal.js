@@ -111,7 +111,7 @@ export default function PurchaseModal({ open, onClose, item }) {
                   </button>
                 )}
                 {tier.credits != null && tier.price != null && (
-                  <span className="text-2xs font-normal uppercase text-neutral-400">or</span>
+                  <span className="text-2xs font-normal uppercase text-neutral-500">or</span>
                 )}
                 {tier.price != null && (
                   <button
@@ -125,7 +125,7 @@ export default function PurchaseModal({ open, onClose, item }) {
               </p>
             </div>
           ))}
-          <p className="border-t border-neutral-100 px-6 py-3 text-center text-2xs uppercase tracking-wider text-neutral-400">
+          <p className="border-t border-neutral-100 px-6 py-3 text-center text-2xs uppercase tracking-wider text-neutral-500">
             Balance {formatNumber(state.credits)} credits
           </p>
         </div>

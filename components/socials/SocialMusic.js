@@ -24,7 +24,7 @@ function TrackProgress() {
           style={{ width: `${duration ? Math.min(100, (currentTime / duration) * 100) : 0}%` }}
         />
       </div>
-      <p className="mt-1 text-2xs text-white/75">
+      <p className="mt-1 text-2xs text-white">
         {formatTime(currentTime)} / {formatTime(duration)}
       </p>
     </div>
@@ -80,12 +80,12 @@ export function TrackList({ tracks, singleColumn = false }) {
                     {track.title}
                   </span>
                   <span
-                    className={`mt-1 block truncate text-xs ${active ? "text-white/75" : "text-neutral-500"}`}
+                    className={`mt-1 block truncate text-xs ${active ? "text-white" : "text-neutral-500"}`}
                   >
                     {track.artist}
                   </span>
                 </span>
-                <span className={`text-2xs ${active ? "text-white/75" : "text-neutral-400"}`}>
+                <span className={`text-2xs ${active ? "text-white" : "text-neutral-500"}`}>
                   {formatTime(track.duration)}
                 </span>
               </button>

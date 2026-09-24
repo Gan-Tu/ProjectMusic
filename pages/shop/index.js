@@ -42,7 +42,7 @@ export default function Shop({ products, categories }) {
               Studios
             </h1>
             <p className="mt-4 text-xl font-light uppercase tracking-[0.15em]">T-shirts</p>
-            <p className="mt-6 max-w-xs text-sm leading-6 text-white/85">
+            <p className="mt-6 max-w-xs text-sm leading-6 text-white">
               From the studio to the street.
               <br />
               Wear the sound.

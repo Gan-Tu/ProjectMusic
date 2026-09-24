@@ -81,7 +81,7 @@ export default function ArticleDetail({ post, related, section }) {
                 <Link
                   href={{ pathname: `/${section}`, query: { tag } }}
                   key={tag}
-                  className="rounded-full bg-neutral-100 px-3 py-1.5 text-2xs font-semibold uppercase tracking-wide text-neutral-500 hover:bg-pmred hover:text-white"
+                  className="rounded-full bg-neutral-100 px-3 py-1.5 text-2xs font-semibold uppercase tracking-wide text-neutral-600 hover:bg-pmred hover:text-white"
                 >
                   {tag}
                 </Link>
@@ -91,7 +91,7 @@ export default function ArticleDetail({ post, related, section }) {
               <p className="text-xs font-bold uppercase tracking-widest">
                 Truth Studios / Los Angeles
               </p>
-              <p className="mt-3 text-sm font-light leading-relaxed text-neutral-400">
+              <p className="mt-3 text-sm font-light leading-relaxed text-neutral-500">
                 Music, people and the stories in between.
               </p>
               <Link href="/about" className="mt-4 inline-block text-xs font-semibold text-pmred">

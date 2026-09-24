@@ -42,7 +42,7 @@ export default function CreditsModal({ open, onClose }) {
   const balance = (
     <div className="ml-auto flex flex-col items-end leading-tight">
       <span className="text-lg font-extrabold text-pmred">{formatNumber(state.credits)}</span>
-      <span className="text-2xs font-semibold uppercase tracking-wider text-neutral-400">
+      <span className="text-2xs font-semibold uppercase tracking-wider text-neutral-500">
         Credits
       </span>
     </div>
@@ -117,7 +117,7 @@ export default function CreditsModal({ open, onClose }) {
             />
             <span>
               <span className="font-medium text-neutral-700">Enable quick credit purchase</span>
-              <span className="block text-neutral-400">
+              <span className="block text-neutral-500">
                 Skip this confirmation and buy immediately when you pick a pack.
               </span>
             </span>
@@ -136,7 +136,7 @@ export default function CreditsModal({ open, onClose }) {
               >
                 <span className="flex flex-col items-center border-r border-neutral-200 pr-5 group-hover:border-white/40">
                   <span className="text-2xl font-bold">{formatNumber(p.credits)}</span>
-                  <span className="text-2xs text-neutral-400 group-hover:text-white">Credits</span>
+                  <span className="text-2xs text-neutral-500 group-hover:text-white">Credits</span>
                 </span>
                 <span
                   className={classNames(

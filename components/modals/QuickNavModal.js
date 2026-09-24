@@ -136,7 +136,7 @@ export default function QuickNavModal({ open, onClose }) {
               <dt className="text-xs font-bold uppercase tracking-wider text-neutral-900">
                 {s.title}
               </dt>
-              <dd className="mt-1 text-xs text-neutral-400">{s.text}</dd>
+              <dd className="mt-1 text-xs text-neutral-500">{s.text}</dd>
             </div>
           ))}
         </dl>

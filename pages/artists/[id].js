@@ -27,7 +27,7 @@ export default function ArtistProfile({ artist, topArtists, albums, photos, even
       <div className="flex flex-wrap items-center justify-between gap-5 bg-neutral-800 px-5 py-5 text-white sm:px-10">
         <Link
           href="/artists"
-          className="cursor-pointer text-xs font-bold uppercase tracking-widest text-pmred"
+          className="cursor-pointer text-xs font-bold uppercase tracking-widest text-pmred-light"
         >
           ← All artists
         </Link>
@@ -59,7 +59,7 @@ export default function ArtistProfile({ artist, topArtists, albums, photos, even
             />
           </div>
           <div className="min-w-0">
-            <p className="text-2xs font-bold uppercase tracking-[0.25em] text-pmred">
+            <p className="text-2xs font-bold uppercase tracking-[0.25em] text-pmred-light">
               Artist / {artist.location}
             </p>
             <h1 className="mt-3 break-words text-4xl font-extrabold uppercase leading-none tracking-tight sm:text-5xl">

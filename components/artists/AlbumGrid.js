@@ -59,7 +59,7 @@ export default function AlbumGrid({ albums }) {
                 aria-label={`${liked ? "Unlike" : "Like"} ${album.name}`}
                 aria-pressed={liked}
                 onClick={() => actions.toggleLike(`album:${album.id}`)}
-                className={`cursor-pointer p-1 ${liked ? "text-pmred" : "text-neutral-300 hover:text-pmred"}`}
+                className={`cursor-pointer p-1 ${liked ? "text-pmred" : "text-neutral-500 hover:text-pmred"}`}
               >
                 <HeartIcon className="h-4 w-4" />
               </button>

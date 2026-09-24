@@ -49,7 +49,7 @@ function Progress({ fallbackDuration }) {
           "--range-bg": `linear-gradient(to right, #fff 0 ${pct}%, var(--color-pmred) ${pct}% ${bufferedPct}%, rgb(255 255 255 / 0.2) ${bufferedPct}% 100%)`
         }}
       />
-      <span className="w-12 shrink-0 text-neutral-500">
+      <span className="w-12 shrink-0 text-neutral-400">
         -{formatTime(Math.max(0, duration - currentTime))}
       </span>
     </div>

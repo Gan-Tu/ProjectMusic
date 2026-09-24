@@ -17,7 +17,7 @@ export default function PictureCategory({ category, photos }) {
           <h1 className="mt-4 text-xl font-extrabold uppercase tracking-wider">{category.name}</h1>
           <p className="mt-2 text-sm text-neutral-500">{category.description}</p>
         </div>
-        <p className="text-sm text-neutral-400">{photos.length} photographs</p>
+        <p className="text-sm text-neutral-500">{photos.length} photographs</p>
       </header>
       <PhotoGallery key={category.id} photos={photos} polaroids={category.id === "polaroids"} />
     </AppContainer>

@@ -45,7 +45,7 @@ export default function EventCard({ event }) {
             </span>
           ))}
         </address>
-        <p className="mt-4 text-2xs font-semibold uppercase tracking-wider text-neutral-400 group-hover:text-white/80 group-focus-within:text-white/80">
+        <p className="mt-4 text-2xs font-semibold uppercase tracking-wider text-neutral-500 group-hover:text-white/80 group-focus-within:text-white/80">
           From {formatUSD(event.price)}
         </p>
       </div>

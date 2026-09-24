@@ -144,7 +144,7 @@ export default function Profile({ albums, topArtists, photos, videos }) {
               />
               <div className="absolute inset-0 bg-linear-to-r from-black/20 to-black/70" />
               <div className="relative">
-                <p className="mb-3 text-2xs font-bold uppercase tracking-[0.25em] text-pmred">
+                <p className="mb-3 text-2xs font-bold uppercase tracking-[0.25em] text-pmred-light">
                   Truth Studios / Los Angeles
                 </p>
                 <h1 className="max-w-sm break-words text-3xl font-extrabold uppercase leading-[0.95] tracking-tight sm:text-6xl">

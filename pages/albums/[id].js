@@ -35,7 +35,7 @@ export default function AlbumDetail({ album, tracks, more }) {
           <div className="px-6 sm:px-10">
             <Link
               href="/albums"
-              className="cursor-pointer text-2xs font-bold uppercase tracking-widest text-neutral-400 hover:text-pmred"
+              className="cursor-pointer text-2xs font-bold uppercase tracking-widest text-neutral-500 hover:text-pmred"
             >
               ← All releases
             </Link>

@@ -19,7 +19,7 @@ import { useUI } from "../lib/ui";
 
 const CommunityForm = dynamic(() => import("../components/content/CommunityForm"), {
   ssr: false,
-  loading: () => <p className="py-20 text-sm text-neutral-400">Loading form…</p>
+  loading: () => <p className="py-20 text-sm text-neutral-500">Loading form…</p>
 });
 const networks = [
   ["Twitch", faTwitch, "/socials"],
@@ -42,7 +42,7 @@ export default function ContactPage() {
       description="Get in touch with Projct Music and Truth Studios. Find us online or leave a message."
     >
       <section className="px-5 py-16 text-center sm:py-24">
-        <p className="mb-5 text-xs font-bold uppercase tracking-[0.2em] text-neutral-400">
+        <p className="mb-5 text-xs font-bold uppercase tracking-[0.2em] text-neutral-500">
           Let&apos;s make something happen
         </p>
         <h1 className="text-[clamp(1.1rem,3.5vw,3rem)] font-extrabold uppercase tracking-tight text-pmred">

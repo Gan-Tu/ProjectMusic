@@ -62,7 +62,7 @@ export default function MusicPlayerCard({ musicData, track, queue, priority = fa
               <p
                 className={classNames(
                   "mt-1 truncate text-xs",
-                  active ? "text-white/80" : "text-neutral-500"
+                  active ? "text-white" : "text-neutral-500"
                 )}
               >
                 {musicData.artist}
