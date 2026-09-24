@@ -43,6 +43,14 @@ export default function KeyboardShortcuts() {
       // page-level dialogs too (lightboxes, video pop-ups), not just global ones.
       if (u.activeModal || document.querySelector('[role="dialog"]')) return;
 
+      // Holding a key repeats keydown: only seeking (plain arrows) should repeat;
+      // everything else (play/pause, add to cart, mute, skip song...) fires once per press.
+      const seeking = (e.key === "ArrowLeft" || e.key === "ArrowRight") && !e.shiftKey;
+      if (e.repeat && !seeking) {
+        if (e.key === " " && !isInteractive(e.target)) e.preventDefault(); // don't scroll
+        return;
+      }
+
       switch (e.key) {
         case " ": {
           if (isInteractive(e.target)) return;
