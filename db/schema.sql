@@ -394,7 +394,7 @@ create table if not exists site_settings (
 
 create table if not exists audit_log (
   id bigserial primary key,
-  actor text not null,                         -- 'admin:nickbrenton', 'user:<id>', 'system'
+  actor text not null,                         -- 'admin:<email>', 'user:<id>', 'system'
   action text not null,                        -- create | update | delete | reset | adjust_credits | ...
   entity text not null,                        -- table name
   entity_id text,

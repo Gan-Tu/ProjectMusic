@@ -10,6 +10,7 @@ undo it. Provisioned on 2026-09-24.
 | Neon Postgres database `project-music-db` | Vercel Marketplace → Neon (team `tugan-team`) | **Neon Free** (`free_v3`): **$0/month** | **Yes** |
 | Neon integration installation `icfg_1V9Ja0EB3D46XkiohGLtusYA` | Vercel team `tugan-team` | Free plan | No (already installed, reused) |
 | 18 environment variables on Vercel project `project-music` | Production, Preview, Development | $0 | **Yes** (added automatically when the database was connected) |
+| `CRM_ADMIN_USERNAME`, `CRM_ADMIN_PASSWORD` env vars | Production + Preview (password stored as sensitive), Development | $0 | **Yes** (the CRM admin login) |
 | Vercel project `project-music` (Hobby) | tugan-team | existing plan, no paid add-ons | No |
 | AWS | — | — | **Nothing provisioned** (not needed: media is URL-only) |
 
@@ -57,9 +58,13 @@ included usage (see Vercel → Usage).
 
 ## Credentials
 
-- CRM admin: username `nickbrenton`, password `nickadmin` (hard-coded in
-  `lib/server/auth.js`; set `CRM_ADMIN_USERNAME` / `CRM_ADMIN_PASSWORD` env vars on
-  Vercel to override without a code change).
+- CRM admin: the email and password in the `CRM_ADMIN_USERNAME` / `CRM_ADMIN_PASSWORD`
+  env vars on Vercel (they are not in the repository, which is public). Without both
+  variables CRM login is disabled. To change them:
+  `printf '%s' '<new value>' | vercel env add CRM_ADMIN_PASSWORD production --sensitive --force`
+  (repeat for `preview` and `development`), redeploy, and sign in again — existing CRM
+  sessions stay valid until they expire (3 days) unless you clear them
+  (`delete from sessions where kind = 'admin'`).
 - Demo member account (seeded): username `demo`, password `demo1234`.
 
 ## Rollback

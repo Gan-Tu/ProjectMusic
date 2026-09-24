@@ -19,7 +19,8 @@ with member accounts and an admin CRM. Read it fully before changing code.
 - **Member accounts**: sign up / log in / log out, a server-side credit balance and
   points, fake payments (card or credits) for credit packs, music, merch and tickets,
   order history, credit history. Comments are real (stored in the DB, visible to all).
-- **CRM** at `/crm` (single admin: username `nickbrenton`, password `nickadmin`):
+- **CRM** at `/crm` (single admin; its email and password come from the
+  `CRM_ADMIN_USERNAME` / `CRM_ADMIN_PASSWORD` environment variables, never the repo):
   manage every entity, centered on **the artist hub** — one page per artist that
   manages the artist's profile/bio and *all* of their linked content (music, videos,
   photos, events, merch, posts, comments) with per-item toggles for **which public
@@ -108,7 +109,7 @@ setting (seeded as 1,000) as a `signup_bonus` ledger entry.
 API conventions: `pages/api/**`, wrap handlers with `apiHandler`; JSON in/out;
 errors as `{ error }` with a 4xx status; mutations need `Content-Type:
 application/json` (the client must send it, also for bodyless POSTs send `{}`).
-Write an `audit_log` row for every CRM mutation (`actor: "admin:nickbrenton"`).
+Write an `audit_log` row for every CRM mutation (`actor: "admin:<admin email>"`).
 
 ### API map
 

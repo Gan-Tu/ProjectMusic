@@ -64,15 +64,16 @@ export default function CrmLogin({ next }) {
           </p>
           <form onSubmit={login} className="mt-8 space-y-5">
             <label htmlFor="crm-username" className="block text-xs">
-              <span>Username</span>
+              <span>Email</span>
               <input
                 id="crm-username"
                 name="username"
+                type="email"
                 required
                 autoComplete="username"
                 autoCapitalize="none"
                 maxLength={100}
-                placeholder="Your username"
+                placeholder="Your admin email"
                 className={INPUT}
               />
             </label>

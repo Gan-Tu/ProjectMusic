@@ -24,7 +24,7 @@ export default apiHandler({
         [JSON.stringify({ ip })]
       );
       await new Promise((resolve) => setTimeout(resolve, 400)); // slow down guessing a little
-      throw new HttpError(401, "Wrong username or password.");
+      throw new HttpError(401, "Wrong email or password.");
     }
     await slot.release();
     await createSession(req, res, { kind: "admin" });
