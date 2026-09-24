@@ -45,12 +45,15 @@ export default function ChatModal({ open, onClose, chatId: initialChatId }) {
   const [tab, setTab] = useState("chats");
   const [activeId, setActiveId] = useState(initialChatId || null);
   const [query, setQuery] = useState("");
-  const [draft, setDraft] = useState("");
+  // Unsent text per conversation, so switching (or re-picking) one never loses it.
+  const [drafts, setDrafts] = useState({});
   const [confirmDelete, setConfirmDelete] = useState(null);
   const threadRef = useRef(null);
 
   const chats = visibleChats(state);
   const active = chats.find((c) => c.id === activeId) || null;
+  const draft = drafts[activeId] || "";
+  const setDraft = (text) => setDrafts((all) => ({ ...all, [activeId]: text }));
   const friends = useMemo(() => getArtistHomePageData().slice(0, 24), []);
 
   const q = query.trim().toLowerCase();
@@ -82,7 +85,6 @@ export default function ChatModal({ open, onClose, chatId: initialChatId }) {
 
   function openChat(id) {
     setActiveId(id);
-    setDraft("");
   }
 
   function startWith(friend) {

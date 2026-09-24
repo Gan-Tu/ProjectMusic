@@ -120,26 +120,31 @@ function CommentItem({
   }
 
   const [saving, setSaving] = useState(false);
-  async function save(e) {
+  // The newer saved text when another tab changed the comment during this edit: shown
+  // next to the draft until the user picks a version.
+  const [conflict, setConflict] = useState(null);
+  async function save(e, { overwrite = false } = {}) {
     e?.preventDefault();
     if (!canEdit) {
       setMode("view");
       return;
     }
-    if (!draft.trim() || saving) return;
-    if (draft.trim() === editBase) {
+    if (!draft.trim() || saving || (conflict !== null && !overwrite)) return;
+    const base = overwrite ? conflict : editBase;
+    if (draft.trim() === base) {
+      setConflict(null);
       setMode("view");
       return;
     }
     // Checked against the latest saved comment (another tab may have edited it).
     setSaving(true);
-    const result = await actions.editComment(threadId, comment.id, draft, editBase);
+    const result = await actions.editComment(threadId, comment.id, draft, base);
     setSaving(false);
     if (result.conflict) {
-      setEditBase(result.text);
-      toast("This comment was changed elsewhere. Review it, then save again to overwrite.");
+      setConflict(result.text);
       return;
     }
+    setConflict(null);
     if (!result.ok) {
       toast.error(result.error);
       return;
@@ -175,6 +180,7 @@ function CommentItem({
                   e.stopPropagation();
                   setMode("view");
                   setDraft(comment.text);
+                  setConflict(null);
                 }
                 if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) save(e);
               }}
@@ -188,8 +194,42 @@ function CommentItem({
                   : "border-neutral-200 bg-white"
               )}
             />
+            {conflict !== null && (
+              <div
+                role="alert"
+                className={classNames(
+                  "border px-4 py-3 text-xs",
+                  dark
+                    ? "border-neutral-700 bg-neutral-900 text-neutral-300"
+                    : "border-neutral-200 bg-neutral-50 text-neutral-700"
+                )}
+              >
+                <p className="font-semibold">Meanwhile, this comment was changed to:</p>
+                <p className="mt-1 whitespace-pre-wrap break-words">{conflict}</p>
+                <div className="mt-3 flex flex-wrap gap-4">
+                  <ActionButton
+                    dark={dark}
+                    onClick={() => {
+                      setDraft(conflict);
+                      setEditBase(conflict);
+                      setConflict(null);
+                    }}
+                  >
+                    Use this version
+                  </ActionButton>
+                  <ActionButton danger onClick={(e) => save(e, { overwrite: true })}>
+                    Save mine instead
+                  </ActionButton>
+                </div>
+              </div>
+            )}
             <div className="flex gap-4">
-              <ActionButton type="submit" danger onClick={save} disabled={!draft.trim()}>
+              <ActionButton
+                type="submit"
+                danger
+                onClick={save}
+                disabled={!draft.trim() || conflict !== null}
+              >
                 Save
               </ActionButton>
               <ActionButton
@@ -197,6 +237,7 @@ function CommentItem({
                 onClick={() => {
                   setMode("view");
                   setDraft(comment.text);
+                  setConflict(null);
                 }}
               >
                 Cancel
