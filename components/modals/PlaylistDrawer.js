@@ -138,15 +138,13 @@ export default function PlaylistDrawer({ open, onClose }) {
               </Button>
               <button
                 type="button"
-                onClick={() => {
-                  const saved = state.playlist;
-                  actions.clearPlaylist();
+                onClick={() =>
                   setUndo({
                     id: Date.now(),
                     message: "Playlist cleared",
-                    run: () => saved.forEach((track) => actions.addToPlaylist(track))
-                  });
-                }}
+                    run: actions.clearPlaylistWithUndo()
+                  })
+                }
                 className="ml-auto text-2xs font-bold uppercase tracking-wider text-neutral-500 hover:text-pmred"
               >
                 Clear

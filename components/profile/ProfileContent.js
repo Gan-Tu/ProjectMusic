@@ -601,14 +601,14 @@ function Feedback() {
                 <button
                   type="button"
                   onClick={() => {
-                    actions.deleteFeedback(entry.id);
+                    const undo = actions.deleteFeedbackWithUndo(entry);
                     toast((t) => (
                       <span className="flex items-center gap-4">
                         Feedback deleted
                         <button
                           type="button"
                           onClick={() => {
-                            actions.restoreFeedback(entry);
+                            undo();
                             toast.dismiss(t.id);
                           }}
                           className="text-xs font-bold uppercase tracking-wider text-pmred"
