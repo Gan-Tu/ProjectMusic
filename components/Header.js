@@ -143,8 +143,9 @@ export default function Header({ curMenu }) {
                 href="/profile"
                 className="hidden items-center gap-4 text-xs font-extrabold uppercase tracking-wider md:flex"
               >
-                {/* Visually hidden below xl, but it still names the link for screen readers. */}
-                <span className="sr-only max-w-24 leading-tight xl:not-sr-only xl:block">
+                {/* Shown from 2xl (below that it would crowd the centered logo), but it
+                    always names the link for screen readers. */}
+                <span className="sr-only max-w-24 leading-tight 2xl:not-sr-only 2xl:block">
                   {user.name}
                 </span>
                 <span className="relative h-11 w-11 overflow-hidden bg-neutral-100">
