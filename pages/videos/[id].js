@@ -1,11 +1,11 @@
 import AppContainer from "../../components/AppContainer";
 import VideoStage from "../../components/videos/VideoStage";
-import { getVideoById, getVideos, getRelatedVideos } from "../../utils/getFakeVideos";
+import { getVideoPage } from "../../lib/server/content";
 
 export default function VideoDetail({ video, videos, related }) {
   return (
     <AppContainer
-      title={`${video.artist} — ${video.title}`}
+      title={video.artist ? `${video.artist} — ${video.title}` : video.title}
       curMenu="Videos"
       description={video.description}
     >
@@ -14,12 +14,13 @@ export default function VideoDetail({ video, videos, related }) {
   );
 }
 
-export function getStaticPaths() {
-  return { paths: getVideos().map((video) => ({ params: { id: video.id } })), fallback: false };
+// Rendered on first request, so videos created in the CRM work without a rebuild.
+export async function getStaticPaths() {
+  return { paths: [], fallback: "blocking" };
 }
 
-export function getStaticProps({ params }) {
-  const video = getVideoById(params.id);
-  if (!video) return { notFound: true };
-  return { props: { video, videos: getVideos(), related: getRelatedVideos(video.id, 8) } };
+export async function getStaticProps({ params }) {
+  const page = await getVideoPage(params.id);
+  if (!page) return { notFound: true, revalidate: 60 };
+  return { props: page, revalidate: 60 };
 }

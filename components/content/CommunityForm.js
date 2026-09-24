@@ -3,15 +3,34 @@ import toast from "react-hot-toast";
 import { CheckCircleIcon } from "@heroicons/react/24/outline";
 import { TextField, Captcha, useCaptcha } from "../ui/Form";
 import Button from "../ui/Button";
+import Honeypot from "../ui/Honeypot";
 import { useStore } from "../../lib/store";
+
+// Sends a message to the studio's inbox (the CRM). Resolves to an error message or "".
+async function sendToInbox(message) {
+  try {
+    const response = await fetch("/api/inbox", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(message)
+    });
+    if (response.ok) return "";
+    const data = await response.json().catch(() => ({}));
+    return data.error || "Your message couldn't be sent. Please try again.";
+  } catch {
+    return "You seem to be offline. Check your connection and try again.";
+  }
+}
 
 export default function CommunityForm({ volunteer = false }) {
   const captcha = useCaptcha();
   const { actions } = useStore();
   const [submitted, setSubmitted] = useState(null); // contact: { subject, message }
   const [error, setError] = useState("");
-  function submit(event) {
+  const [sending, setSending] = useState(false);
+  async function submit(event) {
     event.preventDefault();
+    if (sending) return;
     const data = new FormData(event.currentTarget);
     const values = Object.fromEntries(data.entries());
     if (
@@ -28,6 +47,35 @@ export default function CommunityForm({ volunteer = false }) {
     }
     if (!captcha.valid) {
       setError("Please type the four numbers shown below.");
+      return;
+    }
+    setError("");
+    // Honeypot filled in (a bot): act as if it worked, send and keep nothing.
+    if (values.website) {
+      setSubmitted(volunteer ? {} : { name: "", email: "", subject: "", message: "" });
+      return;
+    }
+    setSending(true);
+    const failure = await sendToInbox(
+      volunteer
+        ? {
+            kind: "volunteer",
+            name: values.name.trim(),
+            email: values.email.trim(),
+            body: values.skills.trim(),
+            payload: { phone: values.phone.trim(), availability: data.getAll("availability") }
+          }
+        : {
+            kind: "contact",
+            name: values.name.trim(),
+            email: values.email.trim(),
+            subject: values.subject.trim(),
+            body: values.message.trim()
+          }
+    );
+    setSending(false);
+    if (failure) {
+      setError(failure);
       return;
     }
     if (volunteer)
@@ -55,11 +103,7 @@ export default function CommunityForm({ volunteer = false }) {
             message: values.message.trim()
           }
     );
-    toast.success(
-      volunteer
-        ? "Thanks for joining the crew!"
-        : "Message saved on this device. Use Open email to send it to the studio."
-    );
+    toast.success(volunteer ? "Thanks for joining the crew!" : "Message sent to the studio.");
   }
   if (submitted)
     return (
@@ -70,8 +114,8 @@ export default function CommunityForm({ volunteer = false }) {
         </h2>
         <p className="mx-auto mb-8 mt-4 max-w-md text-sm leading-relaxed text-neutral-500">
           {volunteer
-            ? "Your interests and availability have been saved in this demo. Thank you for being part of the Projct community."
-            : "Your message is saved on this device. This demo doesn’t send email, so use Open email below to send it to the studio."}
+            ? "Your interests and availability are with the studio team. Thank you for being part of the Projct community."
+            : "Your message is with the studio team, and we’ll get back to you by email. Prefer your own mail app? Use Open email below."}
         </p>
         <Button
           href={
@@ -91,6 +135,7 @@ export default function CommunityForm({ volunteer = false }) {
     );
   return (
     <form onSubmit={submit} className="space-y-6">
+      <Honeypot />
       <div className="grid gap-5 sm:grid-cols-2">
         <TextField
           id={`${volunteer ? "volunteer" : "contact"}-name`}
@@ -179,14 +224,14 @@ export default function CommunityForm({ volunteer = false }) {
       )}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <p className="max-w-xs text-xs leading-relaxed text-neutral-500">
-          Demo only. Your submission is saved on this device.
+          Your submission goes straight to the studio team.
         </p>
         <div className="flex gap-3">
           <Button href="/" variant="muted" className="cursor-pointer">
             Cancel
           </Button>
-          <Button type="submit" className="cursor-pointer" size="md">
-            {volunteer ? "Join the crew" : "Send message"}
+          <Button type="submit" className="cursor-pointer" size="md" disabled={sending}>
+            {sending ? "Sending…" : volunteer ? "Join the crew" : "Send message"}
           </Button>
         </div>
       </div>

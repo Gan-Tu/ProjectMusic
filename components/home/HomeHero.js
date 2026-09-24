@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Image from "next/image";
+import Image from "../ui/SmartImage";
 import Link from "next/link";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import { PlayIcon } from "@heroicons/react/24/solid";
@@ -105,7 +105,7 @@ export default function HomeHero({ videos }) {
             <p className="text-xs font-extrabold uppercase tracking-wider">{video.artist}</p>
             <p className="mt-1 text-xs leading-relaxed text-neutral-400">{video.subtitle}</p>
             <p className="mt-2 text-xs text-white">
-              {formatTime(video.duration)}{" "}
+              {video.duration > 0 && `${formatTime(video.duration)} `}
               <span className="ml-2 text-neutral-400">/ {pad2(featured.length)} videos</span>
             </p>
           </div>

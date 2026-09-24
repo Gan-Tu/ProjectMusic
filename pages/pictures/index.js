@@ -1,7 +1,7 @@
-import Image from "next/image";
+import Image from "../../components/ui/SmartImage";
 import Link from "next/link";
 import AppContainer from "../../components/AppContainer";
-import { PHOTO_CATEGORIES } from "../../utils/getFakePhotos";
+import { listPhotoCategories } from "../../lib/server/content";
 
 export default function Pictures({ categories }) {
   return (
@@ -52,6 +52,6 @@ export default function Pictures({ categories }) {
   );
 }
 
-export function getStaticProps() {
-  return { props: { categories: PHOTO_CATEGORIES } };
+export async function getStaticProps() {
+  return { props: { categories: await listPhotoCategories() }, revalidate: 60 };
 }

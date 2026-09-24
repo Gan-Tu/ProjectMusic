@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Image from "next/image";
+import Image from "../ui/SmartImage";
 import { HeartIcon } from "@heroicons/react/24/outline";
 import AppContainer from "../AppContainer";
 import ArticleCard from "../ArticleCard";
@@ -51,8 +51,8 @@ export default function ArticleDetail({ post, related, section }) {
               {post.snippet}
             </p>
             <div className="space-y-6 text-sm font-light leading-8 text-neutral-500">
-              {post.body.map((paragraph) => (
-                <p key={paragraph}>{paragraph}</p>
+              {post.body.map((paragraph, index) => (
+                <p key={index}>{paragraph}</p>
               ))}
             </div>
             <CommentThread
@@ -77,7 +77,7 @@ export default function ArticleDetail({ post, related, section }) {
             </div>
             <h2 className="mb-4 mt-10 text-xs font-bold uppercase tracking-widest">Filed under</h2>
             <div className="flex flex-wrap gap-2">
-              {[...new Set([post.category, ...post.tags])].map((tag) => (
+              {[...new Set([post.category, ...post.tags])].filter(Boolean).map((tag) => (
                 <Link
                   href={{ pathname: `/${section}`, query: { tag } }}
                   key={tag}
@@ -101,18 +101,20 @@ export default function ArticleDetail({ post, related, section }) {
           </aside>
         </div>
       </article>
-      <section className="border-t border-neutral-200">
-        <h2 className="px-6 py-8 text-sm font-extrabold uppercase tracking-widest sm:px-10">
-          Related {section === "news" ? "news" : "stories"}
-        </h2>
-        <ul className="grid gap-px bg-neutral-200 lg:grid-cols-2">
-          {related.map((item) => (
-            <li key={item.id}>
-              <ArticleCard {...item} href={`/${section}/${item.id}`} />
-            </li>
-          ))}
-        </ul>
-      </section>
+      {related.length > 0 && (
+        <section className="border-t border-neutral-200">
+          <h2 className="px-6 py-8 text-sm font-extrabold uppercase tracking-widest sm:px-10">
+            Related {section === "news" ? "news" : "stories"}
+          </h2>
+          <ul className="grid gap-px bg-neutral-200 lg:grid-cols-2">
+            {related.map((item) => (
+              <li key={item.id}>
+                <ArticleCard {...item} href={`/${section}/${item.id}`} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
     </AppContainer>
   );
 }

@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image from "./ui/SmartImage";
 import { CloseButton, Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
 import { EnvelopeIcon } from "@heroicons/react/24/outline";
 import { useStore, visibleChats } from "../lib/store";

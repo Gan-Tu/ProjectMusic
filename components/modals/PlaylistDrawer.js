@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Image from "next/image";
+import Image from "../ui/SmartImage";
 import { PauseIcon, PlayIcon } from "@heroicons/react/24/solid";
 import { MusicalNoteIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Drawer } from "../ui/Modal";

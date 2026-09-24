@@ -1,9 +1,9 @@
 import { useState } from "react";
-import Image from "next/image";
+import Image from "../../components/ui/SmartImage";
 import Link from "next/link";
 import { Squares2X2Icon, Bars3Icon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import AppContainer from "../../components/AppContainer";
-import { getArtistHomePageData } from "../../utils/getFakeArtistsData";
+import { listArtists } from "../../lib/server/content";
 import { useStore } from "../../lib/store";
 import { classNames } from "../../lib/format";
 
@@ -17,7 +17,7 @@ export default function ArtistsHome({ artistsData }) {
       artist.name.toLowerCase().includes(search.trim().toLowerCase()) &&
       (letter === "All" || artist.name.toUpperCase().startsWith(letter))
   );
-  const letters = new Set(artistsData.map((artist) => artist.name[0].toUpperCase()));
+  const letters = new Set(artistsData.map((artist) => artist.name.charAt(0).toUpperCase()));
   return (
     <AppContainer
       title="Artists"
@@ -180,5 +180,5 @@ export default function ArtistsHome({ artistsData }) {
 }
 
 export async function getStaticProps() {
-  return { props: { artistsData: getArtistHomePageData() } };
+  return { props: { artistsData: await listArtists({ placement: "directory" }) }, revalidate: 60 };
 }

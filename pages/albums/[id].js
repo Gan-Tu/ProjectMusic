@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import Image from "next/image";
+import Image from "../../components/ui/SmartImage";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { ArrowUpRightIcon, ShareIcon } from "@heroicons/react/24/outline";
@@ -14,14 +14,22 @@ import { useStore } from "../../lib/store";
 import { useUI, useCartCandidate } from "../../lib/ui";
 import { formatTime } from "../../lib/format";
 import { albumPurchaseItem, tierLine } from "../../lib/pricing";
-import { getMusics, getMusicById, getAlbumTracks } from "../../utils/getFakeTracks";
-import { toAlbumSummary } from "../../utils/albumTracks";
+import { getAlbumPage } from "../../lib/server/content";
+
+// "Open in Spotify" for Spotify links, otherwise a generic label.
+function externalLabel(url) {
+  try {
+    return new URL(url).hostname.endsWith("spotify.com") ? "Open in Spotify" : "Open release";
+  } catch {
+    return "Open release";
+  }
+}
 
 export default function AlbumDetail({ album, tracks, more }) {
   const player = usePlayer();
   const { actions } = useStore();
   const { openModal } = useUI();
-  const item = useMemo(() => albumPurchaseItem(album), [album]);
+  const item = useMemo(() => albumPurchaseItem({ ...album, tracks }), [album, tracks]);
   useCartCandidate(tierLine(item, "download"));
   const totalTime = tracks.reduce((total, track) => total + track.duration, 0);
   return (
@@ -46,12 +54,21 @@ export default function AlbumDetail({ album, tracks, more }) {
               {album.name}
             </h1>
             <p className="mt-4 text-xs text-neutral-500">
-              {album.release_date.slice(0, 4)} ·{" "}
+              {album.release_date && `${album.release_date.slice(0, 4)} · `}
               <span className="capitalize">{album.albumType}</span> · {tracks.length}{" "}
               {tracks.length === 1 ? "track" : "tracks"} · {formatTime(totalTime)}
             </p>
+            {album.description && (
+              <p className="mt-4 max-w-xl text-sm leading-7 text-neutral-500">
+                {album.description}
+              </p>
+            )}
             <div className="my-6 flex flex-wrap gap-2">
-              <Button className="cursor-pointer" onClick={() => player.playQueue(tracks)}>
+              <Button
+                className="cursor-pointer"
+                disabled={!tracks.length}
+                onClick={() => player.playQueue(tracks)}
+              >
                 Play all
               </Button>
               <Button
@@ -86,14 +103,16 @@ export default function AlbumDetail({ album, tracks, more }) {
             >
               <ShareIcon className="h-4 w-4" /> Share album
             </button>
-            <a
-              href={album.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex cursor-pointer items-center gap-2 hover:text-pmred"
-            >
-              Open in Spotify <ArrowUpRightIcon className="h-4 w-4" />
-            </a>
+            {album.url && (
+              <a
+                href={album.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex cursor-pointer items-center gap-2 hover:text-pmred"
+              >
+                {externalLabel(album.url)} <ArrowUpRightIcon className="h-4 w-4" />
+              </a>
+            )}
           </div>
         </section>
         <div className="relative order-first flex min-h-80 items-center justify-center overflow-hidden bg-neutral-950 p-10 sm:p-16 lg:order-none lg:min-h-[650px] lg:items-start">
@@ -121,38 +140,32 @@ export default function AlbumDetail({ album, tracks, more }) {
       <section className="border-t border-neutral-200 px-6 py-12 sm:px-10">
         <CommentThread threadId={`album:${album.id}`} className="max-w-3xl" />
       </section>
-      <section className="bg-black text-white">
-        <h2 className="px-6 py-7 text-xs font-bold uppercase tracking-[0.2em] sm:px-10">
-          More releases
-        </h2>
-        <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
-          {more.map((release) => (
-            <li key={release.id}>
-              <AlbumCard musicData={release} linked />
-            </li>
-          ))}
-        </ul>
-      </section>
+      {more.length > 0 && (
+        <section className="bg-black text-white">
+          <h2 className="px-6 py-7 text-xs font-bold uppercase tracking-[0.2em] sm:px-10">
+            More releases
+          </h2>
+          <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
+            {more.map((release) => (
+              <li key={release.id}>
+                <AlbumCard musicData={release} linked />
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
     </AppContainer>
   );
 }
 
+// Rendered on first request (and re-rendered at most once a minute, or right away
+// after a CRM edit), so albums created in the CRM work without a rebuild.
 export async function getStaticPaths() {
-  return {
-    paths: getMusics().map((album) => ({ params: { id: album.id } })),
-    fallback: "blocking"
-  };
+  return { paths: [], fallback: "blocking" };
 }
 
 export async function getStaticProps({ params }) {
-  const album = getMusicById(params.id);
-  if (!album) return { notFound: true };
-  const others = getMusics().filter((release) => release.id !== album.id);
-  const more = [
-    ...others.filter((release) => release.artist === album.artist),
-    ...others.filter((release) => release.artist !== album.artist)
-  ]
-    .slice(0, 6)
-    .map(toAlbumSummary);
-  return { props: { album, tracks: getAlbumTracks(album.id), more } };
+  const page = await getAlbumPage(params.id);
+  if (!page) return { notFound: true, revalidate: 60 };
+  return { props: page, revalidate: 60 };
 }

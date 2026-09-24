@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image from "../components/ui/SmartImage";
 import AppContainer from "../components/AppContainer";
 import Button from "../components/ui/Button";
 import SongCounter from "../components/content/SongCounter";

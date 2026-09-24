@@ -2,7 +2,7 @@ import { useState } from "react";
 import AppContainer from "../../components/AppContainer";
 import EventCard from "../../components/events/EventCard";
 import { classNames } from "../../lib/format";
-import { getEvents } from "../../utils/getFakeEvents";
+import { listEvents } from "../../lib/server/content";
 
 export default function EventsHome({ eventData }) {
   const [month, setMonth] = useState(null);
@@ -89,5 +89,5 @@ export default function EventsHome({ eventData }) {
 }
 
 export async function getStaticProps() {
-  return { props: { eventData: getEvents() } };
+  return { props: { eventData: await listEvents({ placement: "events" }) }, revalidate: 60 };
 }

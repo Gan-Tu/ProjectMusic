@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import Image from "next/image";
+import Image from "../ui/SmartImage";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import {
@@ -17,8 +17,13 @@ import VideoStrip from "./VideoStrip";
 import VideoCard from "./VideoCard";
 import CommentThread from "../comments/CommentThread";
 import CaptionsTrack from "./CaptionsTrack";
+import VideoEmbed from "./VideoEmbed";
+import { isSampleVideo, parseVideoUrl } from "../../lib/media";
 
-export default function VideoStage({ video, videos, related }) {
+export default function VideoStage({ video, videos: listed, related }) {
+  // An unlisted video still gets a strip (and previous / next) of its own.
+  const videos = listed.length ? listed : [video];
+  const embedded = parseVideoUrl(video.src).type !== "file";
   const [started, setStarted] = useState(false);
   const [creditsOpen, setCreditsOpen] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -58,11 +63,17 @@ export default function VideoStage({ video, videos, related }) {
           )}
         >
           <div className="relative aspect-video overflow-hidden bg-black">
-            {started ? (
+            {started && embedded ? (
+              <VideoEmbed
+                src={video.src}
+                title={`${video.artist} — ${video.title}`}
+                className="h-full w-full"
+              />
+            ) : started ? (
               <video
                 ref={videoRef}
                 src={video.src}
-                poster={video.poster}
+                poster={video.poster || undefined}
                 autoPlay
                 controls
                 playsInline
@@ -72,7 +83,7 @@ export default function VideoStage({ video, videos, related }) {
                 onError={() => setFailed(true)}
                 className="h-full w-full object-contain"
               >
-                <CaptionsTrack src={video.src} />
+                <CaptionsTrack src={video.src} captions={video.captions} />
               </video>
             ) : (
               <>
@@ -185,8 +196,8 @@ export default function VideoStage({ video, videos, related }) {
           >
             <h2 className="mb-5 text-xs font-bold uppercase tracking-[0.2em]">Behind the video</h2>
             <dl className="space-y-5">
-              {video.credits.map((credit) => (
-                <div key={credit.role}>
+              {video.credits.map((credit, index) => (
+                <div key={`${credit.role}-${index}`}>
                   <dt className="text-2xs uppercase tracking-widest text-neutral-400">
                     {credit.role}
                   </dt>
@@ -194,12 +205,14 @@ export default function VideoStage({ video, videos, related }) {
                 </div>
               ))}
             </dl>
-            <Link
-              href={`/artists/${video.artistId}`}
-              className="mt-7 inline-block text-2xs font-bold uppercase tracking-widest text-pmred hover:text-white"
-            >
-              Artist profile ↗
-            </Link>
+            {video.artistId && (
+              <Link
+                href={`/artists/${video.artistId}`}
+                className="mt-7 inline-block text-2xs font-bold uppercase tracking-widest text-pmred hover:text-white"
+              >
+                Artist profile ↗
+              </Link>
+            )}
           </div>
         </aside>
       </section>
@@ -209,12 +222,18 @@ export default function VideoStage({ video, videos, related }) {
         className="grid gap-8 border-t border-neutral-800 px-5 py-9 md:grid-cols-[1fr_auto] md:px-10 md:py-12"
       >
         <div className="max-w-3xl">
-          <Link
-            href={`/artists/${video.artistId}`}
-            className="text-xs font-extrabold uppercase tracking-[0.2em] text-pmred hover:underline"
-          >
-            {video.artist}
-          </Link>
+          {video.artistId ? (
+            <Link
+              href={`/artists/${video.artistId}`}
+              className="text-xs font-extrabold uppercase tracking-[0.2em] text-pmred hover:underline"
+            >
+              {video.artist}
+            </Link>
+          ) : (
+            <p className="text-xs font-extrabold uppercase tracking-[0.2em] text-pmred">
+              {video.artist}
+            </p>
+          )}
           <h1
             id="video-title"
             className="mt-3 text-2xl font-extrabold uppercase tracking-tight md:text-3xl"
@@ -224,12 +243,14 @@ export default function VideoStage({ video, videos, related }) {
           <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-xs text-neutral-400">
             <span>{formatNumber(video.views)} views</span>
             <time dateTime={video.date}>{formatLongDate(video.date)}</time>
-            <span>{formatTime(video.duration)}</span>
+            {video.duration > 0 && <span>{formatTime(video.duration)}</span>}
           </div>
           <p className="mt-6 max-w-2xl text-sm leading-7 text-neutral-400">{video.description}</p>
-          <p className="mt-4 text-2xs text-neutral-400">
-            Demo collection · Playback uses sample footage.
-          </p>
+          {isSampleVideo(video.src) && (
+            <p className="mt-4 text-2xs text-neutral-400">
+              Demo collection · Playback uses sample footage.
+            </p>
+          )}
         </div>
         <div className="flex flex-wrap content-start items-start gap-3">
           <button

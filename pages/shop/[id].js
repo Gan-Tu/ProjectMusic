@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import Image from "next/image";
+import Image from "../../components/ui/SmartImage";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import {
@@ -19,12 +19,7 @@ import { salesEnded, useStore } from "../../lib/store";
 import { useNow } from "../../lib/useNow";
 import { useCartCandidate, useUI } from "../../lib/ui";
 import { classNames, formatCredits, formatUSD } from "../../lib/format";
-import {
-  CATEGORIES,
-  getProductById,
-  getProducts,
-  getRelatedProducts
-} from "../../utils/getFakeProducts";
+import { getProductPage } from "../../lib/server/content";
 
 function ProductDetail({ product, category, related }) {
   const [imageIndex, setImageIndex] = useState(0);
@@ -326,21 +321,13 @@ export default function ProductPage(props) {
   return <ProductDetail key={props.product.id} {...props} />;
 }
 
-export function getStaticPaths() {
-  return {
-    paths: getProducts().map((product) => ({ params: { id: product.id } })),
-    fallback: "blocking"
-  };
+// Rendered on first request, so products created in the CRM work without a rebuild.
+export async function getStaticPaths() {
+  return { paths: [], fallback: "blocking" };
 }
 
-export function getStaticProps({ params }) {
-  const product = getProductById(params.id);
-  if (!product) return { notFound: true };
-  return {
-    props: {
-      product,
-      category: CATEGORIES.find((category) => category.slug === product.category),
-      related: getRelatedProducts(product)
-    }
-  };
+export async function getStaticProps({ params }) {
+  const page = await getProductPage(params.id);
+  if (!page) return { notFound: true, revalidate: 60 };
+  return { props: page, revalidate: 60 };
 }

@@ -19,7 +19,7 @@ export function TicketButton({ event, tier, className = "" }) {
     kind: "ticket",
     price: tier?.price ?? event.price,
     credits: tier?.credits ?? event.credits,
-    options: { tier: tier?.name || "General admission" },
+    options: { tier: tier?.name || event.tiers?.[0]?.name || "General admission" },
     startsAt: event.startsAt
   };
   if (now && salesEnded(item, now)) {

@@ -2,7 +2,9 @@ import { useRef } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import ProductCard from "./ProductCard";
 
-export default function RelatedProducts({ products }) {
+// A scrollable row of product cards ("Related products" on product pages, "Featured"
+// on the shop home).
+export default function RelatedProducts({ products, title = "Related products", id = "related" }) {
   const strip = useRef(null);
   function move(direction) {
     strip.current?.scrollBy({
@@ -11,16 +13,16 @@ export default function RelatedProducts({ products }) {
     });
   }
   return (
-    <section aria-labelledby="related-heading" className="border-t border-neutral-200">
+    <section aria-labelledby={`${id}-heading`} className="border-t border-neutral-200">
       <div className="flex items-center justify-between gap-4 px-5 py-7 sm:px-10">
-        <h2 id="related-heading" className="text-xs font-extrabold uppercase tracking-[0.18em]">
-          Related products
+        <h2 id={`${id}-heading`} className="text-xs font-extrabold uppercase tracking-[0.18em]">
+          {title}
         </h2>
         <div className="flex gap-1">
           <button
             type="button"
             onClick={() => move(-1)}
-            aria-label="Previous related products"
+            aria-label={`Previous ${title.toLowerCase()}`}
             className="cursor-pointer bg-pmred p-2 text-white hover:bg-pmred-dark"
           >
             <ChevronLeftIcon className="h-5 w-5" />
@@ -28,7 +30,7 @@ export default function RelatedProducts({ products }) {
           <button
             type="button"
             onClick={() => move(1)}
-            aria-label="Next related products"
+            aria-label={`Next ${title.toLowerCase()}`}
             className="cursor-pointer bg-pmred p-2 text-white hover:bg-pmred-dark"
           >
             <ChevronRightIcon className="h-5 w-5" />
@@ -38,7 +40,7 @@ export default function RelatedProducts({ products }) {
       <div
         ref={strip}
         className="scrollbar-none flex snap-x snap-mandatory overflow-x-auto"
-        aria-label="Related products"
+        aria-label={title}
       >
         {products.map((product) => (
           <div className="w-[65%] shrink-0 snap-start sm:w-1/3 lg:w-1/5" key={product.id}>

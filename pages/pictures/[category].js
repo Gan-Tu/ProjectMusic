@@ -1,7 +1,7 @@
 import Link from "next/link";
 import AppContainer from "../../components/AppContainer";
 import PhotoGallery from "../../components/pictures/PhotoGallery";
-import { PHOTO_CATEGORIES, getPhotos } from "../../utils/getFakePhotos";
+import { getPhotoCategoryPage } from "../../lib/server/content";
 
 export default function PictureCategory({ category, photos }) {
   return (
@@ -17,22 +17,28 @@ export default function PictureCategory({ category, photos }) {
           <h1 className="mt-4 text-xl font-extrabold uppercase tracking-wider">{category.name}</h1>
           <p className="mt-2 text-sm text-neutral-500">{category.description}</p>
         </div>
-        <p className="text-sm text-neutral-500">{photos.length} photographs</p>
+        <p className="text-sm text-neutral-500">
+          {photos.length} {photos.length === 1 ? "photograph" : "photographs"}
+        </p>
       </header>
-      <PhotoGallery key={category.id} photos={photos} polaroids={category.id === "polaroids"} />
+      {photos.length ? (
+        <PhotoGallery key={category.id} photos={photos} polaroids={category.id === "polaroids"} />
+      ) : (
+        <p className="px-6 py-24 text-center text-sm text-neutral-500">
+          New photographs are on the way.
+        </p>
+      )}
     </AppContainer>
   );
 }
 
-export function getStaticPaths() {
-  return {
-    paths: PHOTO_CATEGORIES.map((category) => ({ params: { category: category.id } })),
-    fallback: "blocking"
-  };
+// Rendered on first request, so categories created in the CRM work without a rebuild.
+export async function getStaticPaths() {
+  return { paths: [], fallback: "blocking" };
 }
 
-export function getStaticProps({ params }) {
-  const category = PHOTO_CATEGORIES.find((item) => item.id === params.category);
-  if (!category) return { notFound: true };
-  return { props: { category, photos: getPhotos(category.id) } };
+export async function getStaticProps({ params }) {
+  const page = await getPhotoCategoryPage(params.category);
+  if (!page) return { notFound: true, revalidate: 60 };
+  return { props: page, revalidate: 60 };
 }

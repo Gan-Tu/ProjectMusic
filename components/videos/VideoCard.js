@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image from "../ui/SmartImage";
 import Link from "next/link";
 import { PlayIcon } from "@heroicons/react/24/solid";
 import { classNames, formatTime } from "../../lib/format";
@@ -31,9 +31,11 @@ export default function VideoCard({ video, active = false, compact = false }) {
             <PlayIcon className="ml-0.5 size-5" aria-hidden="true" />
           </span>
         </span>
-        <span className="absolute right-2 bottom-2 bg-black/75 px-1.5 py-0.5 text-2xs font-semibold text-white">
-          {formatTime(video.duration)}
-        </span>
+        {video.duration > 0 && (
+          <span className="absolute right-2 bottom-2 bg-black/75 px-1.5 py-0.5 text-2xs font-semibold text-white">
+            {formatTime(video.duration)}
+          </span>
+        )}
         {active && <span className="absolute inset-x-0 bottom-0 h-1 bg-pmred" />}
       </div>
       <div className="px-3 py-4">

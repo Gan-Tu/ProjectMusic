@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowUpRightIcon } from "@heroicons/react/24/outline";
 import AppContainer from "../../components/AppContainer";
 import { SocialIcon, FollowButton } from "../../components/socials/SocialProfile";
-import { getSocialProfiles } from "../../utils/getFakeSocials";
+import { listSocialNetworks } from "../../lib/server/content";
 import { formatNumber } from "../../lib/format";
 import { useStore } from "../../lib/store";
 
@@ -55,6 +55,6 @@ export default function SocialsPage({ profiles }) {
   );
 }
 
-export function getStaticProps() {
-  return { props: { profiles: getSocialProfiles() } };
+export async function getStaticProps() {
+  return { props: { profiles: await listSocialNetworks() }, revalidate: 60 };
 }

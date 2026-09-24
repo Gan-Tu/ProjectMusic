@@ -1,17 +1,23 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import Image from "next/image";
+import Image from "../../components/ui/SmartImage";
 import { ArrowUpRightIcon } from "@heroicons/react/24/outline";
 import AppContainer from "../../components/AppContainer";
 import ProductCard from "../../components/shop/ProductCard";
+import RelatedProducts from "../../components/shop/RelatedProducts";
 import { classNames } from "../../lib/format";
-import { CATEGORIES, getProducts } from "../../utils/getFakeProducts";
+import { getShopPage } from "../../lib/server/content";
 
-export default function Shop({ products, categories }) {
+const HERO_PRODUCT = "truth-studios-t-shirt";
+
+export default function Shop({ products, featured, categories }) {
   const router = useRouter();
   const [sort, setSort] = useState("featured");
   const category = categories.find((item) => item.slug === router.query.category);
+  const heroHref = [...featured, ...products].some((product) => product.id === HERO_PRODUCT)
+    ? `/shop/${HERO_PRODUCT}`
+    : "/shop?category=t-shirts";
   const visible = products
     .filter((product) => !category || product.category === category.slug)
     .sort((a, b) => {
@@ -48,14 +54,14 @@ export default function Shop({ products, categories }) {
               Wear the sound.
             </p>
             <Link
-              href="/shop/truth-studios-t-shirt"
+              href={heroHref}
               className="mt-7 inline-flex cursor-pointer items-center gap-5 rounded-full border border-white px-6 py-3 text-xs font-bold uppercase tracking-wider transition-colors hover:bg-white hover:text-pmred"
             >
               Shop the original <ArrowUpRightIcon className="h-4 w-4" />
             </Link>
           </div>
           <Link
-            href="/shop/truth-studios-t-shirt"
+            href={heroHref}
             aria-label="Shop the Truth Studios T-shirt"
             className="group relative block aspect-[4/3] cursor-pointer overflow-hidden bg-[#f1f1f1] md:aspect-auto md:min-h-[440px]"
           >
@@ -72,6 +78,9 @@ export default function Shop({ products, categories }) {
             </span>
           </Link>
         </section>
+      )}
+      {!category && featured.length > 0 && (
+        <RelatedProducts products={featured} title="Featured" id="featured" />
       )}
       <section aria-label="Shop catalog">
         <div className="border-b border-neutral-200 px-5 py-7 sm:px-10">
@@ -154,6 +163,6 @@ export default function Shop({ products, categories }) {
   );
 }
 
-export function getStaticProps() {
-  return { props: { products: getProducts(), categories: CATEGORIES } };
+export async function getStaticProps() {
+  return { props: await getShopPage(), revalidate: 60 };
 }

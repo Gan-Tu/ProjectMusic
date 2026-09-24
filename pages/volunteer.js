@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic";
-import Image from "next/image";
+import Image from "../components/ui/SmartImage";
 import AppContainer from "../components/AppContainer";
 const CommunityForm = dynamic(() => import("../components/content/CommunityForm"), {
   ssr: false,

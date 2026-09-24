@@ -1,10 +1,10 @@
-import Image from "next/image";
+import Image from "../ui/SmartImage";
 import Link from "next/link";
 import { HeartIcon, PauseIcon, PlayIcon, PlusIcon } from "@heroicons/react/24/solid";
 import toast from "react-hot-toast";
 import { usePlayer } from "../../lib/player";
 import { useStore } from "../../lib/store";
-import { buildAlbumTracks } from "../../utils/albumTracks";
+import { playAlbum } from "../music/albumQueue";
 
 export default function AlbumGrid({ albums }) {
   const player = usePlayer();
@@ -12,8 +12,7 @@ export default function AlbumGrid({ albums }) {
   return (
     <ul className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 xl:grid-cols-4">
       {albums.map((album, index) => {
-        const tracks = album.tracks || buildAlbumTracks(album);
-        const track = tracks[0];
+        const track = album.tracks?.[0];
         const playing = track && player.isTrackPlaying(track.id);
         const liked = !!state.likes[`album:${album.id}`];
         return (
@@ -36,7 +35,7 @@ export default function AlbumGrid({ albums }) {
               {track && (
                 <button
                   type="button"
-                  onClick={() => player.playTrack(track, tracks)}
+                  onClick={() => playAlbum(player, album)}
                   aria-label={`${playing ? "Pause" : "Play"} ${album.name}`}
                   className="absolute bottom-3 right-3 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full bg-pmred text-white shadow-lg transition hover:scale-110 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                 >

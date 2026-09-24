@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image from "./ui/SmartImage";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";

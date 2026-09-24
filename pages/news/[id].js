@@ -1,16 +1,17 @@
 import ArticleDetail from "../../components/content/ArticleDetail";
-import { getNews, getNewsById, getRelatedNews } from "../../utils/getFakeNews";
+import { getPostPage } from "../../lib/server/content";
 
 export default function NewsDetail({ post, related }) {
   return <ArticleDetail post={post} related={related} section="news" />;
 }
 
+// Rendered on first request, so posts created in the CRM work without a rebuild.
 export async function getStaticPaths() {
-  return { paths: getNews().map((post) => ({ params: { id: String(post.id) } })), fallback: false };
+  return { paths: [], fallback: "blocking" };
 }
 
 export async function getStaticProps({ params }) {
-  const post = getNewsById(params.id);
-  if (!post) return { notFound: true };
-  return { props: { post, related: getRelatedNews(params.id) } };
+  const page = await getPostPage("news", params.id);
+  if (!page) return { notFound: true, revalidate: 60 };
+  return { props: page, revalidate: 60 };
 }

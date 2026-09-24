@@ -1,9 +1,10 @@
-import { useId, useState } from "react";
+import { useId, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import Modal from "../ui/Modal";
 import Button from "../ui/Button";
 import { Captcha, TextField, useCaptcha } from "../ui/Form";
 import { useStore } from "../../lib/store";
+import Honeypot from "../ui/Honeypot";
 
 const VARIANTS = {
   newsletter: {
@@ -36,12 +37,41 @@ function ListSignupModal({ open, onClose, kind }) {
   const [name, setName] = useState(existing?.name || "");
   const [value, setValue] = useState(existing?.value || "");
   const [error, setError] = useState("");
+  const [sending, setSending] = useState(false);
+  const honeypot = useRef(null);
 
-  function submit(e) {
+  // Signs up with the studio (the CRM inbox), then remembers it on this device.
+  async function submit(e) {
     e?.preventDefault();
+    if (sending) return;
     if (!name.trim()) return setError("Please tell us your name.");
     if (!config.validate(value.trim())) return setError(config.invalid);
     if (!captcha.valid) return setError("The numbers don't match, try again.");
+    setError("");
+    // Honeypot filled in (a bot): act as if it worked, send and keep nothing.
+    if (honeypot.current?.value) {
+      toast.success(config.done);
+      onClose();
+      return;
+    }
+    setSending(true);
+    const contact = kind === "sms" ? { payload: { phone: value.trim() } } : { email: value.trim() };
+    let failure = "";
+    try {
+      const response = await fetch("/api/inbox", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ kind, name: name.trim(), ...contact })
+      });
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        failure = data.error || "That didn't work. Please try again.";
+      }
+    } catch {
+      failure = "You seem to be offline. Check your connection and try again.";
+    }
+    setSending(false);
+    if (failure) return setError(failure);
     actions.subscribe(kind, { name: name.trim(), value: value.trim() });
     toast.success(config.done);
     onClose();
@@ -59,13 +89,14 @@ function ListSignupModal({ open, onClose, kind }) {
           <Button variant="muted" size="xs" onClick={onClose}>
             Cancel
           </Button>
-          <Button size="sm" type="submit" form={formId}>
-            Submit
+          <Button size="sm" type="submit" form={formId} disabled={sending}>
+            {sending ? "Sending…" : "Submit"}
           </Button>
         </>
       }
     >
       <form id={formId} onSubmit={submit} noValidate className="space-y-4 py-4">
+        <Honeypot inputRef={honeypot} />
         {existing && (
           <p className="flex flex-wrap items-center gap-3 bg-neutral-50 px-4 py-3 text-xs text-neutral-500">
             You&apos;re subscribed as{" "}

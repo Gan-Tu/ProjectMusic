@@ -1,28 +1,67 @@
-import Image from "next/image";
+import Image from "../../components/ui/SmartImage";
 import Link from "next/link";
+import toast from "react-hot-toast";
+import { ArrowUpRightIcon } from "@heroicons/react/24/outline";
 import AppContainer from "../../components/AppContainer";
 import Button from "../../components/ui/Button";
 import TopArtists from "../../components/artists/TopArtists";
 import AlbumGrid from "../../components/artists/AlbumGrid";
 import PeopleTabs, { usePeopleTab } from "../../components/profile/PeopleTabs";
 import PhotoGallery from "../../components/pictures/PhotoGallery";
-import { getArtistHomePageData, getArtistProfile } from "../../utils/getFakeArtistsData";
-import { getMusics } from "../../utils/getFakeTracks";
-import { toAlbumSummary } from "../../utils/albumTracks";
-import { getArtistPhotos } from "../../utils/getFakePhotos";
-import { getEvents } from "../../utils/getFakeEvents";
-import toast from "react-hot-toast";
+import VideoCard from "../../components/videos/VideoCard";
+import ProductCard from "../../components/shop/ProductCard";
 import { isHiddenContact, useStore } from "../../lib/store";
 import { useUI } from "../../lib/ui";
-import { formatCompact, formatLongDate, hashString, pad2 } from "../../lib/format";
+import { formatCompact, formatLongDate, pad2 } from "../../lib/format";
+import { getArtistPage } from "../../lib/server/content";
 
-const TABS = ["music", "pictures", "timeline", "events", "about"];
+const TABS = ["music", "videos", "pictures", "timeline", "events", "merch", "about"];
+const ALWAYS_SHOWN = ["music", "timeline", "about"];
 
-export default function ArtistProfile({ artist, topArtists, albums, photos, events }) {
+// Labels for the keys of `artist.links` (other keys are shown capitalized).
+const LINK_LABELS = {
+  website: "Website",
+  instagram: "Instagram",
+  youtube: "YouTube",
+  spotify: "Spotify",
+  soundcloud: "SoundCloud",
+  twitter: "Twitter",
+  tiktok: "TikTok",
+  facebook: "Facebook",
+  bandcamp: "Bandcamp",
+  apple: "Apple Music"
+};
+
+function linkLabel(key) {
+  return LINK_LABELS[key] || key.charAt(0).toUpperCase() + key.slice(1);
+}
+
+export default function ArtistProfile({
+  artist,
+  topArtists,
+  discography,
+  rotation,
+  videos,
+  photos,
+  posts,
+  events,
+  merch
+}) {
   const { state, actions } = useStore();
   const { openModal } = useUI();
-  const { tab } = usePeopleTab(TABS, "music");
+  // Tabs without content are left out (Music, Timeline and About always show).
+  const sizes = {
+    videos: videos.length,
+    pictures: photos.length,
+    events: events.length,
+    merch: merch.length
+  };
+  const tabs = TABS.filter((name) => ALWAYS_SHOWN.includes(name) || sizes[name] > 0);
+  const { tab } = usePeopleTab(tabs, "music");
   const following = !!state.follows[`artist:${artist.id}`];
+  const links = Object.entries(artist.links || {}).filter(
+    ([, href]) => typeof href === "string" && /^https?:\/\//.test(href)
+  );
   return (
     <AppContainer title={artist.name} curMenu="Artists" description={artist.bio}>
       <div className="flex flex-wrap items-center justify-between gap-5 bg-neutral-800 px-5 py-5 text-white sm:px-10">
@@ -49,7 +88,7 @@ export default function ArtistProfile({ artist, topArtists, albums, photos, even
       </div>
       <div className="grid bg-neutral-900 text-white lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
         <div className="flex flex-col gap-6 p-6 sm:flex-row sm:items-center sm:gap-10 sm:p-10">
-          <div className="relative aspect-square w-44 shrink-0 sm:w-52">
+          <div className="relative aspect-square w-44 shrink-0 bg-neutral-800 sm:w-52">
             <Image
               src={artist.imgUrl}
               alt={artist.name}
@@ -61,13 +100,13 @@ export default function ArtistProfile({ artist, topArtists, albums, photos, even
           </div>
           <div className="min-w-0">
             <p className="text-2xs font-bold uppercase tracking-[0.25em] text-pmred-light">
-              Artist / {artist.location}
+              Artist{artist.location && ` / ${artist.location}`}
             </p>
             <h1 className="mt-3 break-words text-4xl font-extrabold uppercase leading-none tracking-tight sm:text-5xl">
               {artist.name}
             </h1>
             <p className="mt-4 max-w-sm text-sm leading-relaxed text-neutral-400">
-              Independent voices. Shared inspiration.
+              {artist.tagline || "Independent voices. Shared inspiration."}
             </p>
             <div className="mt-6 flex gap-3">
               <Button
@@ -97,9 +136,9 @@ export default function ArtistProfile({ artist, topArtists, albums, photos, even
             </div>
           </div>
         </div>
-        <TopArtists artists={topArtists} />
+        {topArtists.length > 0 && <TopArtists artists={topArtists} />}
       </div>
-      <PeopleTabs tabs={TABS} active={tab} />
+      <PeopleTabs tabs={tabs} active={tab} />
       <section
         key={`${artist.id}-${tab}`}
         className="min-h-72 px-5 py-8 sm:px-10 sm:py-10"
@@ -107,11 +146,34 @@ export default function ArtistProfile({ artist, topArtists, albums, photos, even
       >
         {tab === "music" && (
           <>
-            <SectionHeading
-              title="On rotation"
-              detail={`Listening inspiration selected for ${artist.name}.`}
-            />
-            <AlbumGrid albums={albums} />
+            {discography.length > 0 && (
+              <div className="mb-12">
+                <SectionHeading title="Discography" detail={`Releases by ${artist.name}.`} />
+                <AlbumGrid albums={discography} />
+              </div>
+            )}
+            {rotation.length > 0 && (
+              <>
+                <SectionHeading
+                  title="On rotation"
+                  detail={`Listening inspiration selected for ${artist.name}.`}
+                />
+                <AlbumGrid albums={rotation} />
+              </>
+            )}
+            {!discography.length && !rotation.length && (
+              <EmptyState>New music from {artist.name} is on the way.</EmptyState>
+            )}
+          </>
+        )}
+        {tab === "videos" && (
+          <>
+            <SectionHeading title="Videos" detail={`Films and sessions with ${artist.name}.`} />
+            <div className="-mx-5 grid grid-cols-2 bg-black sm:-mx-10 lg:grid-cols-4">
+              {videos.map((video) => (
+                <VideoCard key={video.id} video={video} />
+              ))}
+            </div>
           </>
         )}
         {tab === "pictures" && (
@@ -123,43 +185,65 @@ export default function ArtistProfile({ artist, topArtists, albums, photos, even
         {tab === "timeline" && (
           <div className="mx-auto max-w-3xl">
             <SectionHeading title="Timeline" detail="Notes from the studio community." />
-            {[
-              "There is something special about hearing an idea become a record. Back in the studio, making room for the next one.",
-              "A few favorite sounds have made their way into this week’s rotation. Find your next discovery in the music tab.",
-              "Good people, honest music, long nights. Thanks for being part of the journey."
-            ].map((post, index) => (
-              <article key={post} className="border-b border-neutral-200 py-6">
-                <p className="text-2xs font-bold uppercase tracking-wider text-pmred">
-                  {artist.name}{" "}
-                  <span className="ml-3 font-normal text-neutral-400">
-                    {formatLongDate(`2026-09-${pad2(22 - index * 4)}`)}
-                  </span>
-                </p>
-                <p className="mt-4 text-sm leading-7 text-neutral-600">{post}</p>
-                <button
-                  type="button"
-                  onClick={() => actions.toggleLike(`post:${artist.id}:${index}`)}
-                  aria-pressed={!!state.likes[`post:${artist.id}:${index}`]}
-                  className="mt-4 cursor-pointer text-xs text-pmred"
+            {posts.map((post) => {
+              const likeId = `post:${post.section}:${post.id}`;
+              const article = post.section !== "timeline";
+              return (
+                <article
+                  key={`${post.section}-${post.id}`}
+                  className="border-b border-neutral-200 py-6"
                 >
-                  {state.likes[`post:${artist.id}:${index}`] ? "♥ Liked" : "♡ Like"}
-                </button>
-              </article>
-            ))}
+                  <p className="text-2xs font-bold uppercase tracking-wider text-pmred">
+                    {article ? post.category || post.section : artist.name}{" "}
+                    <time dateTime={post.isoDate} className="ml-3 font-normal text-neutral-400">
+                      {formatLongDate(post.isoDate)}
+                    </time>
+                  </p>
+                  {article && (
+                    <h3 className="mt-3 text-sm font-extrabold uppercase tracking-wide">
+                      <Link href={`/${post.section}/${post.id}`} className="hover:text-pmred">
+                        {post.title}
+                      </Link>
+                    </h3>
+                  )}
+                  {(article ? [post.snippet] : post.body).filter(Boolean).map((paragraph) => (
+                    <p key={paragraph} className="mt-4 text-sm leading-7 text-neutral-600">
+                      {paragraph}
+                    </p>
+                  ))}
+                  <div className="mt-4 flex items-center gap-6">
+                    <button
+                      type="button"
+                      onClick={() => actions.toggleLike(likeId)}
+                      aria-pressed={!!state.likes[likeId]}
+                      className="cursor-pointer text-xs text-pmred"
+                    >
+                      {state.likes[likeId] ? "♥ Liked" : "♡ Like"}
+                    </button>
+                    {article && (
+                      <Link
+                        href={`/${post.section}/${post.id}`}
+                        className="text-2xs font-bold uppercase tracking-widest text-neutral-500 hover:text-pmred"
+                      >
+                        Read more →
+                      </Link>
+                    )}
+                  </div>
+                </article>
+              );
+            })}
+            {!posts.length && <EmptyState>No posts from {artist.name} yet.</EmptyState>}
           </div>
         )}
         {tab === "events" && (
           <>
             <SectionHeading
-              title="Community events"
-              detail="A look back at nights that brought us together."
+              title="Events"
+              detail={`Nights with ${artist.name} and the Projct Music community.`}
             />
             <div className="grid sm:grid-cols-2 xl:grid-cols-3">
-              {events.map((event, index) => (
-                <article
-                  key={event.id || event.title || index}
-                  className="border-b border-neutral-200 p-6 sm:border-r"
-                >
+              {events.map((event) => (
+                <article key={event.id} className="border-b border-neutral-200 p-6 sm:border-r">
                   <div className="flex items-center gap-4">
                     <span className="text-5xl font-light text-pmred">{pad2(event.day)}</span>
                     <span className="text-xs font-bold uppercase text-neutral-400">
@@ -170,17 +254,27 @@ export default function ArtistProfile({ artist, topArtists, albums, photos, even
                   </div>
                   <h3 className="mt-5 text-sm font-bold uppercase">{event.title}</h3>
                   <p className="mt-2 text-xs text-neutral-500">
-                    {event.address?.[0] || event.venue} · {event.time}
+                    {event.address[0]} · {event.time}
                   </p>
                   <Button
-                    href="/events"
+                    href={`/events/${event.id}`}
                     variant="outline"
                     size="xs"
                     className="mt-6 cursor-pointer"
                   >
-                    Explore events
+                    Event details
                   </Button>
                 </article>
+              ))}
+            </div>
+          </>
+        )}
+        {tab === "merch" && (
+          <>
+            <SectionHeading title="Merch" detail={`Records and merchandise from ${artist.name}.`} />
+            <div className="-mx-5 grid grid-cols-2 border-t border-neutral-200 sm:-mx-10 md:grid-cols-3 lg:grid-cols-4">
+              {merch.map((product) => (
+                <ProductCard key={product.id} product={product} />
               ))}
             </div>
           </>
@@ -188,20 +282,46 @@ export default function ArtistProfile({ artist, topArtists, albums, photos, even
         {tab === "about" && (
           <div className="max-w-3xl">
             <SectionHeading title={`About ${artist.name}`} />
-            <p className="text-base leading-8 text-neutral-500">{artist.bio}</p>
+            {artist.bio ? (
+              <p className="whitespace-pre-line text-base leading-8 text-neutral-500">
+                {artist.bio}
+              </p>
+            ) : (
+              <EmptyState>More about {artist.name} soon.</EmptyState>
+            )}
             <dl className="mt-8 grid gap-6 border-t border-neutral-200 pt-6 sm:grid-cols-2">
-              <div>
-                <dt className="text-2xs font-bold uppercase tracking-widest text-pmred">
-                  Based in
-                </dt>
-                <dd className="mt-2 text-sm">{artist.location}</dd>
-              </div>
+              {artist.location && (
+                <div>
+                  <dt className="text-2xs font-bold uppercase tracking-widest text-pmred">
+                    Based in
+                  </dt>
+                  <dd className="mt-2 text-sm">{artist.location}</dd>
+                </div>
+              )}
               <div>
                 <dt className="text-2xs font-bold uppercase tracking-widest text-pmred">
                   Community
                 </dt>
                 <dd className="mt-2 text-sm">Projct Music / Truth Studios</dd>
               </div>
+              {links.length > 0 && (
+                <div className="sm:col-span-2">
+                  <dt className="text-2xs font-bold uppercase tracking-widest text-pmred">Links</dt>
+                  <dd className="mt-3 flex flex-wrap gap-2">
+                    {links.map(([key, href]) => (
+                      <a
+                        key={key}
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 rounded-full border border-neutral-200 px-4 py-2 text-2xs font-bold uppercase tracking-wider text-neutral-600 transition-colors hover:border-pmred hover:text-pmred"
+                      >
+                        {linkLabel(key)} <ArrowUpRightIcon className="h-3 w-3" />
+                      </a>
+                    ))}
+                  </dd>
+                </div>
+              )}
             </dl>
           </div>
         )}
@@ -219,29 +339,17 @@ function SectionHeading({ title, detail }) {
   );
 }
 
-export function getStaticPaths() {
-  return {
-    paths: getArtistHomePageData().map((artist) => ({ params: { id: artist.id } })),
-    fallback: "blocking"
-  };
+function EmptyState({ children }) {
+  return <p className="py-10 text-sm text-neutral-500">{children}</p>;
 }
 
-export function getStaticProps({ params }) {
-  const artist = getArtistProfile(params.id);
-  if (!artist) return { notFound: true };
-  const music = getMusics();
-  const offset = hashString(artist.id) % music.length;
-  const albums = Array.from(
-    { length: 8 },
-    (_, index) => music[(offset + index) % music.length]
-  ).map(toAlbumSummary);
-  return {
-    props: {
-      artist,
-      topArtists: getArtistHomePageData().slice(0, 10),
-      albums,
-      photos: getArtistPhotos(artist),
-      events: getEvents().slice(0, 6)
-    }
-  };
+// Rendered on first request, so artists created in the CRM work without a rebuild.
+export async function getStaticPaths() {
+  return { paths: [], fallback: "blocking" };
+}
+
+export async function getStaticProps({ params }) {
+  const page = await getArtistPage(params.id);
+  if (!page) return { notFound: true, revalidate: 60 };
+  return { props: page, revalidate: 60 };
 }

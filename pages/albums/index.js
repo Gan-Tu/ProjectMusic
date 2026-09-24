@@ -2,8 +2,7 @@ import { useState } from "react";
 import AppContainer from "../../components/AppContainer";
 import AlbumCard from "../../components/AlbumCard";
 import CatalogToolbar from "../../components/music/CatalogToolbar";
-import { getMusics } from "../../utils/getFakeTracks";
-import { toAlbumSummary } from "../../utils/albumTracks";
+import { listAlbums } from "../../lib/server/content";
 import { formatNumber } from "../../lib/format";
 
 export default function Albums({ musics }) {
@@ -40,8 +39,8 @@ export default function Albums({ musics }) {
   );
 }
 
+// Each album carries its first track, so its card plays at once (the rest of the
+// tracklist loads on demand, see components/music/albumQueue.js).
 export async function getStaticProps() {
-  return {
-    props: { musics: getMusics().map(toAlbumSummary) }
-  };
+  return { props: { musics: await listAlbums({ placement: "music" }) }, revalidate: 60 };
 }

@@ -1,15 +1,14 @@
+const { IMAGE_HOSTS } = require("./lib/imageHosts");
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  // Parallel dev servers (e.g. `NEXT_DIST_DIR=.next-crm next dev -p 3002`) need
+  // separate build folders.
+  distDir: process.env.NEXT_DIST_DIR || ".next",
   images: {
-    remotePatterns: [
-      "s3.amazonaws.com",
-      "images.unsplash.com",
-      "picsum.photos",
-      "fastly.picsum.photos",
-      "i.scdn.co",
-      "assets.audiomack.com"
-    ].map((hostname) => ({ protocol: "https", hostname }))
+    // Other hosts (admin-pasted URLs) render unoptimized via components/ui/SmartImage.js.
+    remotePatterns: IMAGE_HOSTS.map((hostname) => ({ protocol: "https", hostname }))
   },
   async redirects() {
     return [

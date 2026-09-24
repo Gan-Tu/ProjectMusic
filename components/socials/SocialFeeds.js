@@ -1,6 +1,6 @@
-import { useEffect, useState, useMemo } from "react";
-import CommentThread, { useThreadComments } from "../comments/CommentThread";
-import Image from "next/image";
+import { useEffect, useState } from "react";
+import CommentThread, { useCommentCount } from "../comments/CommentThread";
+import Image from "../ui/SmartImage";
 import {
   ArrowPathRoundedSquareIcon,
   ArrowUpRightIcon,
@@ -16,25 +16,17 @@ import { useStore } from "../../lib/store";
 import { usePlayer } from "../../lib/player";
 import { formatLongDate, formatNumber } from "../../lib/format";
 import CaptionsTrack from "../videos/CaptionsTrack";
+import VideoEmbed from "../videos/VideoEmbed";
+import { parseVideoUrl } from "../../lib/media";
 
 const FIRST_BATCH = 12; // photos shown before "Load more"
 
-// `likeKey` overrides the default "social:<id>" key (e.g. tracks share music likes).
-// Seeded comments of a photo post (shared by its tile count and its lightbox thread).
-function conversationSeed(post) {
-  return post.conversation.map((comment, i) => ({
-    id: `${post.id}#c${i}`,
-    author: comment.author,
-    text: comment.text,
-    label: formatLongDate(post.date)
-  }));
-}
-
 function CommentCount({ post }) {
-  const seed = useMemo(() => conversationSeed(post), [post]);
-  return useThreadComments(`social:${post.id}`, { seed }).length;
+  const count = useCommentCount(`social:${post.id}`);
+  return count ?? <span className="sr-only">Loading</span>;
 }
 
+// `likeKey` overrides the default "social:<id>" key (e.g. tracks share music likes).
 export function LikeButton({ id, likeKey, count = 0, label = "Like", inverse = false }) {
   const { state, actions } = useStore();
   const key = likeKey || `social:${id}`;
@@ -221,7 +213,6 @@ export function PhotoFeed({ posts, pinterest = false }) {
                   compact
                   title="Comments"
                   threadId={`social:${post.id}`}
-                  seed={conversationSeed(post)}
                   className="mt-5"
                 />
                 <div className="mt-auto flex items-center justify-between gap-4 pt-8">
@@ -400,20 +391,24 @@ function VideoPreview({ post, pause, loop }) {
   const [failed, setFailed] = useState(false);
   return (
     <>
-      <video
-        src={post.src}
-        poster={post.image}
-        autoPlay
-        controls
-        playsInline
-        loop={loop}
-        onPlay={pause}
-        onError={() => setFailed(true)}
-        className="aspect-video w-full bg-black"
-        aria-label={post.title}
-      >
-        <CaptionsTrack src={post.src} />
-      </video>
+      {parseVideoUrl(post.src).type === "file" ? (
+        <video
+          src={post.src}
+          poster={post.image}
+          autoPlay
+          controls
+          playsInline
+          loop={loop}
+          onPlay={pause}
+          onError={() => setFailed(true)}
+          className="aspect-video w-full bg-black"
+          aria-label={post.title}
+        >
+          <CaptionsTrack src={post.src} />
+        </video>
+      ) : (
+        <VideoEmbed src={post.src} title={post.title} className="aspect-video w-full bg-black" />
+      )}
       <div className="px-7 py-6">
         <p className="text-sm text-neutral-600">{post.caption}</p>
         {failed && (

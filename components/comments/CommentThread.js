@@ -1,27 +1,27 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import Image from "../ui/SmartImage";
 import toast from "react-hot-toast";
 import { HeartIcon } from "@heroicons/react/24/outline";
 import { HeartIcon as HeartSolidIcon } from "@heroicons/react/24/solid";
 import { useStore } from "../../lib/store";
-import { useSessionContext } from "../../lib/SessionProvider";
+import { loginHref, useSessionContext } from "../../lib/SessionProvider";
 import { classNames, pad2, timeAgo } from "../../lib/format";
 import { useNow } from "../../lib/useNow";
-import { getSeedComments } from "../../utils/getFakeComments";
 import UndoBar from "../ui/UndoBar";
+import {
+  deleteComment,
+  editComment,
+  postComment,
+  useCommentCount,
+  useThread
+} from "./commentsStore";
 
 const MAX_LENGTH = 1000;
 
-// Visible comments of a thread: the user's own (newest first) + seeded ones not removed.
-export function useThreadComments(threadId, { seed, seedCount } = {}) {
-  const { state } = useStore();
-  const seeded = useMemo(
-    () => seed ?? getSeedComments(threadId, seedCount),
-    [seed, threadId, seedCount]
-  );
-  const mine = state.comments[threadId] || [];
-  return [...mine, ...seeded.filter((c) => !state.hiddenComments[c.id])];
-}
+// Number of comments in a thread, for "Comment (3)" style labels (null until known).
+export { useCommentCount };
 
 function Avatar({ src, name, compact }) {
   const size = compact ? "h-7 w-7" : "h-10 w-10";
@@ -30,14 +30,7 @@ function Avatar({ src, name, compact }) {
       className={classNames("relative shrink-0 overflow-hidden rounded-full bg-neutral-200", size)}
     >
       {src ? (
-        <Image
-          src={src}
-          alt=""
-          fill
-          sizes="40px"
-          className="object-cover"
-          unoptimized={src.startsWith("data:")}
-        />
+        <Image src={src} alt="" fill sizes="40px" className="object-cover" />
       ) : (
         <span className="flex h-full w-full items-center justify-center text-2xs font-bold uppercase text-neutral-500">
           {name?.slice(0, 2)}
@@ -53,7 +46,7 @@ function ActionButton({ children, onClick, danger, dark, ...props }) {
       type="button"
       onClick={onClick}
       className={classNames(
-        "text-2xs font-bold uppercase tracking-wider transition",
+        "text-2xs font-bold uppercase tracking-wider transition disabled:opacity-40",
         danger
           ? "text-pmred hover:text-pmred-dark"
           : dark
@@ -67,30 +60,20 @@ function ActionButton({ children, onClick, danger, dark, ...props }) {
   );
 }
 
-function CommentItem({
-  comment,
-  threadId,
-  loggedIn,
-  canModerate,
-  compact,
-  dark,
-  now,
-  onReply,
-  onDeleted
-}) {
+function CommentItem({ comment, threadId, loggedIn, compact, dark, now, onReply, onDeleted }) {
   const { state, actions } = useStore();
   const [mode, setMode] = useState("view"); // "view" | "edit" | "confirm"
   const [draft, setDraft] = useState(comment.text);
   // Text the edit started from, to notice changes saved meanwhile (e.g. in another tab).
   const [editBase, setEditBase] = useState(comment.text);
+  // Likes are this browser's toggle on top of the stored count.
   const likeId = `comment:${comment.id}`;
   const liked = Boolean(state.likes[likeId]);
   const likes = (comment.likes || 0) + (liked ? 1 : 0);
-  // Editing and deleting need an active session (moderation also needs the admin role).
-  const canEdit = loggedIn && comment.mine;
-  const canDelete = loggedIn && (comment.mine || canModerate);
-  const editing = mode === "edit" && canEdit;
-  const confirming = mode === "confirm" && canDelete;
+  // Members edit and delete their own comments (moderation happens in the CRM).
+  const canChange = loggedIn && comment.mine;
+  const editing = mode === "edit" && canChange;
+  const confirming = mode === "confirm" && canChange;
 
   // Keep keyboard focus with the action: into the confirmation, and back to Edit or
   // Delete when editing or confirming ends.
@@ -112,34 +95,40 @@ function CommentItem({
     setMode("edit");
   }
 
-  function remove() {
-    if (!canDelete) return;
-    const undo = actions.deleteComment(threadId, comment);
-    setMode("view");
-    onDeleted({ message: comment.mine ? "Comment deleted" : "Comment removed", run: undo });
-  }
-
-  const [saving, setSaving] = useState(false);
-  // The newer saved text when another tab changed the comment during this edit: shown
-  // next to the draft until the user picks a version.
-  const [conflict, setConflict] = useState(null);
-  async function save(e, { overwrite = false } = {}) {
-    e?.preventDefault();
-    if (!canEdit) {
+  const [busy, setBusy] = useState(false);
+  async function remove() {
+    if (!canChange || busy) return;
+    setBusy(true);
+    const result = await deleteComment(threadId, comment.id);
+    setBusy(false);
+    if (!result.ok) {
+      toast.error(result.error);
       setMode("view");
       return;
     }
-    if (!draft.trim() || saving || (conflict !== null && !overwrite)) return;
+    onDeleted(comment);
+  }
+
+  // The newer saved text when the comment changed during this edit (e.g. in another
+  // tab): shown next to the draft until the user picks a version.
+  const [conflict, setConflict] = useState(null);
+  async function save(e, { overwrite = false } = {}) {
+    e?.preventDefault();
+    if (!canChange) {
+      setMode("view");
+      return;
+    }
+    if (!draft.trim() || busy || (conflict !== null && !overwrite)) return;
     const base = overwrite ? conflict : editBase;
     if (draft.trim() === base) {
       setConflict(null);
       setMode("view");
       return;
     }
-    // Checked against the latest saved comment (another tab may have edited it).
-    setSaving(true);
-    const result = await actions.editComment(threadId, comment.id, draft, base);
-    setSaving(false);
+    // Checked against the latest saved comment on the server.
+    setBusy(true);
+    const result = await editComment(threadId, comment.id, draft, base);
+    setBusy(false);
     if (result.conflict) {
       setConflict(result.text);
       return;
@@ -159,15 +148,16 @@ function CommentItem({
       <div className="min-w-0 flex-1">
         <p className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
           <span className="text-xs font-bold text-pmred">{comment.author}</span>
-          <span
+          <time
+            dateTime={comment.at}
             className={classNames(
               "text-2xs uppercase tracking-wider",
               dark ? "text-neutral-400" : "text-neutral-500"
             )}
           >
-            {comment.label || timeAgo(comment.at, now || undefined)}
+            {timeAgo(comment.at, now || undefined)}
             {comment.editedAt && " · edited"}
-          </span>
+          </time>
         </p>
 
         {editing ? (
@@ -228,9 +218,9 @@ function CommentItem({
                 type="submit"
                 danger
                 onClick={save}
-                disabled={!draft.trim() || conflict !== null}
+                disabled={!draft.trim() || conflict !== null || busy}
               >
-                Save
+                {busy ? "Saving…" : "Save"}
               </ActionButton>
               <ActionButton
                 dark={dark}
@@ -265,9 +255,9 @@ function CommentItem({
               dark ? "text-neutral-300" : "text-neutral-600"
             )}
           >
-            {comment.mine ? "Delete this comment?" : "Remove this comment for everyone?"}
-            <ActionButton danger onClick={remove} ref={confirmRef}>
-              {comment.mine ? "Delete" : "Remove"}
+            Delete this comment?
+            <ActionButton danger onClick={remove} disabled={busy} ref={confirmRef}>
+              Delete
             </ActionButton>
             <ActionButton dark={dark} onClick={() => setMode("view")}>
               Cancel
@@ -297,18 +287,20 @@ function CommentItem({
                 )}
                 {likes > 0 && likes}
               </button>
-              <ActionButton dark={dark} onClick={() => onReply(comment.author)}>
-                Reply
-              </ActionButton>
-              {canEdit && (
-                <ActionButton dark={dark} onClick={startEdit} ref={editRef}>
-                  Edit
+              {loggedIn && (
+                <ActionButton dark={dark} onClick={() => onReply(comment.author)}>
+                  Reply
                 </ActionButton>
               )}
-              {canDelete && (
-                <ActionButton danger onClick={() => setMode("confirm")} ref={deleteRef}>
-                  {comment.mine ? "Delete" : "Remove"}
-                </ActionButton>
+              {canChange && (
+                <>
+                  <ActionButton dark={dark} onClick={startEdit} ref={editRef}>
+                    Edit
+                  </ActionButton>
+                  <ActionButton danger onClick={() => setMode("confirm")} ref={deleteRef}>
+                    Delete
+                  </ActionButton>
+                </>
               )}
             </div>
           )
@@ -318,42 +310,49 @@ function CommentItem({
   );
 }
 
-// Persisted comment thread with add / edit / delete (+ undo) / like / reply.
-// The logged-in user is the site admin, so they may also remove others' comments.
-// Keyed by thread so drafts never leak when the same component switches threads.
+// A comment thread (stored on the server, visible to everyone): members post, reply,
+// edit and delete their own comments (with Undo); guests read along and get a link to
+// log in. Keyed by thread so drafts never leak when the same component switches threads.
 export default function CommentThread(props) {
   return <Thread key={props.threadId} {...props} />;
 }
 
 function Thread({
   threadId,
-  seed,
-  seedCount,
   title = "Conversation",
   compact = false,
   placeholder = "What are you hearing?",
   dark = false,
   className
 }) {
-  const { actions } = useStore();
-  const [session, dispatch] = useSessionContext();
+  const [session] = useSessionContext();
+  const router = useRouter();
   const user = session.user;
-  const comments = useThreadComments(threadId, { seed, seedCount });
+  const { comments, error } = useThread(threadId, user?.id || "guest");
+  const list = comments || [];
   const now = useNow(); // one clock per thread keeps "5 minutes ago" labels current
   const headingRef = useRef(null); // where focus goes when an Undo notice closes
   const [draft, setDraft] = useState("");
+  const [posting, setPosting] = useState(false);
   const [showAll, setShowAll] = useState(false);
   const [undo, setUndo] = useState(null);
   const inputRef = useRef(null);
   const limit = compact ? 3 : 5;
-  const shown = showAll ? comments : comments.slice(0, limit);
-  const canModerate = user?.role === "Administrator";
+  const shown = showAll ? list : list.slice(0, limit);
 
-  function post(e) {
+  async function post(e) {
     e?.preventDefault();
     const text = draft.trim();
-    if (!text || !user) return;
-    actions.addComment(threadId, { text, author: user.name, avatar: user.avatar });
+    if (!text || !user || posting) return;
+    setPosting(true);
+    const result = await postComment(threadId, text);
+    setPosting(false);
+    if (!result.ok) {
+      toast.error(
+        result.status === 401 ? "Your session ended. Log in again to comment." : result.error
+      );
+      return;
+    }
     setDraft("");
     toast.success("Comment posted");
   }
@@ -361,6 +360,18 @@ function Thread({
   function reply(author) {
     setDraft((d) => (d.startsWith(`@${author}`) ? d : `@${author} ${d}`));
     inputRef.current?.focus();
+  }
+
+  // Undo puts the text back as a new comment.
+  function deleted(comment) {
+    setUndo({
+      id: Date.now(),
+      message: "Comment deleted",
+      run: async () => {
+        const result = await postComment(threadId, comment.text);
+        if (!result.ok) toast.error(result.error);
+      }
+    });
   }
 
   const form = user ? (
@@ -387,7 +398,7 @@ function Thread({
             />
             <button
               type="submit"
-              disabled={!draft.trim()}
+              disabled={!draft.trim() || posting}
               className="rounded-full bg-pmred px-4 text-2xs font-bold uppercase tracking-wider text-white transition hover:bg-pmred-dark disabled:opacity-40"
             >
               Post
@@ -418,10 +429,10 @@ function Thread({
               </span>
               <button
                 type="submit"
-                disabled={!draft.trim()}
+                disabled={!draft.trim() || posting}
                 className="rounded-full bg-pmred px-6 py-2 text-xs font-bold uppercase tracking-wider text-white transition hover:bg-pmred-dark disabled:opacity-40"
               >
-                Post comment
+                {posting ? "Posting…" : "Post comment"}
               </button>
             </div>
           </>
@@ -429,15 +440,19 @@ function Thread({
       </div>
     </form>
   ) : (
-    <p className="flex flex-wrap items-center gap-3 text-xs text-neutral-500">
-      Log in to join the conversation.
-      <button
-        type="button"
-        onClick={() => dispatch({ type: "set_user", user: {} })}
-        className="font-bold uppercase tracking-wider text-pmred"
+    <p
+      className={classNames(
+        "flex flex-wrap items-center gap-3 text-xs",
+        dark ? "text-neutral-400" : "text-neutral-500"
+      )}
+    >
+      Join the conversation.
+      <Link
+        href={loginHref(router.asPath)}
+        className="font-bold uppercase tracking-wider text-pmred hover:underline"
       >
-        Login
-      </button>
+        Log in to comment
+      </Link>
     </p>
   );
 
@@ -452,7 +467,7 @@ function Thread({
           compact ? "mb-3 text-2xs" : "mb-6 text-sm"
         )}
       >
-        {title} <span className="text-pmred">{pad2(comments.length)}</span>
+        {title} <span className="text-pmred">{pad2(list.length)}</span>
       </h2>
       {form}
       {undo && (
@@ -465,7 +480,7 @@ function Thread({
           className="mt-4"
         />
       )}
-      {comments.length ? (
+      {list.length ? (
         <ul
           className={classNames(
             "divide-y",
@@ -480,27 +495,29 @@ function Thread({
               comment={comment}
               threadId={threadId}
               loggedIn={Boolean(user)}
-              canModerate={canModerate}
               compact={compact}
               dark={dark}
               now={now}
               onReply={reply}
-              onDeleted={(entry) => setUndo({ ...entry, id: Date.now() })}
+              onDeleted={deleted}
             />
           ))}
         </ul>
       ) : (
-        <p className={classNames("mt-4 text-sm", dark ? "text-neutral-400" : "text-neutral-500")}>
-          Be the first to add your voice.
+        <p
+          role={error ? "alert" : undefined}
+          className={classNames("mt-4 text-sm", dark ? "text-neutral-400" : "text-neutral-500")}
+        >
+          {error || (comments ? "Be the first to add your voice." : "Loading comments…")}
         </p>
       )}
-      {comments.length > limit && (
+      {list.length > limit && (
         <button
           type="button"
           onClick={() => setShowAll((v) => !v)}
           className="mt-3 text-2xs font-bold uppercase tracking-wider text-pmred"
         >
-          {showAll ? "Show fewer" : `Show all ${comments.length} comments`}
+          {showAll ? "Show fewer" : `Show all ${list.length} comments`}
         </button>
       )}
     </section>

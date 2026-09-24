@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image from "../ui/SmartImage";
 import Link from "next/link";
 import { PauseIcon, PlayIcon, PlusIcon, CheckIcon } from "@heroicons/react/24/solid";
 import toast from "react-hot-toast";

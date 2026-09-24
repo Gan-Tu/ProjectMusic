@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Image from "next/image";
+import Image from "./ui/SmartImage";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { HeartIcon, PlusIcon } from "@heroicons/react/24/outline";
@@ -11,7 +11,7 @@ import { classNames, formatTime } from "../lib/format";
 import { trackPurchaseItem } from "../lib/pricing";
 import { Equalizer, PlayButton, TrackProgress } from "./music/TrackControls";
 import { shareAlbum } from "./music/share";
-import CommentThread, { useThreadComments } from "./comments/CommentThread";
+import CommentThread, { useCommentCount } from "./comments/CommentThread";
 
 export default function MusicPlayerCard({ musicData, track, queue, priority = false }) {
   const { state, actions } = useStore();
@@ -21,7 +21,7 @@ export default function MusicPlayerCard({ musicData, track, queue, priority = fa
   const active = player.isCurrent(track.id);
   const liked = !!state.likes[track.id];
   const saved = state.playlist.some((item) => item.id === track.id);
-  const comments = useThreadComments(`album:${musicData.id}`);
+  const comments = useCommentCount(`album:${musicData.id}`);
   const item = trackPurchaseItem(track);
 
   return (
@@ -87,7 +87,7 @@ export default function MusicPlayerCard({ musicData, track, queue, priority = fa
               onClick={() => setCommentOpen(!commentOpen)}
               className="min-h-8 cursor-pointer hover:underline"
             >
-              Comment{comments.length > 0 ? ` (${comments.length})` : ""}
+              Comment{comments > 0 ? ` (${comments})` : ""}
             </button>
             <button
               type="button"

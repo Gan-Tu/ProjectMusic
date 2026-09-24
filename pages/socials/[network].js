@@ -8,7 +8,16 @@ import {
 } from "../../components/socials/SocialFeeds";
 import { TrackList, MyspaceProfile } from "../../components/socials/SocialMusic";
 import WikipediaArticle from "../../components/socials/WikipediaArticle";
-import { getSocialProfiles, getSocialPage } from "../../utils/getFakeSocials";
+import { getSocialPage } from "../../lib/server/content";
+
+// Networks without a layout of their own (e.g. added in the CRM) get the feed that
+// suits most of their posts.
+function fallbackFeed(posts) {
+  const videos = posts.filter((post) => post.type === "video" && post.src).length;
+  if (videos > posts.length / 2) return <VideoFeed posts={posts} network="youtube" />;
+  if (!posts.some((post) => post.image)) return <TwitterFeed posts={posts} />;
+  return <JournalFeed posts={posts} />;
+}
 
 function NetworkContent({ network, content }) {
   switch (network) {
@@ -31,9 +40,9 @@ function NetworkContent({ network, content }) {
     case "myspace":
       return <MyspaceProfile friends={content.friends} tracks={content.tracks} />;
     case "wikipedia":
-      return <WikipediaArticle article={content.article} />;
+      return content.article ? <WikipediaArticle article={content.article} /> : null;
     default:
-      return null;
+      return content.posts?.length ? fallbackFeed(content.posts) : null;
   }
 }
 
@@ -50,15 +59,13 @@ export default function SocialNetworkPage({ profile, content }) {
   );
 }
 
-export function getStaticPaths() {
-  return {
-    paths: getSocialProfiles().map(({ id }) => ({ params: { network: id } })),
-    fallback: "blocking"
-  };
+// Rendered on first request, so networks added in the CRM work without a rebuild.
+export async function getStaticPaths() {
+  return { paths: [], fallback: "blocking" };
 }
 
-export function getStaticProps({ params }) {
-  const data = getSocialPage(params.network);
-  if (!data) return { notFound: true };
-  return { props: data };
+export async function getStaticProps({ params }) {
+  const page = await getSocialPage(params.network);
+  if (!page) return { notFound: true, revalidate: 60 };
+  return { props: page, revalidate: 60 };
 }

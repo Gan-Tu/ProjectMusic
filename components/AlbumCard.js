@@ -1,13 +1,17 @@
-import Image from "next/image";
+import Image from "./ui/SmartImage";
 import Link from "next/link";
 import { pad2 } from "../lib/format";
+import { usePlayer } from "../lib/player";
 import { PlayButton } from "./music/TrackControls";
-import { buildAlbumTracks } from "../utils/albumTracks";
+import { playAlbum } from "./music/albumQueue";
 
 // Existing artist grids may wrap this card in their own link. Catalog pages opt
-// into an internal link; the play queue is built from the album on demand.
+// into an internal link; the play button plays the album (its full tracklist loads
+// on demand when the card only has the first track).
 export default function AlbumCard({ musicData, num, tracks, linked = false, priority = false }) {
-  const queue = tracks || musicData.tracks || (linked ? buildAlbumTracks(musicData) : null);
+  const player = usePlayer();
+  const album = tracks ? { ...musicData, tracks } : musicData;
+  const queue = album.tracks;
   return (
     <div className="group relative isolate aspect-square overflow-hidden bg-neutral-900 text-white">
       <Image
@@ -36,7 +40,11 @@ export default function AlbumCard({ musicData, num, tracks, linked = false, prio
       </div>
       {linked && queue?.length > 0 && (
         <div className="absolute right-3 top-3 z-20 transition-opacity sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100">
-          <PlayButton track={queue[0]} queue={queue} className="bg-pmred text-white shadow-lg" />
+          <PlayButton
+            track={queue[0]}
+            onPlay={() => playAlbum(player, album)}
+            className="bg-pmred text-white shadow-lg"
+          />
         </div>
       )}
     </div>

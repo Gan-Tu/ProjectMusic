@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
-import Image, { getImageProps } from "next/image";
+import { getImageProps } from "next/image";
 import {
   ArrowDownTrayIcon,
   ArrowLeftIcon,
@@ -9,14 +9,17 @@ import {
   HeartIcon
 } from "@heroicons/react/24/outline";
 import toast from "react-hot-toast";
+import Image from "../ui/SmartImage";
 import Modal from "../ui/Modal";
 import { useStore } from "../../lib/store";
 import { classNames, pad2 } from "../../lib/format";
+import { isOptimizableSrc } from "../../lib/imageHosts";
 
 // Some originals live on hosts that refuse cross-origin fetches (S3), so downloads go
-// through Next's same-origin image endpoint: full size, in the original format.
+// through Next's same-origin image endpoint: full size, in the original format. Hosts
+// the optimizer doesn't know (admin-pasted URLs) are fetched directly.
 function downloadUrl(src) {
-  if (src.startsWith("/")) return src;
+  if (src.startsWith("/") || !isOptimizableSrc(src)) return src;
   return getImageProps({ src, alt: "", width: 1920, height: 1920 }).props.src;
 }
 

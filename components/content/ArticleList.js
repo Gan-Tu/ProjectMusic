@@ -63,7 +63,7 @@ function FilteredArticles({ posts, section, active }) {
 export default function ArticleList({ posts, section }) {
   const router = useRouter();
   const active = typeof router.query.tag === "string" ? router.query.tag : "";
-  const categories = [...new Set(posts.map((post) => post.category))];
+  const categories = [...new Set(posts.map((post) => post.category).filter(Boolean))];
   const tags = [...new Set(posts.flatMap((post) => post.tags))].sort();
   const title = section === "news" ? "News" : "Blog";
   return (

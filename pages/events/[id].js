@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image from "../../components/ui/SmartImage";
 import Link from "next/link";
 import { ClockIcon, MapPinIcon, ArrowUpRightIcon } from "@heroicons/react/24/outline";
 import AppContainer from "../../components/AppContainer";
@@ -6,7 +6,7 @@ import { TicketButton, InterestedButton } from "../../components/events/EventAct
 import CalendarDownload from "../../components/events/CalendarDownload";
 import CommentThread from "../../components/comments/CommentThread";
 import { formatLongDate, formatUSD, formatCredits } from "../../lib/format";
-import { getEvents, getEventById } from "../../utils/getFakeEvents";
+import { getEvent } from "../../lib/server/content";
 
 export default function EventDetail({ event }) {
   const directions = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.address.join(", "))}`;
@@ -62,29 +62,33 @@ export default function EventDetail({ event }) {
           <p className="mt-4 max-w-xl text-sm font-light leading-7 text-neutral-500">
             {event.description}
           </p>
-          <h2 className="mb-5 mt-10 text-xs font-bold uppercase tracking-[0.2em]">
-            Featured lineup
-          </h2>
-          <ul className="grid grid-cols-3 gap-3">
-            {event.lineup.map((artist) => (
-              <li key={artist.id}>
-                <Link href={`/artists/${artist.id}`} className="group block cursor-pointer">
-                  <div className="relative aspect-square overflow-hidden bg-neutral-100">
-                    <Image
-                      src={artist.imgUrl}
-                      alt={artist.name}
-                      fill
-                      sizes="(max-width: 1023px) 30vw, 15vw"
-                      className="object-cover transition duration-300 group-hover:scale-105"
-                    />
-                  </div>
-                  <p className="mt-3 text-2xs font-bold uppercase tracking-wider group-hover:text-pmred">
-                    {artist.name}
-                  </p>
-                </Link>
-              </li>
-            ))}
-          </ul>
+          {event.lineup.length > 0 && (
+            <>
+              <h2 className="mb-5 mt-10 text-xs font-bold uppercase tracking-[0.2em]">
+                Featured lineup
+              </h2>
+              <ul className="grid grid-cols-3 gap-3">
+                {event.lineup.map((artist) => (
+                  <li key={artist.id}>
+                    <Link href={`/artists/${artist.id}`} className="group block cursor-pointer">
+                      <div className="relative aspect-square overflow-hidden bg-neutral-100">
+                        <Image
+                          src={artist.imgUrl}
+                          alt={artist.name}
+                          fill
+                          sizes="(max-width: 1023px) 30vw, 15vw"
+                          className="object-cover transition duration-300 group-hover:scale-105"
+                        />
+                      </div>
+                      <p className="mt-3 text-2xs font-bold uppercase tracking-wider group-hover:text-pmred">
+                        {artist.name}
+                      </p>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
           <h2 className="mb-5 mt-10 text-xs font-bold uppercase tracking-[0.2em]">The venue</h2>
           <div
             className="relative flex min-h-56 items-center justify-center overflow-hidden border border-neutral-200 bg-neutral-100"
@@ -120,7 +124,9 @@ export default function EventDetail({ event }) {
         <aside className="border-t border-neutral-200 bg-neutral-50 px-6 py-10 sm:px-12 lg:border-l lg:border-t-0">
           <h2 className="text-xs font-bold uppercase tracking-[0.2em]">Make it a night</h2>
           <p className="mt-3 text-sm font-light text-neutral-500">
-            Choose your ticket. Bring your people.
+            {event.tiers.length
+              ? "Choose your ticket. Bring your people."
+              : "Tickets go on sale soon. Mark yourself as interested to keep it on your radar."}
           </p>
           <ul className="mt-8 space-y-5">
             {event.tiers.map((tier) => (
@@ -147,15 +153,13 @@ export default function EventDetail({ event }) {
   );
 }
 
+// Rendered on first request, so events created in the CRM work without a rebuild.
 export async function getStaticPaths() {
-  return {
-    paths: getEvents().map((event) => ({ params: { id: event.id } })),
-    fallback: "blocking"
-  };
+  return { paths: [], fallback: "blocking" };
 }
 
 export async function getStaticProps({ params }) {
-  const event = getEventById(params.id);
-  if (!event) return { notFound: true };
-  return { props: { event } };
+  const event = await getEvent(params.id);
+  if (!event) return { notFound: true, revalidate: 60 };
+  return { props: { event }, revalidate: 60 };
 }

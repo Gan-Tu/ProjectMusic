@@ -2,10 +2,15 @@ import { PauseIcon, PlayIcon } from "@heroicons/react/24/solid";
 import { usePlayer, usePlayerProgress } from "../../lib/player";
 import { classNames } from "../../lib/format";
 
-export function PlayButton({ track, queue, className = "" }) {
+// `onPlay` replaces the default behavior (e.g. playing a whole album, see albumQueue).
+export function PlayButton({ track, queue, onPlay, className = "" }) {
   const player = usePlayer();
   const playing = player.isTrackPlaying(track.id);
   function handlePlay() {
+    if (onPlay) {
+      onPlay();
+      return;
+    }
     const sameQueue =
       !queue ||
       (queue.length === player.queue.length &&
