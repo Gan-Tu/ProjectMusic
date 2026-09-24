@@ -88,7 +88,8 @@ export function Drawer({ open, onClose, title, children, footer, widthClassName 
           <DialogPanel
             transition
             className={classNames(
-              "pointer-events-auto flex h-full w-screen flex-col bg-white shadow-2xl transition duration-300 ease-out data-closed:translate-x-full",
+              // Full width minus the wrapper's left gutter (pl-6), so it never overflows a phone.
+              "pointer-events-auto flex h-full w-[calc(100vw-1.5rem)] flex-col bg-white shadow-2xl transition duration-300 ease-out data-closed:translate-x-full",
               widthClassName
             )}
           >

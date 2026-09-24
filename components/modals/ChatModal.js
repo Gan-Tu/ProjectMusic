@@ -51,16 +51,17 @@ export default function ChatModal({ open, onClose, chatId: initialChatId }) {
   const matchingChats = chats.filter((c) => c.name.toLowerCase().includes(q));
   const visibleFriends = friends.filter((f) => f.name.toLowerCase().includes(q));
 
-  const messageCount = active?.messages.length || 0;
-  useEffect(() => {
-    const el = threadRef.current;
-    if (el) el.scrollTop = el.scrollHeight;
-  }, [activeId, messageCount]);
-
   // Replies count as read only while the conversation is on screen: phones hide it
   // behind the Friends tab (from md up, list and conversation sit side by side).
   const sideBySide = useMediaQuery("(min-width: 48rem)");
   const conversationShown = tab === "chats" || sideBySide;
+
+  // Keep the newest message in view, including when a hidden conversation comes back.
+  const messageCount = active?.messages.length || 0;
+  useEffect(() => {
+    const el = threadRef.current;
+    if (el && conversationShown) el.scrollTop = el.scrollHeight;
+  }, [activeId, messageCount, conversationShown]);
   useEffect(() => {
     if (open && conversationShown && activeId && active?.unread) actions.markChatRead(activeId);
   }, [open, conversationShown, activeId, active?.unread, actions]);
