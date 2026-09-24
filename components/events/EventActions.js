@@ -1,6 +1,7 @@
 import { HeartIcon } from "@heroicons/react/24/outline";
 import { HeartIcon as HeartSolidIcon } from "@heroicons/react/24/solid";
-import { useStore } from "../../lib/store";
+import { salesEnded, useStore } from "../../lib/store";
+import { useNow } from "../../lib/useNow";
 import { useUI } from "../../lib/ui";
 import { formatLongDate } from "../../lib/format";
 import Button from "../ui/Button";
@@ -9,21 +10,31 @@ import { showCartToast } from "../shop/cart";
 export function TicketButton({ event, tier, className = "" }) {
   const { actions } = useStore();
   const { openModal } = useUI();
-  function addTicket() {
-    const item = {
-      id: `ticket:${event.id}`,
-      name: event.title,
-      subtitle: `${formatLongDate(event.date)} · ${event.address[0]}`,
-      image: event.image,
-      kind: "ticket",
-      price: tier?.price ?? event.price,
-      credits: tier?.credits ?? event.credits,
-      options: { tier: tier?.name || "General admission" }
-    };
-    showCartToast(item, openModal, actions.addToCart(item));
+  const now = useNow();
+  const item = {
+    id: `ticket:${event.id}`,
+    name: event.title,
+    subtitle: `${formatLongDate(event.date)} · ${event.address[0]}`,
+    image: event.image,
+    kind: "ticket",
+    price: tier?.price ?? event.price,
+    credits: tier?.credits ?? event.credits,
+    options: { tier: tier?.name || "General admission" },
+    startsAt: event.startsAt
+  };
+  if (now && salesEnded(item, now)) {
+    return (
+      <Button variant="muted" className={className} disabled>
+        Sales ended
+      </Button>
+    );
   }
   return (
-    <Button variant="outline" className={`cursor-pointer ${className}`} onClick={addTicket}>
+    <Button
+      variant="outline"
+      className={`cursor-pointer ${className}`}
+      onClick={() => showCartToast(item, openModal, actions.addToCart(item))}
+    >
       Get tickets
     </Button>
   );

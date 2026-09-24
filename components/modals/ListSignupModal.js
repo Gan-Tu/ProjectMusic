@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useId, useState } from "react";
 import toast from "react-hot-toast";
 import Modal from "../ui/Modal";
 import Button from "../ui/Button";
@@ -32,6 +32,7 @@ function ListSignupModal({ open, onClose, kind }) {
   const { state, actions } = useStore();
   const existing = state.subscriptions[kind];
   const captcha = useCaptcha();
+  const formId = useId(); // the footer's CAPTCHA and Submit belong to this form
   const [name, setName] = useState(existing?.name || "");
   const [value, setValue] = useState(existing?.value || "");
   const [error, setError] = useState("");
@@ -52,19 +53,19 @@ function ListSignupModal({ open, onClose, kind }) {
       onClose={onClose}
       title={config.title}
       size="lg"
-      footerStart={<Captcha captcha={captcha} />}
+      footerStart={<Captcha captcha={captcha} form={formId} />}
       footer={
         <>
           <Button variant="muted" size="xs" onClick={onClose}>
             Cancel
           </Button>
-          <Button size="sm" onClick={submit}>
+          <Button size="sm" type="submit" form={formId}>
             Submit
           </Button>
         </>
       }
     >
-      <form onSubmit={submit} noValidate className="space-y-4 py-4">
+      <form id={formId} onSubmit={submit} noValidate className="space-y-4 py-4">
         {existing && (
           <p className="flex flex-wrap items-center gap-3 bg-neutral-50 px-4 py-3 text-xs text-neutral-500">
             You&apos;re subscribed as{" "}

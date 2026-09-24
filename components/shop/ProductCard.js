@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ShoppingBagIcon } from "@heroicons/react/24/outline";
-import { useStore } from "../../lib/store";
+import { salesEnded, useStore } from "../../lib/store";
+import { useNow } from "../../lib/useNow";
 import { useUI } from "../../lib/ui";
 import { formatCredits, formatUSD } from "../../lib/format";
 import ProductVisual from "./ProductVisual";
@@ -8,6 +9,8 @@ import { makeCartItem, showCartToast } from "./cart";
 
 export default function ProductCard({ product, priority = false }) {
   const { actions } = useStore();
+  const now = useNow();
+  const ended = now > 0 && salesEnded(product, now); // past event: no quick add
   const { openModal } = useUI();
   const cheapestTier = product.tiers?.reduce(
     (best, tier) => (tier.price < best.price ? tier : best),
@@ -47,17 +50,19 @@ export default function ProductCard({ product, priority = false }) {
           </p>
         </div>
       </Link>
-      <button
-        type="button"
-        onClick={addToCart}
-        aria-label={`Add ${product.name}${cheapestTier ? ` (${cheapestTier.label})` : ""} to cart`}
-        title={
-          cheapestTier ? `Add ${cheapestTier.label} to cart` : "Add to cart with default options"
-        }
-        className="absolute right-3 top-3 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-white text-pmred shadow-xs transition hover:bg-pmred hover:text-white focus-visible:opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100"
-      >
-        <ShoppingBagIcon className="h-5 w-5" />
-      </button>
+      {!ended && (
+        <button
+          type="button"
+          onClick={addToCart}
+          aria-label={`Add ${product.name}${cheapestTier ? ` (${cheapestTier.label})` : ""} to cart`}
+          title={
+            cheapestTier ? `Add ${cheapestTier.label} to cart` : "Add to cart with default options"
+          }
+          className="absolute right-3 top-3 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-white text-pmred shadow-xs transition hover:bg-pmred hover:text-white focus-visible:opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100"
+        >
+          <ShoppingBagIcon className="h-5 w-5" />
+        </button>
+      )}
     </article>
   );
 }

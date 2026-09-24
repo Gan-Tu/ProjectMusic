@@ -57,7 +57,9 @@ export function useCaptcha() {
   return { code, input, setInput, refresh, valid: input.trim() === code };
 }
 
-export function Captcha({ captcha, className }) {
+// `form`: the id of the form it belongs to when rendered outside it (e.g. in a
+// pop-up's footer), so Enter in the field submits that form.
+export function Captcha({ captcha, className, form }) {
   return (
     <div className={classNames("flex items-center gap-3", className)}>
       <span
@@ -78,6 +80,7 @@ export function Captcha({ captcha, className }) {
         value={captcha.input}
         onChange={(e) => captcha.setInput(e.target.value.replace(/\D/g, "").slice(0, 4))}
         inputMode="numeric"
+        form={form}
         placeholder="Type the numbers"
         aria-label="Type the numbers"
         className="h-9 w-36 rounded-full border border-neutral-200 px-4 text-xs placeholder:text-neutral-300 focus:border-pmred focus:outline-none"

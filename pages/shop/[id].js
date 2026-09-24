@@ -15,7 +15,8 @@ import Button from "../../components/ui/Button";
 import ProductVisual, { DigitalIcon } from "../../components/shop/ProductVisual";
 import RelatedProducts from "../../components/shop/RelatedProducts";
 import { makeCartItem, showCartToast } from "../../components/shop/cart";
-import { useStore } from "../../lib/store";
+import { salesEnded, useStore } from "../../lib/store";
+import { useNow } from "../../lib/useNow";
 import { useCartCandidate, useUI } from "../../lib/ui";
 import { classNames, formatCredits, formatUSD } from "../../lib/format";
 import {
@@ -32,6 +33,7 @@ function ProductDetail({ product, category, related }) {
   const [color, setColor] = useState(product.colors?.[0]);
   const [tierId, setTierId] = useState(product.tiers?.[0]?.id);
   const { actions } = useStore();
+  const now = useNow();
   const { openModal } = useUI();
   const tier = product.tiers?.find((entry) => entry.id === tierId);
   const item = useMemo(
@@ -220,19 +222,25 @@ function ProductDetail({ product, category, related }) {
                 </select>
               </label>
             )}
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Button size="md" className="min-h-11 cursor-pointer" onClick={addToCart}>
-                Add to cart
-              </Button>
-              <Button
-                variant="outline"
-                size="md"
-                className="min-h-11 cursor-pointer"
-                onClick={() => openModal("purchase", { item: { ...item, qty: quantity } })}
-              >
-                Buy now
-              </Button>
-            </div>
+            {now > 0 && salesEnded(item, now) ? (
+              <p className="mt-6 text-sm font-semibold text-neutral-600">
+                Ticket sales have ended: this event has already taken place.
+              </p>
+            ) : (
+              <div className="mt-6 flex flex-wrap gap-3">
+                <Button size="md" className="min-h-11 cursor-pointer" onClick={addToCart}>
+                  Add to cart
+                </Button>
+                <Button
+                  variant="outline"
+                  size="md"
+                  className="min-h-11 cursor-pointer"
+                  onClick={() => openModal("purchase", { item: { ...item, qty: quantity } })}
+                >
+                  Buy now
+                </Button>
+              </div>
+            )}
           </div>
           <h2 className="mb-3 text-2xs font-bold uppercase tracking-[0.15em]">
             Product description

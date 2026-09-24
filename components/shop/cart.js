@@ -1,6 +1,6 @@
 import toast from "react-hot-toast";
 import { periodDays } from "../../lib/entitlements";
-import { MAX_QTY } from "../../lib/store";
+import { MAX_QTY, salesEnded } from "../../lib/store";
 
 export function makeCartItem(
   product,
@@ -20,6 +20,7 @@ export function makeCartItem(
     grantsCredits: tier?.grantsCredits || product.grantsCredits || 0,
     options,
     subtitle: [product.subtitle, ...Object.values(options)].filter(Boolean).join(" · "),
+    ...(product.startsAt ? { startsAt: product.startsAt } : {}),
     // Download passes (and bundles that include them) grant download access for
     // the tier's period; plans without a period (Basic/Premium/Custom) run a year.
     ...(product.grantsDownloads && tier
@@ -30,6 +31,10 @@ export function makeCartItem(
 
 // Feedback after adding `requested` of an item, of which `added` fit in the cart.
 export function showCartToast(item, openModal, added = 1, requested = added) {
+  if (!added && salesEnded(item)) {
+    toast.error(`Ticket sales for ${item.name} have ended.`);
+    return;
+  }
   if (!added) {
     toast.error(`Your cart already has the maximum of ${MAX_QTY} × ${item.name}.`);
     return;

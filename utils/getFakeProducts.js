@@ -227,6 +227,7 @@ export function getProducts() {
     kind: "ticket",
     // Same cart line and prices as the Events page ("Get tickets").
     cartId: `ticket:${event.id}`,
+    startsAt: event.startsAt, // ticket sales end when the event starts
     price: event.price,
     credits: event.credits,
     tiers: event.tiers.map((tier) => ({

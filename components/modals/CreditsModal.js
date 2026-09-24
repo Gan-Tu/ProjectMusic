@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import Modal from "../ui/Modal";
 import Button from "../ui/Button";
@@ -18,6 +18,11 @@ export default function CreditsModal({ open, onClose }) {
   const [password, setPassword] = useState("");
   const [done, setDone] = useState(null); // credits granted by the completed purchase
   const [busy, setBusy] = useState(false);
+  // The confirmation replaces the button that had focus: move focus into it.
+  const closeRef = useRef(null);
+  useEffect(() => {
+    if (done !== null) closeRef.current?.focus();
+  }, [done]);
 
   async function purchase(selected = pack) {
     if (busy) return;
@@ -57,7 +62,7 @@ export default function CreditsModal({ open, onClose }) {
             {formatNumber(done)} credits were added. Your balance is now{" "}
             <span className="font-semibold text-neutral-800">{formatNumber(state.credits)}</span>.
           </p>
-          <Button variant="outline" size="sm" className="mt-8" onClick={onClose}>
+          <Button ref={closeRef} variant="outline" size="sm" className="mt-8" onClick={onClose}>
             Close
           </Button>
         </div>
