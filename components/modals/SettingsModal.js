@@ -90,18 +90,26 @@ export default function SettingsModal({ open, onClose, tab: initialTab = "genera
     avatar: session.user?.avatar
   }));
   const [editing, setEditing] = useState(null);
+  // What the pop-up opened with, to save only the fields changed here.
+  const [initial] = useState(() => ({ settings: { ...draft }, profile: { ...profile } }));
   const [blockName, setBlockName] = useState("");
 
   const set = (patch) => setDraft((d) => ({ ...d, ...patch }));
   const toggleEdit = (field) => setEditing((current) => (current === field ? null : field));
 
   function accept() {
-    actions.updateSettings(draft);
-    if (session.user) {
-      dispatch({
-        type: "update_user",
-        patch: { username: profile.username, email: profile.email, avatar: profile.avatar }
-      });
+    const changed = (a, b) => JSON.stringify(a) !== JSON.stringify(b);
+    const settingsPatch = Object.fromEntries(
+      Object.entries(draft).filter(([key, value]) => changed(value, initial.settings[key]))
+    );
+    if (Object.keys(settingsPatch).length) actions.updateSettings(settingsPatch);
+    const profilePatch = Object.fromEntries(
+      ["username", "email", "avatar"]
+        .filter((key) => profile[key] !== initial.profile[key])
+        .map((key) => [key, profile[key]])
+    );
+    if (session.user && Object.keys(profilePatch).length) {
+      dispatch({ type: "update_user", patch: profilePatch });
     }
     toast.success(profile.password ? "Settings and password updated" : "Settings saved");
     onClose();

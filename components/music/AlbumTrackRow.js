@@ -5,6 +5,7 @@ import { usePlayer } from "../../lib/player";
 import { useStore } from "../../lib/store";
 import { classNames, formatTime, pad2 } from "../../lib/format";
 import { PlayButton, TrackProgress, Equalizer } from "./TrackControls";
+import SongDNA from "../SongDNA";
 
 export default function AlbumTrackRow({ track, queue, number }) {
   const player = usePlayer();
@@ -28,7 +29,10 @@ export default function AlbumTrackRow({ track, queue, number }) {
         {pad2(number)}
       </span>
       <PlayButton track={track} queue={queue} className={active ? "text-white" : "text-pmred"} />
-      <span className="min-w-0 flex-1 truncate text-xs font-semibold">{track.title}</span>
+      <span className="flex min-w-0 flex-1 flex-col">
+        <span className="truncate text-xs font-semibold">{track.title}</span>
+        <SongDNA trackId={track.id} dark={active} />
+      </span>
       {player.isTrackPlaying(track.id) && <Equalizer />}
       <span className="px-1 text-2xs tabular-nums">{formatTime(track.duration)}</span>
       <button

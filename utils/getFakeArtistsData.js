@@ -354,7 +354,7 @@ const ARTIST_DATA = [
   {
     imgUrl: "https://s3.amazonaws.com/projctmusic.com/sunnygabe_500x500_8818814878445912861.jpg",
     location: "Virginia, USA",
-    name: "Sunny &amp; Gabe",
+    name: "Sunny & Gabe",
     id: "sunny-gabe"
   },
 

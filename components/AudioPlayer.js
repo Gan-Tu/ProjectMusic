@@ -20,6 +20,7 @@ import {
   PlusCircleIcon
 } from "@heroicons/react/24/solid";
 import { usePlayer, usePlayerProgress } from "../lib/player";
+import SongDNA from "./SongDNA";
 import { useStore } from "../lib/store";
 import { useUI } from "../lib/ui";
 import { classNames, formatTime } from "../lib/format";
@@ -216,6 +217,7 @@ export default function AudioPlayer() {
               <span className="hidden truncate text-xs font-light text-neutral-400 sm:inline">
                 {track.artist}
               </span>
+              <SongDNA trackId={track.id} dark className="hidden md:inline-flex" />
             </div>
             <Progress fallbackDuration={track.duration} />
           </div>

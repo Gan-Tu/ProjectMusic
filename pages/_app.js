@@ -10,6 +10,7 @@ import { UIProvider } from "../lib/ui";
 import AudioPlayer from "../components/AudioPlayer";
 import ModalHost from "../components/modals/ModalHost";
 import KeyboardShortcuts from "../components/KeyboardShortcuts";
+import MessagePopups from "../components/MessagePopups";
 
 // Font Awesome's CSS is imported above; don't let it inject a <style> at runtime.
 fontAwesomeConfig.autoAddCss = false;
@@ -46,6 +47,7 @@ function MyApp({ Component, pageProps }) {
             </div>
             <ModalHost />
             <KeyboardShortcuts />
+            <MessagePopups />
           </UIProvider>
         </PlayerProvider>
       </StoreProvider>

@@ -25,6 +25,7 @@ import { useStore } from "../../lib/store";
 import { usePlayer } from "../../lib/player";
 import { useUI } from "../../lib/ui";
 import { formatNumber, formatLongDate, formatUSD, formatTime, pad2 } from "../../lib/format";
+import { getAudioSrc } from "../../lib/media";
 
 const FEATURES = [
   [
@@ -75,34 +76,41 @@ export default function ProfileContent({ tab, albums, photos, videos, topArtists
   const { state } = useStore();
   if (tab === "overview")
     return (
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3">
-        {FEATURES.map(([target, label, title, description, Icon]) => (
-          <Link
-            key={target}
-            href={`/profile?tab=${target}`}
-            shallow
-            scroll={false}
-            className="group flex cursor-pointer items-start gap-5 border-b border-neutral-200 px-6 py-10 transition-colors hover:bg-pmred hover:text-white focus-visible:bg-pmred focus-visible:text-white sm:border-r sm:px-10"
-          >
-            <Icon className="mt-4 h-7 w-7 shrink-0 text-pmred group-hover:text-white group-focus-visible:text-white" />
-            <div>
-              <p className="text-2xs font-bold uppercase tracking-[0.2em] text-pmred group-hover:text-white/70 group-focus-visible:text-white/70">
-                {label}
-              </p>
-              <h2 className="mt-1 text-sm font-extrabold uppercase tracking-wide">{title}</h2>
-              <p className="mt-2 max-w-xs text-xs leading-5 text-neutral-500 group-hover:text-white/80 group-focus-visible:text-white/80">
-                {description}
-              </p>
-            </div>
-          </Link>
-        ))}
-      </div>
+      <>
+        <PrivacyBar />
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3">
+          {FEATURES.map(([target, label, title, description, Icon]) => (
+            <Link
+              key={target}
+              href={`/profile?tab=${target}`}
+              shallow
+              scroll={false}
+              className="group flex cursor-pointer items-start gap-5 border-b border-neutral-200 px-6 py-10 transition-colors hover:bg-pmred hover:text-white focus-visible:bg-pmred focus-visible:text-white sm:border-r sm:px-10"
+            >
+              <Icon className="mt-4 h-7 w-7 shrink-0 text-pmred group-hover:text-white group-focus-visible:text-white" />
+              <div>
+                <p className="text-2xs font-bold uppercase tracking-[0.2em] text-pmred group-hover:text-white/70 group-focus-visible:text-white/70">
+                  {label}
+                </p>
+                <h2 className="mt-1 text-sm font-extrabold uppercase tracking-wide">{title}</h2>
+                <p className="mt-2 max-w-xs text-xs leading-5 text-neutral-500 group-hover:text-white/80 group-focus-visible:text-white/80">
+                  {description}
+                </p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </>
     );
   if (tab === "playlist")
     return (
       <Section
         title="Your playlist"
-        detail={`${state.playlist.length} ${state.playlist.length === 1 ? "track" : "tracks"}, all yours.`}
+        detail={`${state.playlist.length} ${state.playlist.length === 1 ? "track" : "tracks"} · ${
+          state.settings.sharePlaylist
+            ? "Public: anyone with the link can listen"
+            : "Private: only you can see it"
+        }`}
       >
         <Playlist />
       </Section>
@@ -277,6 +285,61 @@ function Playlist() {
   );
 }
 
+// Download links for purchased "stream and download" music (demo sample audio).
+function Downloads({ tracks }) {
+  const link = (track) => (
+    <a
+      href={getAudioSrc(track.id)}
+      download={`${track.title}.mp3`}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-pmred hover:underline"
+    >
+      <ArrowDownTrayIcon className="h-4 w-4" />
+      {tracks.length === 1 ? "Download" : track.title}
+    </a>
+  );
+  if (tracks.length === 1) return <div className="mt-2">{link(tracks[0])}</div>;
+  return (
+    <details className="mt-2">
+      <summary className="cursor-pointer text-xs font-bold uppercase tracking-wider text-pmred">
+        Download tracks ({tracks.length})
+      </summary>
+      <ul className="mt-2 grid gap-1.5 sm:grid-cols-2">
+        {tracks.map((track) => (
+          <li key={track.id}>{link(track)}</li>
+        ))}
+      </ul>
+    </details>
+  );
+}
+
+// Reflects the "Share timeline / playlist publicly" settings.
+function PrivacyBar() {
+  const { state } = useStore();
+  const { openModal } = useUI();
+  const chip = (label, on) => (
+    <span className="inline-flex items-center gap-2">
+      <span className={`h-2 w-2 rounded-full ${on ? "bg-lime-500" : "bg-neutral-300"}`} />
+      {label}:{" "}
+      <strong className="font-semibold text-neutral-800">{on ? "Public" : "Private"}</strong>
+    </span>
+  );
+  return (
+    <div className="flex flex-wrap items-center gap-x-6 gap-y-2 border-b border-neutral-200 px-5 py-3 text-xs text-neutral-500 sm:px-10">
+      {chip("Timeline", state.settings.shareTimeline)}
+      {chip("Playlist", state.settings.sharePlaylist)}
+      <button
+        type="button"
+        onClick={() => openModal("settings", { tab: "playlist" })}
+        className="ml-auto text-2xs font-bold uppercase tracking-wider text-pmred hover:underline"
+      >
+        Change
+      </button>
+    </div>
+  );
+}
+
 function Purchases() {
   const { state } = useStore();
   if (!state.purchases.length)
@@ -327,6 +390,7 @@ function Purchases() {
                       .filter(Boolean)
                       .join(" · ")}
                   </p>
+                  {item.downloads?.length > 0 && <Downloads tracks={item.downloads} />}
                 </div>
                 <span className="text-xs text-neutral-500">× {item.qty || 1}</span>
               </li>

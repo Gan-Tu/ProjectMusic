@@ -138,6 +138,7 @@ export default function Profile({ albums, topArtists, photos, videos }) {
                 src="/profile/canal.webp"
                 alt=""
                 fill
+                priority
                 sizes="(max-width: 1023px) 70vw, 50vw"
                 className="object-cover opacity-30"
               />

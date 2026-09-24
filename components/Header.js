@@ -41,7 +41,7 @@ const DIVIDER = "h-8 w-px shrink-0 bg-neutral-200";
 export default function Header({ curMenu }) {
   const [session, dispatch] = useSessionContext();
   const { state } = useStore();
-  const { megaMenu, openMegaMenu, openModal } = useUI();
+  const { megaMenu, openMegaMenu, closeMegaMenu, openModal } = useUI();
   const user = session.user;
   const cartCount = state.cart.reduce((sum, line) => sum + line.qty, 0);
 
@@ -58,7 +58,16 @@ export default function Header({ curMenu }) {
   }, [megaMenu.open]);
 
   return (
-    <header className="sticky top-0 z-50 bg-white shadow-[0_4px_20px_-6px_rgba(0,0,0,0.15)]">
+    <header
+      className="sticky top-0 z-50 bg-white shadow-[0_4px_20px_-6px_rgba(0,0,0,0.15)]"
+      onBlur={(e) => {
+        // Close the mega menu when keyboard focus leaves the header (e.g. Tab past
+        // the last item) so focus never lands on content hidden behind the backdrop.
+        if (megaMenu.open && e.relatedTarget && !e.currentTarget.contains(e.relatedTarget)) {
+          closeMegaMenu();
+        }
+      }}
+    >
       <div className="relative flex h-16 items-center">
         <div className="flex h-full min-w-0 flex-1 items-center">
           {megaMenu.open ? (
