@@ -36,12 +36,7 @@ export default function AlbumCard({ musicData, num, tracks, linked = false, prio
       </div>
       {linked && queue?.length > 0 && (
         <div className="absolute right-3 top-3 z-20 transition-opacity sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100">
-          <PlayButton
-            track={queue[0]}
-            queue={queue}
-            replaceQueue
-            className="bg-pmred text-white shadow-lg"
-          />
+          <PlayButton track={queue[0]} queue={queue} className="bg-pmred text-white shadow-lg" />
         </div>
       )}
     </div>

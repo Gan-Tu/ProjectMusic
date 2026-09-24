@@ -2,7 +2,7 @@ import { PauseIcon, PlayIcon } from "@heroicons/react/24/solid";
 import { usePlayer, usePlayerProgress } from "../../lib/player";
 import { classNames } from "../../lib/format";
 
-export function PlayButton({ track, queue, className = "", replaceQueue = false }) {
+export function PlayButton({ track, queue, className = "" }) {
   const player = usePlayer();
   const playing = player.isTrackPlaying(track.id);
   function handlePlay() {
@@ -10,7 +10,9 @@ export function PlayButton({ track, queue, className = "", replaceQueue = false 
       !queue ||
       (queue.length === player.queue.length &&
         queue.every((item, index) => item.id === player.queue[index].id));
-    if (player.isCurrent(track.id) && (!replaceQueue || sameQueue)) player.togglePlay();
+    // Same track and queue: plain toggle. Otherwise adopt this list as the queue
+    // (playTrack still toggles when the track is already current).
+    if (player.isCurrent(track.id) && sameQueue) player.togglePlay();
     else player.playTrack(track, queue);
   }
   return (

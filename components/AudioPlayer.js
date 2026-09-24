@@ -1,7 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
 import {
+  AdjustmentsHorizontalIcon,
   ArrowPathRoundedSquareIcon,
   ArrowsRightLeftIcon,
   BackwardIcon,
@@ -50,6 +52,85 @@ function Progress({ fallbackDuration }) {
         -{formatTime(Math.max(0, duration - currentTime))}
       </span>
     </div>
+  );
+}
+
+// Volume / repeat / shuffle for small screens, where the bar has no room for them.
+function MobileOptions({ player }) {
+  const { volume, muted, repeat, shuffle } = player;
+  const volumePct = muted ? 0 : volume * 100;
+  const row = "flex items-center justify-between gap-4 py-3";
+  const label = "text-2xs font-bold uppercase tracking-wider text-neutral-400";
+  return (
+    <Popover className="relative lg:hidden">
+      <PopoverButton
+        aria-label="Player options"
+        className="flex items-center text-white/70 outline-none transition hover:text-white data-open:text-pmred"
+      >
+        <AdjustmentsHorizontalIcon className="h-6 w-6" />
+      </PopoverButton>
+      <PopoverPanel
+        transition
+        anchor="top end"
+        className="z-[60] w-64 bg-neutral-900 px-5 py-2 text-white shadow-2xl ring-1 ring-white/10 transition duration-200 ease-out [--anchor-gap:1rem] data-closed:translate-y-1 data-closed:opacity-0"
+      >
+        <div className={row}>
+          <button
+            type="button"
+            onClick={player.toggleMute}
+            aria-label={muted ? "Unmute" : "Mute"}
+            className="text-white/80 hover:text-white"
+          >
+            {muted || volume === 0 ? (
+              <SpeakerXMarkIcon className="h-5 w-5" />
+            ) : (
+              <SpeakerWaveIcon className="h-5 w-5" />
+            )}
+          </button>
+          <input
+            type="range"
+            min={0}
+            max={1}
+            step={0.01}
+            value={muted ? 0 : volume}
+            onChange={(e) => player.setVolume(Number(e.target.value))}
+            aria-label="Volume"
+            className="range-slider flex-1"
+            style={{ "--range-pct": `${volumePct}%` }}
+          />
+        </div>
+        <div className={row}>
+          <span className={label}>Repeat</span>
+          <button
+            type="button"
+            onClick={player.cycleRepeat}
+            aria-label={`Repeat: ${repeat}`}
+            className={classNames(
+              "rounded-full border px-3 py-1 text-2xs font-bold uppercase tracking-wider transition",
+              repeat === "off"
+                ? "border-white/30 text-white/70"
+                : "border-pmred bg-pmred text-white"
+            )}
+          >
+            {repeat === "off" ? "Off" : repeat === "one" ? "One" : "All"}
+          </button>
+        </div>
+        <div className={row}>
+          <span className={label}>Shuffle</span>
+          <button
+            type="button"
+            onClick={player.toggleShuffle}
+            aria-pressed={shuffle}
+            className={classNames(
+              "rounded-full border px-3 py-1 text-2xs font-bold uppercase tracking-wider transition",
+              shuffle ? "border-pmred bg-pmred text-white" : "border-white/30 text-white/70"
+            )}
+          >
+            {shuffle ? "On" : "Off"}
+          </button>
+        </div>
+      </PopoverPanel>
+    </Popover>
   );
 }
 
@@ -141,6 +222,7 @@ export default function AudioPlayer() {
         </div>
 
         <div className="flex items-center gap-3 md:gap-4">
+          <MobileOptions player={player} />
           <IconButton
             label={liked ? "Unlike" : "Like"}
             active={liked}

@@ -38,18 +38,11 @@ export default function CommunityForm({ volunteer = false }) {
         skills: values.skills.trim(),
         availability: data.getAll("availability")
       });
-    else
-      actions.addFeedback(
-        JSON.stringify({
-          kind: "contact",
-          name: values.name.trim(),
-          email: values.email.trim(),
-          subject: values.subject.trim(),
-          message: values.message.trim()
-        })
-      );
+    // Contact messages go to the studio (simulated); they aren't profile feedback.
     setSubmitted(true);
-    toast.success(volunteer ? "Thanks for joining the crew!" : "Your message has been saved.");
+    toast.success(
+      volunteer ? "Thanks for joining the crew!" : "Thanks! Our team will get back to you shortly."
+    );
   }
   if (submitted)
     return (

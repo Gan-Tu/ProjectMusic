@@ -17,9 +17,13 @@ export default function CreditsModal({ open, onClose }) {
   const [pack, setPack] = useState(null);
   const [password, setPassword] = useState("");
   const [done, setDone] = useState(false);
+  const [busy, setBusy] = useState(false);
 
-  function purchase(selected = pack) {
-    const result = actions.checkout("card", [packItem(selected)]);
+  async function purchase(selected = pack) {
+    if (busy) return;
+    setBusy(true);
+    const result = await actions.checkout("card", [packItem(selected)]);
+    setBusy(false);
     if (!result.ok) {
       toast.error(result.error);
       return;
@@ -73,7 +77,7 @@ export default function CreditsModal({ open, onClose }) {
             <Button variant="muted" size="xs" onClick={() => setPack(null)}>
               Back
             </Button>
-            <Button size="sm" disabled={!password} onClick={() => purchase()}>
+            <Button size="sm" disabled={!password || busy} onClick={() => purchase()}>
               Purchase {formatUSD(pack.price)}
             </Button>
           </>

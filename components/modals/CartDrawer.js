@@ -29,8 +29,13 @@ export default function CartDrawer({ open, onClose }) {
   const payable = method === "card" ? totals.cardPayable : totals.creditsPayable;
   const enoughCredits = totals.credits <= state.credits;
 
-  function checkout() {
-    const result = actions.checkout(method);
+  const [busy, setBusy] = useState(false);
+
+  async function checkout() {
+    if (busy) return;
+    setBusy(true);
+    const result = await actions.checkout(method);
+    setBusy(false);
     if (!result.ok) {
       toast.error(result.error);
       return;
@@ -102,7 +107,7 @@ export default function CartDrawer({ open, onClose }) {
       <Button
         size="lg"
         className="w-full"
-        disabled={!payable || (method === "credits" && !enoughCredits)}
+        disabled={busy || !payable || (method === "credits" && !enoughCredits)}
         onClick={checkout}
       >
         Checkout {method === "card" ? formatUSD(totals.usd) : formatCredits(totals.credits)}

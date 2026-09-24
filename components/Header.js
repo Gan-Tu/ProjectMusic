@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import toast from "react-hot-toast";
@@ -44,6 +45,18 @@ export default function Header({ curMenu }) {
   const user = session.user;
   const cartCount = state.cart.reduce((sum, line) => sum + line.qty, 0);
 
+  // When the mega menu closes (Esc, close button, backdrop), return keyboard focus
+  // to the menu button instead of dropping it on the page body.
+  const openerRef = useRef(null);
+  const wasOpen = useRef(false);
+  useEffect(() => {
+    if (wasOpen.current && !megaMenu.open) {
+      const active = document.activeElement;
+      if (!active || active === document.body) openerRef.current?.focus();
+    }
+    wasOpen.current = megaMenu.open;
+  }, [megaMenu.open]);
+
   return (
     <header className="sticky top-0 z-50 bg-white shadow-[0_4px_20px_-6px_rgba(0,0,0,0.15)]">
       <div className="relative flex h-16 items-center">
@@ -53,6 +66,7 @@ export default function Header({ curMenu }) {
           ) : (
             <>
               <button
+                ref={openerRef}
                 type="button"
                 onClick={() => openMegaMenu()}
                 aria-label="Open menu"

@@ -284,17 +284,13 @@ export function getSocialPage(network) {
     }
     case "soundcloud":
       content = {
-        tracks: getMusics()
-          .slice(0, 16)
-          .map((album, i) => ({ ...albumToTrack(album), duration: 182 + i * 9 }))
+        tracks: getMusics().slice(0, 16).map(albumToTrack)
       };
       break;
     case "myspace":
       content = {
         friends: getArtistHomePageData().slice(0, 8),
-        tracks: getMusics()
-          .slice(0, 8)
-          .map((album, i) => ({ ...albumToTrack(album), duration: 182 + i * 9 }))
+        tracks: getMusics().slice(0, 8).map(albumToTrack)
       };
       break;
     case "wikipedia":

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Image from "next/image";
 import toast from "react-hot-toast";
 import Modal from "../ui/Modal";
@@ -18,15 +19,19 @@ function tiersFor(item) {
 export default function PurchaseModal({ open, onClose, item }) {
   const { state, actions } = useStore();
   const { openModal } = useUI();
+  const [busy, setBusy] = useState(false);
   if (!item) return null;
 
   const tiers = tiersFor(item);
   const [primary, ...others] = tiers;
   const qty = item.qty || 1;
 
-  function buy(tier, method) {
+  async function buy(tier, method) {
+    if (busy) return;
+    setBusy(true);
     const line = { ...(item.tiers?.length ? tierLine(item, tier.id) : item), qty };
-    const result = actions.checkout(method, [line]);
+    const result = await actions.checkout(method, [line]);
+    setBusy(false);
     if (!result.ok) {
       toast.error(result.error);
       if (method === "credits" && tier.credits * qty > state.credits) openModal("credits");
@@ -75,6 +80,7 @@ export default function PurchaseModal({ open, onClose, item }) {
             <button
               type="button"
               onClick={() => buy(primary, primaryMethod)}
+              disabled={busy}
               className="mt-3 rounded-full border-2 border-white px-8 py-1 text-xs font-bold uppercase tracking-wider transition hover:bg-white hover:text-pmred"
             >
               Buy
