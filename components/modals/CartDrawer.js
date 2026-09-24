@@ -3,6 +3,7 @@ import Image from "next/image";
 import { MinusIcon, PlusIcon, ShoppingCartIcon, TrashIcon } from "@heroicons/react/24/outline";
 import toast from "react-hot-toast";
 import { Drawer } from "../ui/Modal";
+import UndoBar from "../ui/UndoBar";
 import Button from "../ui/Button";
 import { cartTotals, MAX_QTY, useStore } from "../../lib/store";
 import { useUI } from "../../lib/ui";
@@ -30,6 +31,7 @@ export default function CartDrawer({ open, onClose }) {
   const enoughCredits = totals.credits <= state.credits;
 
   const [busy, setBusy] = useState(false);
+  const [undo, setUndo] = useState(null);
 
   async function checkout() {
     if (busy) return;
@@ -123,6 +125,14 @@ export default function CartDrawer({ open, onClose }) {
 
   return (
     <Drawer open={open} onClose={onClose} title={`Your cart (${totals.count})`} footer={footer}>
+      {undo && (
+        <UndoBar
+          key={undo.id}
+          message={undo.message}
+          onUndo={undo.run}
+          onDone={() => setUndo(null)}
+        />
+      )}
       {state.cart.length === 0 ? (
         <div className="flex h-full flex-col items-center justify-center gap-4 px-8 text-center">
           <ShoppingCartIcon className="h-12 w-12 text-neutral-200" />
@@ -142,24 +152,13 @@ export default function CartDrawer({ open, onClose }) {
             </span>
             <button
               type="button"
-              onClick={() => {
-                const undo = actions.clearCartWithUndo();
-                toast((t) => (
-                  <span className="flex items-center gap-4">
-                    Cart cleared
-                    <button
-                      type="button"
-                      onClick={() => {
-                        undo();
-                        toast.dismiss(t.id);
-                      }}
-                      className="text-xs font-bold uppercase tracking-wider text-pmred"
-                    >
-                      Undo
-                    </button>
-                  </span>
-                ));
-              }}
+              onClick={() =>
+                setUndo({
+                  id: Date.now(),
+                  message: "Cart cleared",
+                  run: actions.clearCartWithUndo()
+                })
+              }
               className="text-neutral-400 transition hover:text-pmred"
             >
               Clear cart

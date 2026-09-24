@@ -8,7 +8,7 @@ import { useStore } from "../../lib/store";
 export default function CommunityForm({ volunteer = false }) {
   const captcha = useCaptcha();
   const { actions } = useStore();
-  const [submitted, setSubmitted] = useState(false);
+  const [submitted, setSubmitted] = useState(null); // contact: { subject, message }
   const [error, setError] = useState("");
   function submit(event) {
     event.preventDefault();
@@ -38,8 +38,16 @@ export default function CommunityForm({ volunteer = false }) {
         skills: values.skills.trim(),
         availability: data.getAll("availability")
       });
-    // Contact messages go to the studio (simulated); they aren't profile feedback.
-    setSubmitted(true);
+    else
+      actions.saveContactMessage({
+        name: values.name.trim(),
+        email: values.email.trim(),
+        subject: values.subject.trim(),
+        message: values.message.trim()
+      });
+    setSubmitted(
+      volunteer ? {} : { subject: values.subject.trim(), message: values.message.trim() }
+    );
     toast.success(
       volunteer ? "Thanks for joining the crew!" : "Thanks! Our team will get back to you shortly."
     );
@@ -54,9 +62,18 @@ export default function CommunityForm({ volunteer = false }) {
         <p className="mx-auto mb-8 mt-4 max-w-md text-sm leading-relaxed text-neutral-500">
           {volunteer
             ? "Your interests and availability have been saved in this demo. Thank you for being part of the Projct community."
-            : "Your message is saved on this device. This demo does not send email; use the email link above to reach the studio."}
+            : "Your message is saved on this device. This demo doesn’t send email, so use Open email below to send it to the studio."}
         </p>
-        <Button href={volunteer ? "/" : "mailto:contact@projctmusic.com"} variant="outline">
+        <Button
+          href={
+            volunteer
+              ? "/"
+              : `mailto:contact@projctmusic.com?subject=${encodeURIComponent(
+                  submitted.subject
+                )}&body=${encodeURIComponent(submitted.message)}`
+          }
+          variant="outline"
+        >
           {volunteer ? "Explore Projct" : "Open email"}
         </Button>
       </div>

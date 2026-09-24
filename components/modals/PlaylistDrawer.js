@@ -1,9 +1,9 @@
 import { useState } from "react";
 import Image from "next/image";
-import toast from "react-hot-toast";
 import { PauseIcon, PlayIcon } from "@heroicons/react/24/solid";
 import { MusicalNoteIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Drawer } from "../ui/Modal";
+import UndoBar from "../ui/UndoBar";
 import Button from "../ui/Button";
 import { usePlayer } from "../../lib/player";
 import { useStore } from "../../lib/store";
@@ -68,6 +68,7 @@ export default function PlaylistDrawer({ open, onClose }) {
   const player = usePlayer();
   const { state, actions } = useStore();
   const [tab, setTab] = useState("queue");
+  const [undo, setUndo] = useState(null);
 
   return (
     <Drawer open={open} onClose={onClose} title="Playlist">
@@ -97,6 +98,14 @@ export default function PlaylistDrawer({ open, onClose }) {
         ))}
       </div>
 
+      {undo && tab === "mine" && (
+        <UndoBar
+          key={undo.id}
+          message={undo.message}
+          onUndo={undo.run}
+          onDone={() => setUndo(null)}
+        />
+      )}
       {tab === "queue" ? (
         <ul className="py-2">
           {player.queue.map((track, i) => (
@@ -133,21 +142,11 @@ export default function PlaylistDrawer({ open, onClose }) {
               onClick={() => {
                 const saved = state.playlist;
                 actions.clearPlaylist();
-                toast((t) => (
-                  <span className="flex items-center gap-4">
-                    Playlist cleared
-                    <button
-                      type="button"
-                      onClick={() => {
-                        saved.forEach((track) => actions.addToPlaylist(track));
-                        toast.dismiss(t.id);
-                      }}
-                      className="text-xs font-bold uppercase tracking-wider text-pmred"
-                    >
-                      Undo
-                    </button>
-                  </span>
-                ));
+                setUndo({
+                  id: Date.now(),
+                  message: "Playlist cleared",
+                  run: () => saved.forEach((track) => actions.addToPlaylist(track))
+                });
               }}
               className="ml-auto text-2xs font-bold uppercase tracking-wider text-neutral-400 hover:text-pmred"
             >

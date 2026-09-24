@@ -16,7 +16,7 @@ export default function CreditsModal({ open, onClose }) {
   const { state, actions } = useStore();
   const [pack, setPack] = useState(null);
   const [password, setPassword] = useState("");
-  const [done, setDone] = useState(false);
+  const [done, setDone] = useState(null); // credits granted by the completed purchase
   const [busy, setBusy] = useState(false);
 
   async function purchase(selected = pack) {
@@ -28,12 +28,13 @@ export default function CreditsModal({ open, onClose }) {
       toast.error(result.error);
       return;
     }
-    setDone(true);
+    setDone(result.purchase.creditsGranted);
   }
 
   // "Quick purchase" is a saved preference: skip the confirmation step.
   const quick = Boolean(state.settings.quickCreditPurchase);
   function choose(selected) {
+    if (busy) return;
     setPack(selected);
     if (quick) purchase(selected);
   }
@@ -47,13 +48,13 @@ export default function CreditsModal({ open, onClose }) {
     </div>
   );
 
-  if (done) {
+  if (done !== null) {
     return (
       <Modal open={open} onClose={onClose} title="Thank you" headerExtra={balance} size="md">
         <div className="py-10 text-center">
           <p className="text-xl font-bold uppercase text-pmred">Thank you for purchasing!</p>
           <p className="mt-3 text-sm text-neutral-500">
-            {formatNumber(pack.credits)} credits were added. Your balance is now{" "}
+            {formatNumber(done)} credits were added. Your balance is now{" "}
             <span className="font-semibold text-neutral-800">{formatNumber(state.credits)}</span>.
           </p>
           <Button variant="outline" size="sm" className="mt-8" onClick={onClose}>
@@ -74,7 +75,7 @@ export default function CreditsModal({ open, onClose }) {
       footer={
         pack && (
           <>
-            <Button variant="muted" size="xs" onClick={() => setPack(null)}>
+            <Button variant="muted" size="xs" disabled={busy} onClick={() => setPack(null)}>
               Back
             </Button>
             <Button size="sm" disabled={!password || busy} onClick={() => purchase()}>
@@ -129,6 +130,7 @@ export default function CreditsModal({ open, onClose }) {
               key={p.credits}
               type="button"
               onClick={() => choose(p)}
+              disabled={busy}
               className="group flex items-center justify-center gap-5 border border-neutral-200 px-5 py-4 uppercase text-pmred transition-colors hover:border-pmred hover:bg-pmred hover:text-white"
             >
               <span className="flex flex-col items-center border-r border-neutral-200 pr-5 group-hover:border-white/40">

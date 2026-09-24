@@ -43,17 +43,23 @@ export default function KeyboardShortcuts() {
       if (u.activeModal) return;
 
       switch (e.key) {
-        case " ":
+        case " ": {
           if (isInteractive(e.target)) return;
           e.preventDefault();
-          p.togglePlay();
+          const video = p.activeVideo();
+          if (!video) p.togglePlay();
+          else if (video.paused) video.play().catch(() => {});
+          else video.pause();
           break;
+        }
         case "ArrowLeft":
         case "ArrowRight": {
           if (u.megaMenu.open) return;
           e.preventDefault();
           const dir = e.key === "ArrowRight" ? 1 : -1;
+          const video = p.activeVideo();
           if (e.shiftKey) (dir > 0 ? p.next : p.prev)();
+          else if (video) video.currentTime = Math.max(0, video.currentTime + dir * 10);
           else p.seekBy(dir * 10);
           break;
         }

@@ -7,6 +7,7 @@ import { useStore } from "../../lib/store";
 import { useSessionContext } from "../../lib/SessionProvider";
 import { classNames, pad2, timeAgo } from "../../lib/format";
 import { getSeedComments } from "../../utils/getFakeComments";
+import UndoBar from "../ui/UndoBar";
 
 const MAX_LENGTH = 1000;
 
@@ -65,7 +66,16 @@ function ActionButton({ children, onClick, danger, dark, ...props }) {
   );
 }
 
-function CommentItem({ comment, threadId, loggedIn, canModerate, compact, dark, onReply }) {
+function CommentItem({
+  comment,
+  threadId,
+  loggedIn,
+  canModerate,
+  compact,
+  dark,
+  onReply,
+  onDeleted
+}) {
   const { state, actions } = useStore();
   const [mode, setMode] = useState("view"); // "view" | "edit" | "confirm"
   const [draft, setDraft] = useState(comment.text);
@@ -90,24 +100,7 @@ function CommentItem({ comment, threadId, loggedIn, canModerate, compact, dark, 
     if (!canDelete) return;
     const undo = actions.deleteComment(threadId, comment);
     setMode("view");
-    toast(
-      (t) => (
-        <span className="flex items-center gap-4">
-          {comment.mine ? "Comment deleted" : "Comment removed"}
-          <button
-            type="button"
-            onClick={() => {
-              undo();
-              toast.dismiss(t.id);
-            }}
-            className="text-xs font-bold uppercase tracking-wider text-pmred"
-          >
-            Undo
-          </button>
-        </span>
-      ),
-      { duration: 6000 }
-    );
+    onDeleted({ message: comment.mine ? "Comment deleted" : "Comment removed", run: undo });
   }
 
   function save(e) {
@@ -272,6 +265,7 @@ function Thread({
   const comments = useThreadComments(threadId, { seed, seedCount });
   const [draft, setDraft] = useState("");
   const [showAll, setShowAll] = useState(false);
+  const [undo, setUndo] = useState(null);
   const inputRef = useRef(null);
   const limit = compact ? 3 : 5;
   const shown = showAll ? comments : comments.slice(0, limit);
@@ -380,6 +374,15 @@ function Thread({
         {title} <span className="text-pmred">{pad2(comments.length)}</span>
       </h2>
       {form}
+      {undo && (
+        <UndoBar
+          key={undo.id}
+          message={undo.message}
+          onUndo={undo.run}
+          onDone={() => setUndo(null)}
+          className="mt-4"
+        />
+      )}
       {comments.length ? (
         <ul
           className={classNames(
@@ -399,6 +402,7 @@ function Thread({
               compact={compact}
               dark={dark}
               onReply={reply}
+              onDeleted={(entry) => setUndo({ ...entry, id: Date.now() })}
             />
           ))}
         </ul>
