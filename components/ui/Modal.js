@@ -1,6 +1,7 @@
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { classNames } from "../../lib/format";
+import ToastAnnouncer from "./ToastAnnouncer";
 
 const SIZES = {
   sm: "max-w-md",
@@ -68,6 +69,7 @@ export default function Modal({
                 <div className="ml-auto flex items-center gap-3">{footer}</div>
               </div>
             )}
+            <ToastAnnouncer />
           </DialogPanel>
         </div>
       </div>
@@ -108,6 +110,7 @@ export function Drawer({ open, onClose, title, children, footer, widthClassName 
             </div>
             <div className="flex-1 overflow-y-auto">{children}</div>
             {footer && <div className="border-t border-neutral-200 px-6 py-5">{footer}</div>}
+            <ToastAnnouncer />
           </DialogPanel>
         </div>
       </div>

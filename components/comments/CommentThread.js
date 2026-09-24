@@ -119,22 +119,32 @@ function CommentItem({
     onDeleted({ message: comment.mine ? "Comment deleted" : "Comment removed", run: undo });
   }
 
-  function save(e) {
+  const [saving, setSaving] = useState(false);
+  async function save(e) {
     e?.preventDefault();
     if (!canEdit) {
       setMode("view");
       return;
     }
-    if (!draft.trim()) return;
-    if (comment.text !== editBase) {
-      setEditBase(comment.text);
+    if (!draft.trim() || saving) return;
+    if (draft.trim() === editBase) {
+      setMode("view");
+      return;
+    }
+    // Checked against the latest saved comment (another tab may have edited it).
+    setSaving(true);
+    const result = await actions.editComment(threadId, comment.id, draft, editBase);
+    setSaving(false);
+    if (result.conflict) {
+      setEditBase(result.text);
       toast("This comment was changed elsewhere. Review it, then save again to overwrite.");
       return;
     }
-    if (draft.trim() !== comment.text) {
-      actions.editComment(threadId, comment.id, draft);
-      toast.success("Comment updated");
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
     }
+    toast.success("Comment updated");
     setMode("view");
   }
 
