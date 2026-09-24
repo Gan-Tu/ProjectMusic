@@ -14,7 +14,7 @@ export default function ActivityMenu() {
     <Popover className="relative flex h-full items-center">
       <PopoverButton
         aria-label={`Notifications${unread ? ` (${unread} unread)` : ""}`}
-        className="group relative flex items-center text-neutral-500 outline-none transition hover:text-pmred data-open:text-pmred"
+        className="group relative flex items-center text-neutral-500 outline-none focus-visible:ring-2 focus-visible:ring-pmred focus-visible:ring-offset-4 transition hover:text-pmred data-open:text-pmred"
       >
         <GlobeAltIcon className="h-6 w-6 transition group-hover:scale-110" />
         {unread > 0 && (

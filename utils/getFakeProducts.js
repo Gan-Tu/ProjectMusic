@@ -174,13 +174,16 @@ export function getProducts() {
       "Your backstage pass to Projct Music. Get premium listening, exclusive sessions, and priority access to selected studio events for the duration of your pass.",
       planTiers(2)
     ),
-    digital(
-      "unlimited-pack",
-      "Unlimited Pack",
-      "packages",
-      "The complete Projct Music experience: premium listening, the download collection, and VIP access together in one pass.",
-      planTiers(3)
-    ),
+    {
+      ...digital(
+        "unlimited-pack",
+        "Unlimited Pack",
+        "packages",
+        "The complete Projct Music experience: premium listening, the download collection, and VIP access together in one pass.",
+        planTiers(3)
+      ),
+      grantsDownloads: true
+    },
     digital(
       "discovery-pack",
       "Discovery Pack",
@@ -188,13 +191,16 @@ export function getProducts() {
       "Find your next favorite. A handpicked collection of independent releases and studio sessions, with a listening pass to keep exploring.",
       planTiers()
     ),
-    digital(
-      "unlimited-downloads",
-      "Unlimited Downloads",
-      "downloads",
-      "Take the music with you. Download the Projct Music catalog in high-quality audio during your selected pass. Downloads are yours to keep for personal listening.",
-      durationTiers()
-    )
+    {
+      ...digital(
+        "unlimited-downloads",
+        "Unlimited Downloads",
+        "downloads",
+        "Take the music with you. Download the Projct Music catalog in high-quality audio during your selected pass. Downloads are yours to keep for personal listening.",
+        durationTiers()
+      ),
+      grantsDownloads: true
+    }
   ];
   const albums = getMusics()
     .slice(0, 6)

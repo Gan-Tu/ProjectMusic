@@ -285,7 +285,7 @@ export default function ChatModal({ open, onClose, chatId: initialChatId }) {
                     )}
                     <div
                       className={classNames(
-                        "max-w-[75%] px-4 py-2.5 text-sm shadow-xs",
+                        "max-w-[75%] px-4 py-2.5 text-sm shadow-xs [overflow-wrap:anywhere]",
                         m.from === "me" ? "bg-pmred text-white" : "bg-white text-neutral-700"
                       )}
                     >

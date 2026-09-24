@@ -39,8 +39,9 @@ export default function KeyboardShortcuts() {
         u.closeMegaMenu();
         return;
       }
-      // Pop-ups handle their own keys (focus is trapped inside them).
-      if (u.activeModal) return;
+      // Pop-ups handle their own keys (focus is trapped inside them). This covers
+      // page-level dialogs too (lightboxes, video pop-ups), not just global ones.
+      if (u.activeModal || document.querySelector('[role="dialog"]')) return;
 
       switch (e.key) {
         case " ": {

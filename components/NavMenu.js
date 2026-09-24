@@ -23,7 +23,7 @@ export default function NavMenu({ curMenu }) {
 
   return (
     <Popover className="relative">
-      <PopoverButton className="group inline-flex items-center gap-2 text-sm font-extrabold uppercase tracking-wider text-pmred outline-none">
+      <PopoverButton className="group inline-flex items-center gap-2 text-sm font-extrabold uppercase tracking-wider text-pmred outline-none focus-visible:ring-2 focus-visible:ring-pmred focus-visible:ring-offset-4">
         <span className="line-clamp-1 max-w-[12rem]">{label}</span>
         <ChevronDownIcon
           className="h-5 w-5 text-pmred/60 transition group-hover:text-pmred group-data-open:rotate-180"

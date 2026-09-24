@@ -124,29 +124,40 @@ export default function CreditsModal({ open, onClose }) {
           </label>
         </form>
       ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {PACKS.map((p) => (
-            <button
-              key={p.credits}
-              type="button"
-              onClick={() => choose(p)}
-              disabled={busy}
-              className="group flex items-center justify-center gap-5 border border-neutral-200 px-5 py-4 uppercase text-pmred transition-colors hover:border-pmred hover:bg-pmred hover:text-white"
-            >
-              <span className="flex flex-col items-center border-r border-neutral-200 pr-5 group-hover:border-white/40">
-                <span className="text-2xl font-bold">{formatNumber(p.credits)}</span>
-                <span className="text-2xs text-neutral-400 group-hover:text-white">Credits</span>
-              </span>
-              <span
-                className={classNames(
-                  "rounded-full border border-current px-3 py-1 text-sm font-semibold"
-                )}
+        <>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            {PACKS.map((p) => (
+              <button
+                key={p.credits}
+                type="button"
+                onClick={() => choose(p)}
+                disabled={busy}
+                className="group flex items-center justify-center gap-5 border border-neutral-200 px-5 py-4 uppercase text-pmred transition-colors hover:border-pmred hover:bg-pmred hover:text-white"
               >
-                {formatUSD(p.price)}
-              </span>
-            </button>
-          ))}
-        </div>
+                <span className="flex flex-col items-center border-r border-neutral-200 pr-5 group-hover:border-white/40">
+                  <span className="text-2xl font-bold">{formatNumber(p.credits)}</span>
+                  <span className="text-2xs text-neutral-400 group-hover:text-white">Credits</span>
+                </span>
+                <span
+                  className={classNames(
+                    "rounded-full border border-current px-3 py-1 text-sm font-semibold"
+                  )}
+                >
+                  {formatUSD(p.price)}
+                </span>
+              </button>
+            ))}
+          </div>
+          <label className="mt-5 flex items-center gap-3 text-xs text-neutral-500">
+            <input
+              type="checkbox"
+              checked={quick}
+              onChange={(e) => actions.updateSettings({ quickCreditPurchase: e.target.checked })}
+              className="h-4 w-4 accent-pmred"
+            />
+            Quick purchase: buy immediately when I pick a pack
+          </label>
+        </>
       )}
     </Modal>
   );

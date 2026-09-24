@@ -69,7 +69,7 @@ export default function SettingsMenu() {
     <Popover className="relative flex h-full items-center">
       <PopoverButton
         aria-label="More"
-        className="flex h-full items-center px-1 text-neutral-500 outline-none transition hover:text-pmred data-open:text-pmred"
+        className="flex h-full items-center px-1 text-neutral-500 outline-none focus-visible:ring-2 focus-visible:ring-pmred focus-visible:ring-offset-4 transition hover:text-pmred data-open:text-pmred"
       >
         <EllipsisHorizontalIcon className="h-7 w-7" />
       </PopoverButton>

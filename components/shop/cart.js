@@ -19,8 +19,10 @@ export function makeCartItem(
     grantsCredits: tier?.grantsCredits || product.grantsCredits || 0,
     options,
     subtitle: [product.subtitle, ...Object.values(options)].filter(Boolean).join(" · "),
-    ...(product.category === "downloads" && tier
-      ? { entitlement: { type: "downloads", days: periodDays(tier.label) } }
+    // Download passes (and bundles that include them) grant download access for
+    // the tier's period; plans without a period (Basic/Premium/Custom) run a year.
+    ...(product.grantsDownloads && tier
+      ? { entitlement: { type: "downloads", days: periodDays(tier.label) || 365 } }
       : {})
   };
 }
