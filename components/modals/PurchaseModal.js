@@ -44,9 +44,9 @@ export default function PurchaseModal({ open, onClose, item }) {
 
   return (
     <Modal open={open} onClose={onClose} title="Purchase" size="xl" bodyClassName="p-0">
-      <div className="grid md:grid-cols-[1fr_15rem]">
-        <div className="flex gap-6 p-8">
-          <span className="relative flex h-32 w-32 shrink-0 items-center justify-center overflow-hidden bg-pmred p-2 text-center text-xs font-bold uppercase text-white">
+      <div className="grid grid-cols-[minmax(0,1fr)] md:grid-cols-[minmax(0,1fr)_15rem]">
+        <div className="flex gap-4 p-5 sm:gap-6 sm:p-8">
+          <span className="relative flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden bg-pmred p-2 text-center text-xs font-bold uppercase text-white sm:h-32 sm:w-32">
             {item.image ? (
               <Image src={item.image} alt="" fill sizes="128px" className="object-cover" />
             ) : (
@@ -54,8 +54,10 @@ export default function PurchaseModal({ open, onClose, item }) {
             )}
           </span>
           <div className="min-w-0">
-            <p className="text-lg font-bold uppercase leading-tight text-pmred">{item.name}</p>
-            {item.subtitle && <p className="text-pmred/80">{item.subtitle}</p>}
+            <p className="text-lg font-bold uppercase leading-tight text-pmred [overflow-wrap:anywhere]">
+              {item.name}
+            </p>
+            {item.subtitle && <p className="text-pmred">{item.subtitle}</p>}
             {item.description && (
               <p className="mt-3 border-t border-neutral-200 pt-3 text-xs leading-relaxed text-neutral-600">
                 {item.description}

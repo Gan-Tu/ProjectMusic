@@ -41,7 +41,7 @@ const DIVIDER = "h-8 w-px shrink-0 bg-neutral-200";
 export default function Header({ curMenu }) {
   const [session, dispatch] = useSessionContext();
   const { state } = useStore();
-  const { megaMenu, openMegaMenu, closeMegaMenu, openModal } = useUI();
+  const { megaMenu, openMegaMenu, closeMegaMenu, openModal, activeModal } = useUI();
   const user = session.user;
   const cartCount = state.cart.reduce((sum, line) => sum + line.qty, 0);
 
@@ -56,6 +56,21 @@ export default function Header({ curMenu }) {
     }
     wasOpen.current = megaMenu.open;
   }, [megaMenu.open]);
+
+  // A pop-up opened from the mega menu can't hand focus back to the item that opened
+  // it (the menu closed), so if closing one leaves focus on the page body, return it
+  // to the menu button (after the leave transition and the dialog's own restore).
+  const hadModal = useRef(false);
+  useEffect(() => {
+    const closed = hadModal.current && !activeModal;
+    hadModal.current = Boolean(activeModal);
+    if (!closed) return;
+    const timer = setTimeout(() => {
+      const active = document.activeElement;
+      if (!active || active === document.body) openerRef.current?.focus();
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [activeModal]);
 
   return (
     <header

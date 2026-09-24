@@ -11,7 +11,8 @@ import { getMusics } from "../../utils/getFakeTracks";
 import { toAlbumSummary } from "../../utils/albumTracks";
 import { getArtistPhotos } from "../../utils/getFakePhotos";
 import { getEvents } from "../../utils/getFakeEvents";
-import { useStore } from "../../lib/store";
+import toast from "react-hot-toast";
+import { isHiddenContact, useStore } from "../../lib/store";
 import { useUI } from "../../lib/ui";
 import { formatCompact, formatLongDate, hashString, pad2 } from "../../lib/format";
 
@@ -80,6 +81,12 @@ export default function ArtistProfile({ artist, topArtists, albums, photos, even
                 className="cursor-pointer"
                 variant="light"
                 onClick={() => {
+                  if (isHiddenContact(state, artist.name)) {
+                    toast.error(
+                      `You've blocked ${artist.name}. Unblock them in Settings → Security to send a message.`
+                    );
+                    return;
+                  }
                   const chatId = artist.id;
                   actions.startChat({ id: chatId, name: artist.name, avatar: artist.imgUrl });
                   openModal("chat", { chatId });

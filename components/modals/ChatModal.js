@@ -9,7 +9,7 @@ import {
 } from "@heroicons/react/24/outline";
 import Modal from "../ui/Modal";
 import { TabList, tabPanelProps } from "../ui/Tabs";
-import { useStore, visibleChats } from "../../lib/store";
+import { isHiddenContact, useStore, visibleChats } from "../../lib/store";
 import { useMediaQuery } from "../../lib/useMediaQuery";
 import { classNames } from "../../lib/format";
 import { getArtistHomePageData } from "../../utils/getFakeArtistsData";
@@ -49,7 +49,10 @@ export default function ChatModal({ open, onClose, chatId: initialChatId }) {
 
   const q = query.trim().toLowerCase();
   const matchingChats = chats.filter((c) => c.name.toLowerCase().includes(q));
-  const visibleFriends = friends.filter((f) => f.name.toLowerCase().includes(q));
+  // Blocked people can't be messaged while their conversations are hidden.
+  const visibleFriends = friends.filter(
+    (f) => !isHiddenContact(state, f.name) && f.name.toLowerCase().includes(q)
+  );
 
   // Replies count as read only while the conversation is on screen: phones hide it
   // behind the Friends tab (from md up, list and conversation sit side by side).

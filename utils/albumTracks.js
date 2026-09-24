@@ -21,7 +21,7 @@ const TITLE_WORDS = [
 // of shipping every tracklist in page props.
 export function buildAlbumTracks(album) {
   const rand = seededRandom(album.id);
-  const count = Math.max(1, Math.min(album.totalTracks || 1, 16));
+  const count = Math.max(1, Math.min(album.totalTracks || 1, 60)); // 60: sanity bound
   return Array.from({ length: count }, (_, i) => {
     const title =
       i === 0

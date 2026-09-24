@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image, { getImageProps } from "next/image";
 import {
   ArrowDownTrayIcon,
@@ -78,18 +78,31 @@ export default function PhotoGallery({ photos, polaroids = false }) {
         toast.error("Could not share this photo. Copy the page address instead.");
     }
   }
+  // The URL fragment names the open photo (#photo-id): links and Back/Forward open
+  // and close the lightbox, and browsing inside it keeps the fragment in step
+  // (replaceState, so flipping through photos doesn't pile up history entries).
+  const hashRead = useRef(false);
   useEffect(() => {
-    const openHash = () => {
+    const syncFromHash = () => {
+      hashRead.current = true;
       const index = photos.findIndex((item) => `#${item.id}` === window.location.hash);
-      if (index >= 0) setSelected(index);
+      setSelected(index >= 0 ? index : null);
     };
-    const timer = window.setTimeout(openHash, 0);
-    window.addEventListener("hashchange", openHash);
+    const timer = window.setTimeout(syncFromHash, 0);
+    window.addEventListener("hashchange", syncFromHash);
     return () => {
       window.clearTimeout(timer);
-      window.removeEventListener("hashchange", openHash);
+      window.removeEventListener("hashchange", syncFromHash);
     };
   }, [photos]);
+  useEffect(() => {
+    if (!hashRead.current) return; // a deep link's fragment hasn't been read yet
+    const id = selected === null ? null : photos[selected]?.id;
+    const hash = id ? `#${id}` : "";
+    if (window.location.hash === hash) return;
+    const { pathname, search } = window.location;
+    window.history.replaceState(window.history.state, "", `${pathname}${search}${hash}`);
+  }, [selected, photos]);
   return (
     <>
       <ul
