@@ -145,10 +145,18 @@ export default function SettingsModal({ open, onClose, tab: initialTab = "genera
     }
     const changed = (a, b) => JSON.stringify(a) !== JSON.stringify(b);
     const settingsPatch = Object.fromEntries(
-      Object.entries(draft).filter(([key, value]) => changed(value, initial.settings[key]))
+      Object.entries(draft).filter(
+        ([key, value]) => key !== "blockedUsers" && changed(value, initial.settings[key])
+      )
     );
-    const hasSettings = Object.keys(settingsPatch).length > 0;
-    if (hasSettings) actions.updateSettings(settingsPatch);
+    // Blocked users are saved as additions/removals against the latest list.
+    const blockedBefore = initial.settings.blockedUsers;
+    const blocked = draft.blockedUsers.filter((name) => !blockedBefore.includes(name));
+    const unblocked = blockedBefore.filter((name) => !draft.blockedUsers.includes(name));
+    const hasSettings =
+      Object.keys(settingsPatch).length > 0 || blocked.length > 0 || unblocked.length > 0;
+    if (Object.keys(settingsPatch).length) actions.updateSettings(settingsPatch);
+    if (blocked.length || unblocked.length) actions.updateBlockedUsers(blocked, unblocked);
     const cleaned = { ...profile, username, email };
     const profilePatch = Object.fromEntries(
       ["username", "email", "avatar"]
