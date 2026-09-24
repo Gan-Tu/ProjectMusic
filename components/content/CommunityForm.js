@@ -56,7 +56,9 @@ export default function CommunityForm({ volunteer = false }) {
           }
     );
     toast.success(
-      volunteer ? "Thanks for joining the crew!" : "Thanks! Our team will get back to you shortly."
+      volunteer
+        ? "Thanks for joining the crew!"
+        : "Message saved on this device. Use Open email to send it to the studio."
     );
   }
   if (submitted)
