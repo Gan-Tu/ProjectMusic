@@ -104,15 +104,17 @@ export default function AlbumDetail({ album, tracks, more }) {
             sizes="60vw"
             className="scale-110 object-cover opacity-40 blur-2xl"
           />
-          <div className="relative aspect-square w-full max-w-lg shadow-2xl lg:sticky lg:top-28 lg:mt-12">
-            <Image
-              src={album.img_url}
-              alt={`${album.name} album cover`}
-              fill
-              sizes="(max-width: 1023px) 75vw, 40vw"
-              priority
-              className="object-cover"
-            />
+          <div className="w-full max-w-lg lg:sticky lg:top-28 lg:mt-12">
+            <div className="relative aspect-square w-full shadow-2xl">
+              <Image
+                src={album.img_url}
+                alt={`${album.name} album cover`}
+                fill
+                sizes="(max-width: 1023px) 75vw, 40vw"
+                priority
+                className="object-cover"
+              />
+            </div>
           </div>
         </div>
       </div>

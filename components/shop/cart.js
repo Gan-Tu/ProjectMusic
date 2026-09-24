@@ -1,4 +1,5 @@
 import toast from "react-hot-toast";
+import { periodDays } from "../../lib/entitlements";
 
 export function makeCartItem(
   product,
@@ -17,7 +18,10 @@ export function makeCartItem(
     credits: tier ? tier.credits : product.credits,
     grantsCredits: tier?.grantsCredits || product.grantsCredits || 0,
     options,
-    subtitle: [product.subtitle, ...Object.values(options)].filter(Boolean).join(" · ")
+    subtitle: [product.subtitle, ...Object.values(options)].filter(Boolean).join(" · "),
+    ...(product.category === "downloads" && tier
+      ? { entitlement: { type: "downloads", days: periodDays(tier.label) } }
+      : {})
   };
 }
 

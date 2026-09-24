@@ -1,13 +1,16 @@
 import toast from "react-hot-toast";
-import { HeartIcon, PlusIcon, CheckIcon } from "@heroicons/react/24/outline";
+import { HeartIcon, PlusIcon, CheckIcon, ArrowDownTrayIcon } from "@heroicons/react/24/outline";
 import { HeartIcon as HeartSolidIcon } from "@heroicons/react/24/solid";
 import { usePlayer } from "../../lib/player";
 import { useStore } from "../../lib/store";
 import { classNames, formatTime, pad2 } from "../../lib/format";
 import { PlayButton, TrackProgress, Equalizer } from "./TrackControls";
 import SongDNA from "../SongDNA";
+import { useDownloadPass } from "../../lib/entitlements";
+import { downloadDemoTrack } from "../../lib/demoAudio";
 
 export default function AlbumTrackRow({ track, queue, number }) {
+  const downloadPass = useDownloadPass();
   const player = usePlayer();
   const { state, actions } = useStore();
   const active = player.isCurrent(track.id);
@@ -35,6 +38,20 @@ export default function AlbumTrackRow({ track, queue, number }) {
       </span>
       {player.isTrackPlaying(track.id) && <Equalizer />}
       <span className="px-1 text-2xs tabular-nums">{formatTime(track.duration)}</span>
+      {downloadPass.active && (
+        <button
+          type="button"
+          onClick={() => downloadDemoTrack(track)}
+          aria-label={`Download ${track.title}`}
+          title="Download (Unlimited Downloads pass)"
+          className={classNames(
+            "p-1 transition hover:scale-110",
+            active ? "text-white" : "text-pmred"
+          )}
+        >
+          <ArrowDownTrayIcon className="h-4 w-4" />
+        </button>
+      )}
       <button
         type="button"
         aria-label={`Like ${track.title}`}

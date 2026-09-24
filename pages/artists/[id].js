@@ -80,7 +80,7 @@ export default function ArtistProfile({ artist, topArtists, albums, photos, even
                 className="cursor-pointer"
                 variant="light"
                 onClick={() => {
-                  const chatId = `artist-${artist.id}`;
+                  const chatId = artist.id;
                   actions.startChat({ id: chatId, name: artist.name, avatar: artist.imgUrl });
                   openModal("chat", { chatId });
                 }}

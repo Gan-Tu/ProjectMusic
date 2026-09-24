@@ -82,9 +82,12 @@ export default function KeyboardShortcuts() {
           }
           break;
         case "m":
-        case "M":
-          p.toggleMute();
+        case "M": {
+          const video = p.activeVideo();
+          if (video) video.muted = !video.muted;
+          else p.toggleMute();
           break;
+        }
         case "?":
           u.openModal("quickNav");
           break;

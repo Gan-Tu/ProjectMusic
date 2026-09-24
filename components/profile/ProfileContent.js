@@ -25,7 +25,7 @@ import { useStore } from "../../lib/store";
 import { usePlayer } from "../../lib/player";
 import { useUI } from "../../lib/ui";
 import { formatNumber, formatLongDate, formatUSD, formatTime, pad2 } from "../../lib/format";
-import { getAudioSrc } from "../../lib/media";
+import { downloadDemoTrack } from "../../lib/demoAudio";
 
 const FEATURES = [
   [
@@ -285,19 +285,18 @@ function Playlist() {
   );
 }
 
-// Download links for purchased "stream and download" music (demo sample audio).
+// Downloads for purchased "stream and download" music (generated demo audio).
 function Downloads({ tracks }) {
   const link = (track) => (
-    <a
-      href={getAudioSrc(track.id)}
-      download={`${track.title}.mp3`}
-      target="_blank"
-      rel="noopener noreferrer"
+    <button
+      type="button"
+      onClick={() => downloadDemoTrack(track)}
+      title="Downloads a demo audio file for this track"
       className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-pmred hover:underline"
     >
       <ArrowDownTrayIcon className="h-4 w-4" />
       {tracks.length === 1 ? "Download" : track.title}
-    </a>
+    </button>
   );
   if (tracks.length === 1) return <div className="mt-2">{link(tracks[0])}</div>;
   return (
@@ -391,6 +390,12 @@ function Purchases() {
                       .join(" · ")}
                   </p>
                   {item.downloads?.length > 0 && <Downloads tracks={item.downloads} />}
+                  {item.entitlement?.type === "downloads" && (
+                    <p className="mt-2 text-xs text-neutral-500">
+                      Unlimited downloads for {item.entitlement.days * (item.qty || 1)} days from{" "}
+                      {formatLongDate(order.date)}. Use the download buttons on any album page.
+                    </p>
+                  )}
                 </div>
                 <span className="text-xs text-neutral-500">× {item.qty || 1}</span>
               </li>

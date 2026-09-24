@@ -65,7 +65,7 @@ export default function ChatModal({ open, onClose, chatId: initialChatId }) {
   }
 
   function startWith(friend) {
-    const id = `artist-${friend.id}`;
+    const id = friend.id; // canonical: same id as seeded chats and artist pages
     actions.startChat({ id, name: friend.name, avatar: friend.imgUrl });
     setTab("chats");
     openChat(id);
@@ -112,7 +112,7 @@ export default function ChatModal({ open, onClose, chatId: initialChatId }) {
         <aside
           className={classNames(
             "flex min-h-0 flex-col border-r border-neutral-200",
-            active && "hidden md:flex"
+            active && tab === "chats" && "hidden md:flex"
           )}
         >
           <div className="relative p-4">
@@ -195,7 +195,12 @@ export default function ChatModal({ open, onClose, chatId: initialChatId }) {
           </ul>
         </aside>
 
-        <section className={classNames("flex min-h-0 flex-col", !active && "hidden md:flex")}>
+        <section
+          className={classNames(
+            "flex min-h-0 flex-col",
+            (!active || tab === "friends") && "hidden md:flex"
+          )}
+        >
           {active ? (
             <>
               <div className="flex items-center gap-3 border-b border-neutral-200 px-5 py-3">
