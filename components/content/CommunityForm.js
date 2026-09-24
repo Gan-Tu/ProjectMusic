@@ -46,7 +46,14 @@ export default function CommunityForm({ volunteer = false }) {
         message: values.message.trim()
       });
     setSubmitted(
-      volunteer ? {} : { subject: values.subject.trim(), message: values.message.trim() }
+      volunteer
+        ? {}
+        : {
+            name: values.name.trim(),
+            email: values.email.trim(),
+            subject: values.subject.trim(),
+            message: values.message.trim()
+          }
     );
     toast.success(
       volunteer ? "Thanks for joining the crew!" : "Thanks! Our team will get back to you shortly."
@@ -70,7 +77,9 @@ export default function CommunityForm({ volunteer = false }) {
               ? "/"
               : `mailto:contact@projctmusic.com?subject=${encodeURIComponent(
                   submitted.subject
-                )}&body=${encodeURIComponent(submitted.message)}`
+                )}&body=${encodeURIComponent(
+                  `${submitted.message}\n\n${submitted.name}\n${submitted.email}`
+                )}`
           }
           variant="outline"
         >

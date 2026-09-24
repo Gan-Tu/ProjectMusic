@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { classNames } from "../../lib/format";
@@ -10,8 +11,20 @@ export function usePeopleTab(tabs, fallback) {
 
 export default function PeopleTabs({ tabs, active }) {
   const router = useRouter();
+  const navRef = useRef(null);
+  // On narrow screens the tabs scroll sideways: keep the selected one in view (for
+  // direct links too), without scrolling the page.
+  useEffect(() => {
+    const nav = navRef.current;
+    const link = nav?.querySelector('[aria-current="page"]');
+    if (!link) return;
+    const navBox = nav.getBoundingClientRect();
+    const linkBox = link.getBoundingClientRect();
+    nav.scrollLeft += linkBox.left - navBox.left - (navBox.width - linkBox.width) / 2;
+  }, [active]);
   return (
     <nav
+      ref={navRef}
       aria-label="Profile sections"
       className="scrollbar-none flex gap-6 overflow-x-auto border-b border-neutral-200 bg-white px-5 sm:px-10"
     >

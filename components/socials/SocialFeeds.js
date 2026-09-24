@@ -15,6 +15,7 @@ import Button from "../ui/Button";
 import { useStore } from "../../lib/store";
 import { usePlayer } from "../../lib/player";
 import { formatLongDate, formatNumber } from "../../lib/format";
+import CaptionsTrack from "../videos/CaptionsTrack";
 
 const FIRST_BATCH = 12; // photos shown before "Load more"
 
@@ -410,7 +411,9 @@ function VideoPreview({ post, pause, loop }) {
         onError={() => setFailed(true)}
         className="aspect-video w-full bg-black"
         aria-label={post.title}
-      />
+      >
+        <CaptionsTrack src={post.src} />
+      </video>
       <div className="px-7 py-6">
         <p className="text-sm text-neutral-600">{post.caption}</p>
         {failed && (

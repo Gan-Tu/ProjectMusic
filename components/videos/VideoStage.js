@@ -16,6 +16,7 @@ import { classNames, formatLongDate, formatNumber, formatTime } from "../../lib/
 import VideoStrip from "./VideoStrip";
 import VideoCard from "./VideoCard";
 import CommentThread from "../comments/CommentThread";
+import CaptionsTrack from "./CaptionsTrack";
 
 export default function VideoStage({ video, videos, related }) {
   const [started, setStarted] = useState(false);
@@ -70,7 +71,9 @@ export default function VideoStage({ video, videos, related }) {
                 onPlay={pause}
                 onError={() => setFailed(true)}
                 className="h-full w-full object-contain"
-              />
+              >
+                <CaptionsTrack src={video.src} />
+              </video>
             ) : (
               <>
                 <Image

@@ -26,6 +26,7 @@ import { usePlayer } from "../../lib/player";
 import { useUI } from "../../lib/ui";
 import { formatNumber, formatLongDate, formatUSD, formatTime, pad2 } from "../../lib/format";
 import { downloadDemoTrack } from "../../lib/demoAudio";
+import CaptionsTrack from "../videos/CaptionsTrack";
 
 const FEATURES = [
   [
@@ -647,11 +648,12 @@ function ProfileVideos({ videos }) {
               autoPlay
               playsInline
               poster={video.poster}
+              aria-label={video.title}
               onPlay={pause}
               className="aspect-video w-full bg-black"
               src={video.src}
             >
-              <track kind="captions" />
+              <CaptionsTrack src={video.src} />
             </video>
           ) : (
             <button

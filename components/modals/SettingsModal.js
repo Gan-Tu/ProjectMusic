@@ -122,7 +122,7 @@ export default function SettingsModal({ open, onClose, tab: initialTab = "genera
   const set = (patch) => setDraft((d) => ({ ...d, ...patch }));
   const toggleEdit = (field) => setEditing((current) => (current === field ? null : field));
 
-  function accept() {
+  async function accept() {
     const changed = (a, b) => JSON.stringify(a) !== JSON.stringify(b);
     const settingsPatch = Object.fromEntries(
       Object.entries(draft).filter(([key, value]) => changed(value, initial.settings[key]))
@@ -135,7 +135,7 @@ export default function SettingsModal({ open, onClose, tab: initialTab = "genera
         .map((key) => [key, profile[key]])
     );
     const hasProfile = Boolean(session.user) && Object.keys(profilePatch).length > 0;
-    if (hasProfile && !session.updateProfile(profilePatch)) {
+    if (hasProfile && !(await session.updateProfile(profilePatch))) {
       toast.error(
         "Profile updated for this visit only: this browser won't save it (storage is full or blocked)."
       );
