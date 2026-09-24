@@ -1,107 +1,51 @@
-import React from "react";
-import { Fragment } from "react";
-import { Popover, Transition } from "@headlessui/react";
-import { ChevronDownIcon } from "@heroicons/react/solid";
 import Link from "next/link";
+import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
+import { ChevronDownIcon } from "@heroicons/react/20/solid";
 
 const paths = [
-  // {
-  //   name: "Home",
-  //   href: "/"
-  // },
-  {
-    name: "Artists",
-    href: "/artists"
-  },
-  {
-    name: "Albums",
-    href: "/albums"
-  },
-  {
-    name: "Musics",
-    href: "/musics"
-  },
-  {
-    name: "Events",
-    href: "/events"
-  },
-  {
-    name: "News",
-    href: "/news"
-  },
-  {
-    name: "Blog",
-    href: "/blog"
-  }
+  { name: "Home", href: "/" },
+  { name: "Artists", href: "/artists" },
+  { name: "Videos", href: "/videos" },
+  { name: "Musics", href: "/musics" },
+  { name: "Albums", href: "/albums" },
+  { name: "Pictures", href: "/pictures" },
+  { name: "Events", href: "/events" },
+  { name: "News", href: "/news" },
+  { name: "Blog", href: "/blog" },
+  { name: "Shop", href: "/shop" },
+  { name: "Socials", href: "/socials" }
 ];
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
-
+// The red section label next to the menu button, doubling as a quick section switcher.
 export default function NavMenu({ curMenu }) {
-  let pathsLeft = paths.filter((x) => x.name !== curMenu);
-  if (pathsLeft.length == 0) {
-    return (
-      <div className="text-pmred cursor-pointer transparent-selection">
-        {curMenu}
-      </div>
-    );
-  }
+  const label = curMenu || "Home";
+  const pathsLeft = paths.filter((x) => x.name.toLowerCase() !== label.toLowerCase());
+
   return (
     <Popover className="relative">
-      {({ open }) => (
-        <>
-          <Popover.Button
-            className={classNames(
-              open ? "text-gray-900" : "text-gray-500",
-              "group inline-flex items-center rounded-md bg-white text-base font-medium hover:text-gray-900 focus:outline-none"
-            )}
-          >
-            <span className="uppercase cursor-pointer transparent-selection text-pmred line-clamp-1 max-w-xs">
-              {curMenu}
-            </span>
-            <ChevronDownIcon
-              className={classNames(
-                open ? "text-gray-600" : "text-gray-400",
-                "ml-2 h-5 w-5 group-hover:text-gray-700 fill-pmred"
-              )}
-              aria-hidden="true"
-            />
-          </Popover.Button>
+      <PopoverButton className="group inline-flex items-center gap-2 text-sm font-extrabold uppercase tracking-wider text-pmred outline-none">
+        <span className="line-clamp-1 max-w-[12rem]">{label}</span>
+        <ChevronDownIcon
+          className="h-5 w-5 text-pmred/60 transition group-hover:text-pmred group-data-open:rotate-180"
+          aria-hidden="true"
+        />
+      </PopoverButton>
 
-          <Transition
-            as={Fragment}
-            enter="transition ease-out duration-200"
-            enterFrom="opacity-0 translate-y-1"
-            enterTo="opacity-100 translate-y-0"
-            leave="transition ease-in duration-150"
-            leaveFrom="opacity-100 translate-y-0"
-            leaveTo="opacity-0 translate-y-1"
+      <PopoverPanel
+        transition
+        anchor="bottom start"
+        className="z-[60] w-56 bg-white py-2 shadow-2xl ring-1 ring-black/5 transition duration-200 ease-out [--anchor-gap:1.25rem] data-closed:translate-y-1 data-closed:opacity-0"
+      >
+        {pathsLeft.map((item) => (
+          <Link
+            key={item.name}
+            href={item.href}
+            className="block px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-neutral-600 transition-colors hover:bg-pmred hover:text-white"
           >
-            <Popover.Panel className="absolute left-1/2 z-10 mt-3 w-52 -translate-x-1/2 transform px-2 sm:px-0">
-              <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
-                <div className="relative grid gap-6 bg-white px-5 py-6 sm:gap-8 sm:p-8">
-                  {pathsLeft.map((item) => (
-                    <Link
-                      key={item.name}
-                      href={item.href}
-                      className="-m-3 block rounded-md p-3 transition duration-150 ease-in-out hover:bg-gray-50"
-                    >
-                      <p className="text-base font-medium text-gray-700 justify-start">
-                        {item.name}
-                      </p>
-                      {/* <p className="mt-1 text-sm text-gray-500">
-                        {item.description}
-                      </p> */}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            </Popover.Panel>
-          </Transition>
-        </>
-      )}
+            {item.name}
+          </Link>
+        ))}
+      </PopoverPanel>
     </Popover>
   );
 }

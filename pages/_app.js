@@ -1,9 +1,54 @@
 import "../styles/globals.css";
+import "@fortawesome/fontawesome-svg-core/styles.css";
+import { config as fontAwesomeConfig } from "@fortawesome/fontawesome-svg-core";
+import { Montserrat } from "next/font/google";
+import { Toaster } from "react-hot-toast";
 import { SessionProvider } from "../lib/SessionProvider";
+import { StoreProvider } from "../lib/store";
+import { PlayerProvider } from "../lib/player";
+import { UIProvider } from "../lib/ui";
+import AudioPlayer from "../components/AudioPlayer";
+import ModalHost from "../components/modals/ModalHost";
+import KeyboardShortcuts from "../components/KeyboardShortcuts";
+
+// Font Awesome's CSS is imported above; don't let it inject a <style> at runtime.
+fontAwesomeConfig.autoAddCss = false;
+
+// Free stand-in for the mock's Gotham (used when Gotham isn't installed locally).
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
+  display: "swap"
+});
+
 function MyApp({ Component, pageProps }) {
   return (
     <SessionProvider>
-      <Component {...pageProps} />
+      <StoreProvider>
+        <PlayerProvider>
+          <UIProvider>
+            <style jsx global>{`
+              :root {
+                --font-montserrat: ${montserrat.style.fontFamily};
+              }
+            `}</style>
+            <Toaster
+              position="top-center"
+              containerStyle={{ top: 80 }}
+              toastOptions={{
+                className: "!rounded-none !text-sm !font-medium",
+                success: { iconTheme: { primary: "#ff0646", secondary: "#fff" } }
+              }}
+            />
+            <div className="flex min-h-dvh flex-col">
+              <Component {...pageProps} />
+              <AudioPlayer />
+            </div>
+            <ModalHost />
+            <KeyboardShortcuts />
+          </UIProvider>
+        </PlayerProvider>
+      </StoreProvider>
     </SessionProvider>
   );
 }

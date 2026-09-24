@@ -1,3 +1,6 @@
+import { ALBUM_META } from "./albumMeta";
+import { buildAlbumTracks } from "./albumTracks";
+
 const PLAYLIST_DATA = [
   {
     description: "Bad Bunny is on top of the Hottest 50!",
@@ -7,24 +10,21 @@ const PLAYLIST_DATA = [
     img_url: "https://i.scdn.co/image/ab67706f000000026383701ce8b3495cf507d796"
   },
   {
-    description:
-      "The hottest tracks in the United States. Cover: Sam Smith & Kim Petras",
+    description: "The hottest tracks in the United States. Cover: Sam Smith & Kim Petras",
     id: "37i9dQZF1DX0kbJZpiYdZl",
     url: "https://open.spotify.com/playlist/37i9dQZF1DX0kbJZpiYdZl",
     name: "Hot Hits USA",
     img_url: "https://i.scdn.co/image/ab67706f0000000247d632c9ba9e5b8bbc55707f"
   },
   {
-    description:
-      "just a throwback of our favorite CEO Selena Gomez, cos why not",
+    description: "just a throwback of our favorite CEO Selena Gomez, cos why not",
     id: "37i9dQZF1DWWvvyNmW9V9a",
     url: "https://open.spotify.com/playlist/37i9dQZF1DWWvvyNmW9V9a",
     name: "teen beats",
     img_url: "https://i.scdn.co/image/ab67706f00000002d07ec1f9ad185be353aa9bcf"
   },
   {
-    description:
-      "Somehow, heartbreak feels good in a place like this. Cover: Joshua Bassett",
+    description: "Somehow, heartbreak feels good in a place like this. Cover: Joshua Bassett",
     id: "37i9dQZF1DWSqBruwoIXkA",
     url: "https://open.spotify.com/playlist/37i9dQZF1DWSqBruwoIXkA",
     name: "sad hour",
@@ -54,8 +54,7 @@ const PLAYLIST_DATA = [
     img_url: "https://i.scdn.co/image/ab67706f000000020ebf73734685da2f5927a7b1"
   },
   {
-    description:
-      "New music from Paramore, Ed Sheeran, Shawn Mendes, Maluma, and more! ",
+    description: "New music from Paramore, Ed Sheeran, Shawn Mendes, Maluma, and more! ",
     id: "37i9dQZF1DX4JAvHpjipBk",
     url: "https://open.spotify.com/playlist/37i9dQZF1DX4JAvHpjipBk",
     name: "New Music Friday",
@@ -69,16 +68,14 @@ const PLAYLIST_DATA = [
     img_url: "https://i.scdn.co/image/ab67706f000000020b8a6331af962d378eae8bd5"
   },
   {
-    description:
-      "Breeze through your commute with these pop favorites. Cover: Lizzo",
+    description: "Breeze through your commute with these pop favorites. Cover: Lizzo",
     id: "37i9dQZF1DWSThc8QnzIme",
     url: "https://open.spotify.com/playlist/37i9dQZF1DWSThc8QnzIme",
     name: "Pop Drive",
     img_url: "https://i.scdn.co/image/ab67706f00000002dac6bdc3ea4d17a8edcaf62d"
   },
   {
-    description:
-      "New music from Paramore, Ed Sheeran, Shawn Mendes, Maluma, and more! ",
+    description: "New music from Paramore, Ed Sheeran, Shawn Mendes, Maluma, and more! ",
     id: "37i9dQZF1DX4JAvHpjipBk",
     url: "https://open.spotify.com/playlist/37i9dQZF1DX4JAvHpjipBk",
     name: "New Music Friday",
@@ -92,16 +89,14 @@ const PLAYLIST_DATA = [
     img_url: "https://i.scdn.co/image/ab67706f000000027ea05e2691c86f2340f4b48a"
   },
   {
-    description:
-      "This week's essential new pop tracks. Cover: BoyWithUke & Oliver Tree\n",
+    description: "This week's essential new pop tracks. Cover: BoyWithUke & Oliver Tree\n",
     id: "37i9dQZF1DX11otjJ7crqp",
     url: "https://open.spotify.com/playlist/37i9dQZF1DX11otjJ7crqp",
     name: "New Pop Picks",
     img_url: "https://i.scdn.co/image/ab67706f000000021f3c492dc43891f5d3b7997e"
   },
   {
-    description:
-      "If the love doesn't feel like 90s R&B, #SpotifyTBT don't want it. Cover: Usher. ",
+    description: "If the love doesn't feel like 90s R&B, #SpotifyTBT don't want it. Cover: Usher. ",
     id: "37i9dQZF1DWWwaxRea1LWS",
     url: "https://open.spotify.com/playlist/37i9dQZF1DWWwaxRea1LWS",
     name: "Throwback Thursday",
@@ -122,16 +117,14 @@ const PLAYLIST_DATA = [
     img_url: "https://i.scdn.co/image/ab67706f00000002d45924b0c5bf77a474e7be2a"
   },
   {
-    description:
-      "Listen to all the tracks you've been missing. Cover: Katy Perry",
+    description: "Listen to all the tracks you've been missing. Cover: Katy Perry",
     id: "37i9dQZF1DX0s5kDXi1oC5",
     url: "https://open.spotify.com/playlist/37i9dQZF1DX0s5kDXi1oC5",
     name: "Hit Rewind",
     img_url: "https://i.scdn.co/image/ab67706f000000024477d03df61b0379b33f8e4f"
   },
   {
-    description:
-      "Remember the biggest boy bands of the 90s? They are all here!",
+    description: "Remember the biggest boy bands of the 90s? They are all here!",
     id: "37i9dQZF1DX17dmzi8A5FV",
     url: "https://open.spotify.com/playlist/37i9dQZF1DX17dmzi8A5FV",
     name: "90s Boy Bands",
@@ -174,8 +167,7 @@ const PLAYLIST_DATA = [
     img_url: "https://i.scdn.co/image/ab67706f000000020cff82b06291045fe23facaf"
   },
   {
-    description:
-      "just a throwback of our favorite CEO Selena Gomez, cos why not",
+    description: "just a throwback of our favorite CEO Selena Gomez, cos why not",
     id: "37i9dQZF1DWWvvyNmW9V9a",
     url: "https://open.spotify.com/playlist/37i9dQZF1DWWvvyNmW9V9a",
     name: "teen beats",
@@ -189,8 +181,7 @@ const PLAYLIST_DATA = [
     img_url: "https://i.scdn.co/image/ab67706f00000002e6d1c9b0f704f86026767192"
   },
   {
-    description:
-      "the mood is to scream into your dashboard/choke back tears in the parking lot",
+    description: "the mood is to scream into your dashboard/choke back tears in the parking lot",
     id: "37i9dQZF1DX4mWCZw6qYIw",
     url: "https://open.spotify.com/playlist/37i9dQZF1DX4mWCZw6qYIw",
     name: "songs to scream in the car",
@@ -212,24 +203,21 @@ const PLAYLIST_DATA = [
     img_url: "https://i.scdn.co/image/ab67706f0000000294bddc1d05920cce685229c5"
   },
   {
-    description:
-      "All the indescribable feelings that music gives you. cover: maya hawke",
+    description: "All the indescribable feelings that music gives you. cover: maya hawke",
     id: "37i9dQZF1DXdwmD5Q7Gxah",
     url: "https://open.spotify.com/playlist/37i9dQZF1DXdwmD5Q7Gxah",
     name: "Lorem",
     img_url: "https://i.scdn.co/image/ab67706f00000002af32a537a6b9eec3b8ba07aa"
   },
   {
-    description:
-      "Pop country hits of today and tomorrow. Cover: Spencer Crandall",
+    description: "Pop country hits of today and tomorrow. Cover: Spencer Crandall",
     id: "37i9dQZF1DXadasIcsfbqh",
     url: "https://open.spotify.com/playlist/37i9dQZF1DXadasIcsfbqh",
     name: "PopCo",
     img_url: "https://i.scdn.co/image/ab67706f0000000286a5ab4db0630ffc5ace3274"
   },
   {
-    description:
-      "The hottest tracks of today...featuring Drake, Rod Wave, and Post Malone ",
+    description: "The hottest tracks of today...featuring Drake, Rod Wave, and Post Malone ",
     id: "37i9dQZF1DWYs83FtTMQFw",
     url: "https://open.spotify.com/playlist/37i9dQZF1DWYs83FtTMQFw",
     name: "Hot Rhythmic",
@@ -250,8 +238,7 @@ const PLAYLIST_DATA = [
     img_url: "https://i.scdn.co/image/ab67706f0000000243b9b47a3801301a54211fe4"
   },
   {
-    description:
-      "The best of folk-infused pop and singer-songwriter. Cover: Stephen Sanchez",
+    description: "The best of folk-infused pop and singer-songwriter. Cover: Stephen Sanchez",
     id: "37i9dQZF1DWXJyjYpHunCf",
     url: "https://open.spotify.com/playlist/37i9dQZF1DWXJyjYpHunCf",
     name: "Folk Pop",
@@ -279,8 +266,7 @@ const PLAYLIST_DATA = [
     img_url: "https://i.scdn.co/image/ab67706f00000002cc90c534f1701405d5f48456"
   },
   {
-    description:
-      "The hottest Latin pop hits right now. Cover: TINI & Tiago PZK. ",
+    description: "The hottest Latin pop hits right now. Cover: TINI & Tiago PZK. ",
     id: "37i9dQZF1DX1QnNyJOBQBv",
     url: "https://open.spotify.com/playlist/37i9dQZF1DX1QnNyJOBQBv",
     name: "Latin Pop Today",
@@ -371,16 +357,14 @@ const PLAYLIST_DATA = [
     img_url: "https://i.scdn.co/image/ab67706f00000002fa81f178dd6ffc482ac385e3"
   },
   {
-    description:
-      "Dancing to electro-pop like a robot from 1984. Cover: The Psychedelic Furs. ",
+    description: "Dancing to electro-pop like a robot from 1984. Cover: The Psychedelic Furs. ",
     id: "37i9dQZF1DWU1f2CQHNexG",
     url: "https://open.spotify.com/playlist/37i9dQZF1DWU1f2CQHNexG",
     name: "Synthpop Classics ",
     img_url: "https://i.scdn.co/image/ab67706f00000002e26cbdb96c372c66a09c42dd"
   },
   {
-    description:
-      "Listen to easy songs from your favorite artists! Cover: Lady Gaga",
+    description: "Listen to easy songs from your favorite artists! Cover: Lady Gaga",
     id: "37i9dQZF1DWTwnEm1IYyoj",
     url: "https://open.spotify.com/playlist/37i9dQZF1DWTwnEm1IYyoj",
     name: "Soft Pop Hits",
@@ -402,8 +386,7 @@ const PLAYLIST_DATA = [
     img_url: "https://i.scdn.co/image/ab67706f00000002b83b43fd330fd8fc5295edb0"
   },
   {
-    description:
-      "Stripped-down versions of all your favorite pop hits. Cover: OneRepublic",
+    description: "Stripped-down versions of all your favorite pop hits. Cover: OneRepublic",
     id: "37i9dQZF1DWWxrt1tiKYiX",
     url: "https://open.spotify.com/playlist/37i9dQZF1DWWxrt1tiKYiX",
     name: "Unplugged",
@@ -446,8 +429,7 @@ const PLAYLIST_DATA = [
     img_url: "https://i.scdn.co/image/ab67706f000000022cdaf81fd64d489d6f1c4d8b"
   },
   {
-    description:
-      "Somehow, heartbreak feels good in a place like this. Cover: Joshua Bassett",
+    description: "Somehow, heartbreak feels good in a place like this. Cover: Joshua Bassett",
     id: "37i9dQZF1DWSqBruwoIXkA",
     url: "https://open.spotify.com/playlist/37i9dQZF1DWSqBruwoIXkA",
     name: "sad hour",
@@ -468,8 +450,7 @@ const PLAYLIST_DATA = [
     img_url: "https://i.scdn.co/image/ab67706f00000002bd0e19e810bb4b55ab164a95"
   },
   {
-    description:
-      "Throw the weights around with your favorite uptempo pop songs!",
+    description: "Throw the weights around with your favorite uptempo pop songs!",
     id: "37i9dQZF1DX5gQonLbZD9s",
     url: "https://open.spotify.com/playlist/37i9dQZF1DX5gQonLbZD9s",
     name: "Pumped Pop",
@@ -511,8 +492,7 @@ const PLAYLIST_DATA = [
     img_url: "https://i.scdn.co/image/ab67706f000000026383701ce8b3495cf507d796"
   },
   {
-    description:
-      "The hottest tracks in the United States. Cover: Sam Smith & Kim Petras",
+    description: "The hottest tracks in the United States. Cover: Sam Smith & Kim Petras",
     id: "37i9dQZF1DX0kbJZpiYdZl",
     url: "https://open.spotify.com/playlist/37i9dQZF1DX0kbJZpiYdZl",
     name: "Hot Hits USA",
@@ -533,8 +513,7 @@ const PLAYLIST_DATA = [
     img_url: "https://i.scdn.co/image/ab67706f000000020cff82b06291045fe23facaf"
   },
   {
-    description:
-      "New music from Paramore, Ed Sheeran, Shawn Mendes, Maluma, and more! ",
+    description: "New music from Paramore, Ed Sheeran, Shawn Mendes, Maluma, and more! ",
     id: "37i9dQZF1DX4JAvHpjipBk",
     url: "https://open.spotify.com/playlist/37i9dQZF1DX4JAvHpjipBk",
     name: "New Music Friday",
@@ -548,16 +527,14 @@ const PLAYLIST_DATA = [
     img_url: "https://i.scdn.co/image/ab67706f00000002d971c6c23114fc7636dc23eb"
   },
   {
-    description:
-      "just a throwback of our favorite CEO Selena Gomez, cos why not",
+    description: "just a throwback of our favorite CEO Selena Gomez, cos why not",
     id: "37i9dQZF1DWWvvyNmW9V9a",
     url: "https://open.spotify.com/playlist/37i9dQZF1DWWvvyNmW9V9a",
     name: "teen beats",
     img_url: "https://i.scdn.co/image/ab67706f00000002d07ec1f9ad185be353aa9bcf"
   },
   {
-    description:
-      "Listen to easy songs from your favorite artists! Cover: Lady Gaga",
+    description: "Listen to easy songs from your favorite artists! Cover: Lady Gaga",
     id: "37i9dQZF1DWTwnEm1IYyoj",
     url: "https://open.spotify.com/playlist/37i9dQZF1DWTwnEm1IYyoj",
     name: "Soft Pop Hits",
@@ -571,8 +548,7 @@ const PLAYLIST_DATA = [
     img_url: "https://i.scdn.co/image/ab67706f00000002e6d1c9b0f704f86026767192"
   },
   {
-    description:
-      "Somehow, heartbreak feels good in a place like this. Cover: Joshua Bassett",
+    description: "Somehow, heartbreak feels good in a place like this. Cover: Joshua Bassett",
     id: "37i9dQZF1DWSqBruwoIXkA",
     url: "https://open.spotify.com/playlist/37i9dQZF1DWSqBruwoIXkA",
     name: "sad hour",
@@ -580,7 +556,7 @@ const PLAYLIST_DATA = [
   }
 ];
 
-const MUSICS_DATA = [
+const MUSICS_DATA_RAW = [
   {
     artist_url: "https://open.spotify.com/artist/6eUKZXaKkcviH0Ku9w2n3V",
     url: "https://open.spotify.com/album/2W5VVBPNkGAduaArE4sX29",
@@ -1543,6 +1519,17 @@ const MUSICS_DATA = [
   }
 ];
 
+// The raw dump repeats some releases; keep the first occurrence of each album id.
+const MUSICS_DATA = MUSICS_DATA_RAW.filter(
+  (album, index, all) => all.findIndex((other) => other.id === album.id) === index
+).map((album) => ({
+  ...album,
+  artist: "Various Artists",
+  totalTracks: 1,
+  albumType: "album",
+  ...ALBUM_META[album.id]
+}));
+
 const PLAYLIST_ID_TO_DATA = new Map(PLAYLIST_DATA.map((x) => [x.id, x]));
 
 const MUSIC_ID_TO_DATA = new Map(MUSICS_DATA.map((x) => [x.id, x]));
@@ -1562,3 +1549,13 @@ export const getMusics = () => {
 export const getMusicById = (id) => {
   return MUSIC_ID_TO_DATA.get(id);
 };
+
+// Deterministic tracklist for an album. Singles contain just the title track.
+export const getAlbumTracks = (albumId) => {
+  const album = MUSIC_ID_TO_DATA.get(albumId);
+  return album ? buildAlbumTracks(album) : [];
+};
+
+// The track the player uses for an album: its canonical first track (same id,
+// duration and audio everywhere the album can be played).
+export const albumToTrack = (album) => buildAlbumTracks(album)[0];

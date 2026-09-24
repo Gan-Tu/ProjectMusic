@@ -1,146 +1,164 @@
 import Image from "next/image";
 import Link from "next/link";
+import toast from "react-hot-toast";
+import { Bars3Icon } from "@heroicons/react/24/outline";
+import { ShoppingCartIcon } from "@heroicons/react/24/outline";
+import Logo from "./Logo";
 import NavMenu from "./NavMenu";
-import MegaMenu from "./MegaMenu";
+import MegaMenu, { MegaMenuTabs } from "./MegaMenu";
 import SettingsMenu from "./SettingsMenu";
 import ActivityMenu from "./ActivityMenu";
-import { MenuIcon } from "@heroicons/react/solid";
+import MessagesMenu from "./MessagesMenu";
 import { useSessionContext } from "../lib/SessionProvider";
-import { useState } from "react";
-import CreditsModal from "./CreditsModal";
+import { useStore } from "../lib/store";
+import { useUI } from "../lib/ui";
+import { classNames, formatNumber } from "../lib/format";
 
-const CURRENT_CREDIT_BALANCE = 3740;
+function CartButton({ count, onClick, className }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={`Cart${count ? ` (${count} items)` : ""}`}
+      className={classNames(
+        "group relative flex items-center text-neutral-500 transition hover:text-pmred",
+        className
+      )}
+    >
+      <ShoppingCartIcon className="h-6 w-6 transition group-hover:scale-110" />
+      {count > 0 && (
+        <span className="absolute -right-3 -top-2.5 min-w-5 rounded-full bg-pmred px-1.5 text-center text-[10px] font-bold leading-5 text-white">
+          {count}
+        </span>
+      )}
+    </button>
+  );
+}
+
+const DIVIDER = "h-8 w-px shrink-0 bg-neutral-200";
 
 export default function Header({ curMenu }) {
   const [session, dispatch] = useSessionContext();
-  const [megaMenuOpen, setMegaMenuOpen] = useState(false);
-  const [creditsModalOpen, setCreditsModalOpen] = useState(false);
+  const { state } = useStore();
+  const { megaMenu, openMegaMenu, openModal } = useUI();
+  const user = session.user;
+  const cartCount = state.cart.reduce((sum, line) => sum + line.qty, 0);
+
   return (
-    <>
-      <header className="sticky top-0 z-50 grid grid-cols-4 xl:grid-cols-3 bg-white shadow-md px-2 md:px-10">
-        <div className="flex items-center uppercase font-extrabold text-md space-x-3 col-span-1">
-          {megaMenuOpen ? (
-            <div className="h-full -ml-2 md:-ml-10 items-center relative w-full">
-              <MegaMenu
-                curMenu={curMenu}
-                onClose={() => setMegaMenuOpen(false)}
-              />
-            </div>
+    <header className="sticky top-0 z-50 bg-white shadow-[0_4px_20px_-6px_rgba(0,0,0,0.15)]">
+      <div className="relative flex h-16 items-center">
+        <div className="flex h-full min-w-0 flex-1 items-center">
+          {megaMenu.open ? (
+            <MegaMenuTabs />
           ) : (
             <>
               <button
-                className="flex cursor-pointer items-center space-x-2 p-2 border-r pr-4 md:-ml-5"
-                onClick={() => setMegaMenuOpen(true)}
+                type="button"
+                onClick={() => openMegaMenu()}
+                aria-label="Open menu"
+                aria-expanded="false"
+                aria-controls="mega-menu-panel"
+                className="flex h-full items-center px-4 text-neutral-900 transition hover:text-pmred md:px-6"
               >
-                <MenuIcon className="h-6" />
+                <Bars3Icon className="h-6 w-6" />
               </button>
-              <div className="cursor-pointer transparent-selection pl-2 hidden lg:inline-flex">
+              <span className={classNames(DIVIDER, "hidden sm:block")} />
+              <div className="hidden pl-5 sm:block md:pl-7">
                 <NavMenu curMenu={curMenu} />
               </div>
             </>
           )}
         </div>
 
-        <div className="justify-center flex cursor-pointer col-span-1">
-          <div className="relative h-16 w-40 hidden lg:inline-flex">
-            {/* TODO: change to home page after done */}
-            <Link href="/albums">
-              <div>
-                <Image
-                  src="https://pm-vue.projctone.com/static/img/logo.98d7b40.png"
-                  layout="fill"
-                  objectFit="contain"
-                  objectPosition="left"
-                  alt="Project Music logo"
-                />
-              </div>
-            </Link>
-          </div>
+        <div
+          className={classNames(
+            "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-sm md:text-base",
+            megaMenu.open && "hidden md:block"
+          )}
+        >
+          <Logo />
         </div>
 
-        <div className="flex space-x-5 uppercase font-extrabold text-md cursor-pointer transparent-selection items-center justify-end col-span-2 xl:col-span-1">
-          {session.user ? (
+        <div className="flex h-full flex-1 items-center justify-end gap-4 pr-3 md:gap-5 md:pr-6">
+          {user ? (
             <>
-              <div className="flex items-center">
-                <div className="flex mx-4 space-x-5 text-gray-600 items-center">
-                  <div className="relative flex click-animation hover:scale-110 cursor-pointer">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="w-6 h-6"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"
-                      />
-                    </svg>
-                    <div className="z-10 absolute bg-pmred text-white text-xs rounded-md -right-2 -top-1 px-1">
-                      12
-                    </div>
-                  </div>
-                  <div className="border-x border-gray-400 px-4 py-1">
-                    <ActivityMenu />
-                  </div>
-                  <button
-                    className="uppercase"
-                    onClick={() => setCreditsModalOpen(true)}
-                  >
-                    <div className="flex flex-col text-center">
-                      <span className="text-pmred text-sm">{CURRENT_CREDIT_BALANCE}</span>
-                      <span className="text-xs font-medium">Credits</span>
-                    </div>
-                  </button>
-                  <div className="flex flex-col text-center border-gray-400 border-l pl-4">
-                    <span className="text-sm">21,665</span>
-                    <span className="text-xs font-medium">Points</span>
-                  </div>
-                </div>
-                <div className="border-r pr-4 hidden md:inline-flex items-center space-x-4 font-semibold">
-                  <span className="uppercase text-sm md:text-md">
-                    Nick Breton
-                  </span>
-                  <div className="relative h-12 w-12 rounded-sm">
-                    <div className="uppercase">
-                      <Image
-                        src="https://s3.amazonaws.com/projctmusic.com/party_favor_500x500_4517214868832703424.jpeg"
-                        layout="fill"
-                        objectFit="contain"
-                        objectPosition="left"
-                        alt="User logo"
-                      />
-                      {/* Log Out */}
-                    </div>
-                  </div>
-                </div>
+              <CartButton
+                count={cartCount}
+                onClick={() => openModal("cart")}
+                className={classNames(!cartCount && "hidden sm:flex")}
+              />
+              <div className="hidden items-center gap-5 lg:flex">
+                <MessagesMenu />
+                <span className={DIVIDER} />
+                <ActivityMenu />
+                <span className={DIVIDER} />
               </div>
-              <div className="flex cursor-pointer items-center text-gray-400 h-full">
-                <SettingsMenu
-                  onLogout={() => dispatch({ type: "unset_user" })}
-                />
-              </div>
+              <button
+                type="button"
+                onClick={() => openModal("credits")}
+                className="hidden flex-col items-center leading-tight xl:flex"
+                title="Buy credits"
+              >
+                <span className="text-sm font-extrabold text-pmred">
+                  {formatNumber(state.credits)}
+                </span>
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-neutral-600">
+                  Credits
+                </span>
+              </button>
+              <Link
+                href="/profile?tab=rewards"
+                className="hidden flex-col items-center leading-tight xl:flex"
+                title="Your points"
+              >
+                <span className="text-sm font-extrabold">{formatNumber(state.points)}</span>
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-neutral-600">
+                  Points
+                </span>
+              </Link>
+              <Link
+                href="/profile"
+                className="hidden items-center gap-4 text-xs font-extrabold uppercase tracking-wider md:flex"
+              >
+                <span className="hidden max-w-24 leading-tight xl:block">{user.name}</span>
+                <span className="relative h-11 w-11 overflow-hidden bg-neutral-100">
+                  <Image src={user.avatar} alt="" fill sizes="44px" className="object-cover" />
+                </span>
+              </Link>
+              <span className={classNames(DIVIDER, "hidden md:block")} />
+              <SettingsMenu />
             </>
           ) : (
             <>
-              <div className="border-r pr-4 hidden md:inline-flex">Sign Up</div>
-              <div className="pr-4 hidden md:inline-flex">
-                <button
-                  className="uppercase"
-                  onClick={() =>
-                    dispatch({ type: "set_user", user: "Nick Brenton" })
-                  }
-                >
-                  Login
-                </button>
-              </div>
+              <Link
+                href="/signup"
+                className="hidden text-xs font-extrabold uppercase tracking-wider transition hover:text-pmred md:block"
+              >
+                Sign up
+              </Link>
+              <span className={classNames(DIVIDER, "hidden md:block")} />
+              <button
+                type="button"
+                onClick={() => {
+                  dispatch({ type: "set_user", user: {} });
+                  toast.success("Welcome back, Nick!");
+                }}
+                className="hidden text-xs font-extrabold uppercase tracking-wider transition hover:text-pmred md:block"
+              >
+                Login
+              </button>
+              <CartButton
+                count={cartCount}
+                onClick={() => openModal("cart")}
+                className={classNames(!cartCount && "hidden")}
+              />
+              <span className={classNames(DIVIDER, "hidden md:block")} />
+              <SettingsMenu />
             </>
           )}
         </div>
-      </header>
-      <CreditsModal isOpen={creditsModalOpen} setIsOpen={setCreditsModalOpen} curCredits={CURRENT_CREDIT_BALANCE} />
-    </>
+      </div>
+      {megaMenu.open && <MegaMenu />}
+    </header>
   );
 }

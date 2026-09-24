@@ -1,0 +1,141 @@
+import Image from "next/image";
+import toast from "react-hot-toast";
+import Modal from "../ui/Modal";
+import { useStore } from "../../lib/store";
+import { useUI } from "../../lib/ui";
+import { formatCredits, formatNumber, formatUSD } from "../../lib/format";
+
+// Music is sold as stream access (credits) or stream + download (credits or card),
+// like the mock; any other item has a single "buy" tier with its own prices.
+function tiersFor(item) {
+  if (item.tiers?.length) return item.tiers;
+  if (item.kind === "music") {
+    const base = item.credits ?? 50;
+    return [
+      { id: "stream", label: "Stream access", credits: base, price: null },
+      { id: "download", label: "Stream and download", credits: base * 2, price: item.price ?? 0.99 }
+    ];
+  }
+  return [{ id: "buy", label: "Buy", credits: item.credits ?? null, price: item.price ?? null }];
+}
+
+export default function PurchaseModal({ open, onClose, item }) {
+  const { state, actions } = useStore();
+  const { openModal } = useUI();
+  if (!item) return null;
+
+  const tiers = tiersFor(item);
+  const [primary, ...others] = tiers;
+  const qty = item.qty || 1;
+
+  function buy(tier, method) {
+    const line = {
+      ...item,
+      id: tier.id === "buy" ? item.id : `${item.id}:${tier.id}`,
+      name: tier.id === "buy" ? item.name : `${item.name} (${tier.label})`,
+      credits: tier.credits,
+      price: tier.price,
+      qty
+    };
+    delete line.tiers;
+    const result = actions.checkout(method, [line]);
+    if (!result.ok) {
+      toast.error(result.error);
+      if (method === "credits" && tier.credits > state.credits) openModal("credits");
+      return;
+    }
+    openModal("thankYou", { orderId: result.purchase.id });
+  }
+
+  const primaryMethod = primary.credits != null ? "credits" : "card";
+
+  return (
+    <Modal open={open} onClose={onClose} title="Purchase" size="xl" bodyClassName="p-0">
+      <div className="grid md:grid-cols-[1fr_15rem]">
+        <div className="flex gap-6 p-8">
+          <span className="relative flex h-32 w-32 shrink-0 items-center justify-center overflow-hidden bg-pmred p-2 text-center text-xs font-bold uppercase text-white">
+            {item.image ? (
+              <Image src={item.image} alt="" fill sizes="128px" className="object-cover" />
+            ) : (
+              item.name
+            )}
+          </span>
+          <div className="min-w-0">
+            <p className="text-lg font-bold uppercase leading-tight text-pmred">{item.name}</p>
+            {item.subtitle && <p className="text-pmred/80">{item.subtitle}</p>}
+            {item.description && (
+              <p className="mt-3 border-t border-neutral-200 pt-3 text-xs leading-relaxed text-neutral-600">
+                {item.description}
+              </p>
+            )}
+            <div className="mt-3 flex flex-wrap gap-x-6 gap-y-1 text-xs font-semibold uppercase text-neutral-800">
+              {item.meta?.map((m) => (
+                <span key={m}>{m}</span>
+              ))}
+              {qty > 1 && <span>Qty {qty}</span>}
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col">
+          <div className="flex flex-1 flex-col items-center justify-center gap-2 bg-pmred px-6 py-8 text-white">
+            <span className="text-4xl font-bold">
+              {primary.credits != null
+                ? formatCredits(primary.credits * qty)
+                : formatUSD(primary.price * qty)}
+            </span>
+            <span className="text-[10px] font-bold uppercase tracking-wider">{primary.label}</span>
+            <button
+              type="button"
+              onClick={() => buy(primary, primaryMethod)}
+              className="mt-3 rounded-full border-2 border-white px-8 py-1 text-xs font-bold uppercase tracking-wider transition hover:bg-white hover:text-pmred"
+            >
+              Buy
+            </button>
+          </div>
+          {primary.credits != null && primary.price != null && (
+            <button
+              type="button"
+              onClick={() => buy(primary, "card")}
+              className="py-3 text-center text-xs font-semibold text-neutral-500 hover:text-pmred"
+            >
+              or pay {formatUSD(primary.price * qty)} by card
+            </button>
+          )}
+          {others.map((tier) => (
+            <div key={tier.id} className="px-6 py-4 text-center">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-800">
+                {tier.label}
+              </p>
+              <p className="mt-1 flex items-center justify-center gap-2 text-sm font-bold text-pmred">
+                {tier.credits != null && (
+                  <button
+                    type="button"
+                    className="hover:underline"
+                    onClick={() => buy(tier, "credits")}
+                  >
+                    {formatCredits(tier.credits * qty)}
+                  </button>
+                )}
+                {tier.credits != null && tier.price != null && (
+                  <span className="text-[10px] font-normal uppercase text-neutral-400">or</span>
+                )}
+                {tier.price != null && (
+                  <button
+                    type="button"
+                    className="hover:underline"
+                    onClick={() => buy(tier, "card")}
+                  >
+                    {formatUSD(tier.price * qty)}
+                  </button>
+                )}
+              </p>
+            </div>
+          ))}
+          <p className="border-t border-neutral-100 px-6 py-3 text-center text-[10px] uppercase tracking-wider text-neutral-400">
+            Balance {formatNumber(state.credits)} credits
+          </p>
+        </div>
+      </div>
+    </Modal>
+  );
+}

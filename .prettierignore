@@ -1,0 +1,5 @@
+.next
+node_modules
+tmpData
+package-lock.json
+*.md

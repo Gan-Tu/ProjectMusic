@@ -1,27 +1,21 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
   images: {
-    domains: [
-      "pm-vue.projctone.com",
+    remotePatterns: [
       "s3.amazonaws.com",
       "images.unsplash.com",
       "picsum.photos",
+      "fastly.picsum.photos",
       "i.scdn.co",
       "assets.audiomack.com"
-    ]
+    ].map((hostname) => ({ protocol: "https", hostname }))
   },
   async redirects() {
     return [
       {
-        source: "/",
-        destination: "/albums",
-        permanent: false
-      },
-      {
-        source: "/albums/:slug",
-        destination: "/musics/:slug",
+        source: "/musics/:slug",
+        destination: "/albums/:slug",
         permanent: false
       }
     ];

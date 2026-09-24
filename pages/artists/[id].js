@@ -1,148 +1,232 @@
 import Image from "next/image";
-import AppContainer from "../../components/AppContainer";
-import { ArrowLeftIcon } from "@heroicons/react/solid";
 import Link from "next/link";
-import { getArtistData, getTopArtists } from "../../utils/getFakeArtistsData";
+import AppContainer from "../../components/AppContainer";
+import Button from "../../components/ui/Button";
+import TopArtists from "../../components/artists/TopArtists";
+import AlbumGrid from "../../components/artists/AlbumGrid";
+import PeopleTabs, { usePeopleTab } from "../../components/profile/PeopleTabs";
+import PhotoGallery from "../../components/pictures/PhotoGallery";
+import { getArtistHomePageData, getArtistProfile } from "../../utils/getFakeArtistsData";
 import { getMusics } from "../../utils/getFakeTracks";
-import AlbumCard from "../../components/AlbumCard";
+import { toAlbumSummary } from "../../utils/albumTracks";
+import { getArtistPhotos } from "../../utils/getFakePhotos";
+import { getEvents } from "../../utils/getFakeEvents";
+import { useStore } from "../../lib/store";
+import { useUI } from "../../lib/ui";
+import { formatCompact, formatLongDate, hashString, pad2 } from "../../lib/format";
 
-function getNumberFormatted(num) {
-  return num < 10 ? `0${num}` : num;
-}
+const TABS = ["music", "pictures", "timeline", "events", "about"];
 
-export default function ArtistProfile({ artistsData, topArtists, musics }) {
+export default function ArtistProfile({ artist, topArtists, albums, photos, events }) {
+  const { state, actions } = useStore();
+  const { openModal } = useUI();
+  const { tab } = usePeopleTab(TABS, "music");
+  const following = !!state.follows[`artist:${artist.id}`];
   return (
-    <AppContainer
-      title={`${artistsData.name} - Profile`}
-      curMenu={`#${artistsData.id}`}
-    >
-      <div className="min-h-screen flex flex-col">
-        <div className="uppercase p-8 bg-neutral-800 text-white flex text-center font-semibold text-sm transparent-selection  place-content-between drop-shadow-4">
-          <div className="flex space-x-10">
-            <Link href="/artists">
-              <button className="text-pmred mr-5 flex items-center cursor-pointer click-animation">
-                <div className="flex cursor-pointer items-center p-2 mr-4 ">
-                  <ArrowLeftIcon className="h-4" />
-                </div>
-                Back
-              </button>
-            </Link>
-            <div className="flex space-x-8 border-l-2 border-neutral-500 pl-10 items-center">
-              <p className="text-neutral-500 cursor-pointer">Profile</p>
-              <p className="cursor-pointer hover:text-neutral-200">Inbox</p>
-              <p className="cursor-pointer hover:text-neutral-200">Credits</p>
-              <p className="cursor-pointer hover:text-neutral-200">VIP</p>
+    <AppContainer title={artist.name} curMenu="Artists" description={artist.bio}>
+      <div className="flex flex-wrap items-center justify-between gap-5 bg-neutral-800 px-5 py-5 text-white sm:px-10">
+        <Link
+          href="/artists"
+          className="cursor-pointer text-xs font-bold uppercase tracking-widest text-pmred"
+        >
+          ← All artists
+        </Link>
+        <dl className="flex gap-8 text-center sm:gap-14">
+          {[
+            ["Listeners", artist.listeners],
+            ["Followers", artist.followers + Number(following)],
+            ["Sessions", artist.sessions]
+          ].map(([label, value]) => (
+            <div key={label}>
+              <dt className="text-[9px] font-semibold uppercase tracking-widest text-neutral-400">
+                {label}
+              </dt>
+              <dd className="mt-1 text-xl font-bold">{formatCompact(value)}</dd>
             </div>
-          </div>
-          <div className="items-center space-x-14 px-8 hidden lg:inline-flex">
-            <div className="flex flex-col border-r-2 pr-14 border-neutral-500 ">
-              <p className="text-2xl">13K</p>
-              <p className="cursor-pointer">Friends</p>
-            </div>
-            <div className="flex flex-col border-r-2 pr-14 border-neutral-500 ">
-              <p className="text-2xl">6,9K</p>
-              <p className="cursor-pointer">Followers</p>
-            </div>
-            <div className="flex flex-col text-pmred">
-              <p className="text-2xl">3740</p>
-              <p className="cursor-pointer">Credits</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 h-96 bg-neutral-900 transparent-selection">
-          <div className="flex items-center space-x-10 my-10 px-5 sm:px-20">
-            <div className="relative h-52 w-52 aspect-square cursor-pointer">
-              <Image
-                src={artistsData.imgUrl}
-                layout="fill"
-                objectFit="contain"
-                objectPosition="left"
-                alt="Profile Thumbnail"
-              />
-            </div>
-            <div className="text-white flex flex-col items-start">
-              <p className="cursor-pointer font-light uppercase">
-                Administrator
-              </p>
-              <p className="cursor-pointer font-extrabold text-3xl py-4">
-                {artistsData.name || "Nick Breton"}
-              </p>
-              <div className="flex space-x-4 py-2">
-                <button className="bg-pmred rounded-full cursor-pointer px-4 py-2 items-center text-sm click-animation">
-                  Follow
-                </button>
-                <button className="bg-transparent border rounded-full cursor-pointer px-4 py-2 items-center text-sm click-animation">
-                  Message
-                </button>
-              </div>
-            </div>
-          </div>
-          <div className="py-10 bg-gradient-to-bl from-neutral-900 to-neutral-800 px-5 sm:px-20">
-            <h1 className="uppercase text-pmred font-semibold">
-              Top 10 Artists
-            </h1>
-            <ul className="text-white uppercase gap-5 font-medium text-sm grid grid-cols-2 mt-10 items-cneter">
-              {topArtists.map((name, index) => (
-                <li
-                  className="cursor-pointer grid grid-cols-6"
-                  key={`top-artist${index}`}
-                >
-                  <span className="text-pmred mw-5 ">
-                    {getNumberFormatted(index + 1)}
-                  </span>
-                  <span className="flex-1 col-span-5 hover:text-neutral-200">
-                    {name}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        <div className="z-10 relative">
-          <div className="bg-white -translate-y-14  max-w-fit px-10 py-7 absolute shadow-2xl left-1/4">
-            <div className="flex space-x-5 justify-center items-center uppercase text-xs text-neutral-700 font-light">
-              <span className="cursor-pointer border-r-2 pr-5 font-semibold text-pmred ">
-                Playlist
-              </span>
-              <span className="cursor-pointer border-r-2 pr-5 hover:text-neutral-500">
-                Timeline
-              </span>
-              <span className="cursor-pointer border-r-2 pr-5 hover:text-neutral-500">
-                Statistics
-              </span>
-              <span className="cursor-pointer border-r-2 pr-5 hover:text-neutral-500">
-                Purchased
-              </span>
-              <span className="cursor-pointer border-r-2 pr-5 hover:text-neutral-500">
-                Suggested
-              </span>
-              <span className="cursor-pointer">Rewards</span>
-            </div>
-          </div>
-        </div>
-
-        <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-          {musics.map((musicData, index) => (
-            <Link href={`/albums/${musicData.id}`} key={musicData.id}>
-              <li key={`album-${index}`}>
-                <AlbumCard musicData={musicData} num={index + 1} />
-              </li>
-            </Link>
           ))}
-        </ul>
+        </dl>
       </div>
+      <div className="grid bg-neutral-900 text-white lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
+        <div className="flex flex-col gap-6 p-6 sm:flex-row sm:items-center sm:gap-10 sm:p-10">
+          <div className="relative aspect-square w-44 shrink-0 sm:w-52">
+            <Image
+              src={artist.imgUrl}
+              alt={artist.name}
+              fill
+              priority
+              sizes="208px"
+              className="object-cover"
+            />
+          </div>
+          <div className="min-w-0">
+            <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-pmred">
+              Artist / {artist.location}
+            </p>
+            <h1 className="mt-3 break-words text-4xl font-extrabold uppercase leading-none tracking-tight sm:text-5xl">
+              {artist.name}
+            </h1>
+            <p className="mt-4 max-w-sm text-sm leading-relaxed text-neutral-400">
+              Independent voices. Shared inspiration.
+            </p>
+            <div className="mt-6 flex gap-3">
+              <Button
+                className="cursor-pointer"
+                onClick={() => actions.toggleFollow(`artist:${artist.id}`)}
+                aria-pressed={following}
+              >
+                {following ? "Following" : "Follow"}
+              </Button>
+              <Button className="cursor-pointer" variant="light" onClick={() => openModal("chat")}>
+                Message
+              </Button>
+            </div>
+          </div>
+        </div>
+        <TopArtists artists={topArtists} />
+      </div>
+      <PeopleTabs tabs={TABS} active={tab} />
+      <section
+        key={`${artist.id}-${tab}`}
+        className="min-h-72 px-5 py-8 sm:px-10 sm:py-10"
+        aria-label={`${artist.name} ${tab}`}
+      >
+        {tab === "music" && (
+          <>
+            <SectionHeading
+              title="On rotation"
+              detail={`Listening inspiration selected for ${artist.name}.`}
+            />
+            <AlbumGrid albums={albums} />
+          </>
+        )}
+        {tab === "pictures" && (
+          <>
+            <SectionHeading title="From the archive" detail="Portraits and studio inspiration." />
+            <PhotoGallery photos={photos} />
+          </>
+        )}
+        {tab === "timeline" && (
+          <div className="mx-auto max-w-3xl">
+            <SectionHeading title="Timeline" detail="Notes from the studio community." />
+            {[
+              "There is something special about hearing an idea become a record. Back in the studio, making room for the next one.",
+              "A few favorite sounds have made their way into this week’s rotation. Find your next discovery in the music tab.",
+              "Good people, honest music, long nights. Thanks for being part of the journey."
+            ].map((post, index) => (
+              <article key={post} className="border-b border-neutral-200 py-6">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-pmred">
+                  {artist.name}{" "}
+                  <span className="ml-3 font-normal text-neutral-400">
+                    {formatLongDate(`2026-09-${pad2(22 - index * 4)}`)}
+                  </span>
+                </p>
+                <p className="mt-4 text-sm leading-7 text-neutral-600">{post}</p>
+                <button
+                  type="button"
+                  onClick={() => actions.toggleLike(`post:${artist.id}:${index}`)}
+                  aria-pressed={!!state.likes[`post:${artist.id}:${index}`]}
+                  className="mt-4 cursor-pointer text-xs text-pmred"
+                >
+                  {state.likes[`post:${artist.id}:${index}`] ? "♥ Liked" : "♡ Like"}
+                </button>
+              </article>
+            ))}
+          </div>
+        )}
+        {tab === "events" && (
+          <>
+            <SectionHeading
+              title="Community events"
+              detail="A look back at nights that brought us together."
+            />
+            <div className="grid sm:grid-cols-2 xl:grid-cols-3">
+              {events.map((event, index) => (
+                <article
+                  key={event.id || event.title || index}
+                  className="border-b border-neutral-200 p-6 sm:border-r"
+                >
+                  <div className="flex items-center gap-4">
+                    <span className="text-5xl font-light text-pmred">{pad2(event.day)}</span>
+                    <span className="text-xs font-bold uppercase text-neutral-400">
+                      {event.year}
+                      <br />
+                      {pad2(event.month)}
+                    </span>
+                  </div>
+                  <h3 className="mt-5 text-sm font-bold uppercase">{event.title}</h3>
+                  <p className="mt-2 text-xs text-neutral-500">
+                    {event.address?.[0] || event.venue} · {event.time}
+                  </p>
+                  <Button
+                    href="/events"
+                    variant="outline"
+                    size="xs"
+                    className="mt-6 cursor-pointer"
+                  >
+                    Explore events
+                  </Button>
+                </article>
+              ))}
+            </div>
+          </>
+        )}
+        {tab === "about" && (
+          <div className="max-w-3xl">
+            <SectionHeading title={`About ${artist.name}`} />
+            <p className="text-base leading-8 text-neutral-500">{artist.bio}</p>
+            <dl className="mt-8 grid gap-6 border-t border-neutral-200 pt-6 sm:grid-cols-2">
+              <div>
+                <dt className="text-[10px] font-bold uppercase tracking-widest text-pmred">
+                  Based in
+                </dt>
+                <dd className="mt-2 text-sm">{artist.location}</dd>
+              </div>
+              <div>
+                <dt className="text-[10px] font-bold uppercase tracking-widest text-pmred">
+                  Community
+                </dt>
+                <dd className="mt-2 text-sm">Projct Music / Truth Studios</dd>
+              </div>
+            </dl>
+          </div>
+        )}
+      </section>
     </AppContainer>
   );
 }
 
-export async function getServerSideProps({ query }) {
+function SectionHeading({ title, detail }) {
+  return (
+    <header className="mb-7">
+      <h2 className="text-sm font-extrabold uppercase tracking-widest">{title}</h2>
+      {detail && <p className="mt-2 text-xs text-neutral-500">{detail}</p>}
+    </header>
+  );
+}
+
+export function getStaticPaths() {
+  return {
+    paths: getArtistHomePageData().map((artist) => ({ params: { id: artist.id } })),
+    fallback: "blocking"
+  };
+}
+
+export function getStaticProps({ params }) {
+  const artist = getArtistProfile(params.id);
+  if (!artist) return { notFound: true };
+  const music = getMusics();
+  const offset = hashString(artist.id) % music.length;
+  const albums = Array.from(
+    { length: 8 },
+    (_, index) => music[(offset + index) % music.length]
+  ).map(toAlbumSummary);
   return {
     props: {
-      artistsData: getArtistData(query.id),
-      topArtists: getTopArtists(),
-      musics: getMusics()
+      artist,
+      topArtists: getArtistHomePageData().slice(0, 10),
+      albums,
+      photos: getArtistPhotos(artist),
+      events: getEvents().slice(0, 6)
     }
   };
 }

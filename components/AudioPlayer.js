@@ -1,149 +1,213 @@
-import { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import toast from "react-hot-toast";
+import {
+  ArrowPathRoundedSquareIcon,
+  ArrowsRightLeftIcon,
+  BackwardIcon,
+  ForwardIcon,
+  HeartIcon,
+  QueueListIcon,
+  SpeakerWaveIcon,
+  SpeakerXMarkIcon
+} from "@heroicons/react/24/outline";
+import {
+  HeartIcon as HeartSolidIcon,
+  PauseIcon,
+  PlayIcon,
+  PlusCircleIcon
+} from "@heroicons/react/24/solid";
+import { usePlayer, usePlayerProgress } from "../lib/player";
+import { useStore } from "../lib/store";
+import { useUI } from "../lib/ui";
+import { classNames, formatTime } from "../lib/format";
 
-export default function AudioPlayer({ curMusic }) {
-  const [musicProgressValue, setMusicProgressValue] = useState(40);
-  const [volumeValue, setVolumeValue] = useState(70);
-  const [onPause, setOnPause] = useState(false);
+function Progress({ fallbackDuration }) {
+  const { seek } = usePlayer();
+  const { currentTime, duration: mediaDuration, buffered } = usePlayerProgress();
+  const duration = mediaDuration || fallbackDuration || 0;
+  const pct = duration ? (currentTime / duration) * 100 : 0;
+  const bufferedPct = duration ? Math.max(pct, (buffered / duration) * 100) : 0;
+
   return (
-    <div className="sticky bottom-0 bg-black h-24 z-30">
-      <div className="grid grid-cols-5 md:grid-cols-12 h-24 place-items-center">
-        <div className="flex items-center space-x-2 col-span-1 md:col-span-2">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={0.6}
-            stroke="white"
-            className="w-4 h-4 md:w-8 md:h-8 click-animation group-hover:scale-110 cursor-pointer"
+    <div className="flex items-center gap-3 text-[11px] font-medium tabular-nums">
+      <span className="w-10 text-right text-white">{formatTime(currentTime)}</span>
+      <input
+        type="range"
+        min={0}
+        max={duration || 1}
+        step={0.1}
+        value={Math.min(currentTime, duration || 1)}
+        onChange={(e) => seek(Number(e.target.value))}
+        aria-label="Seek"
+        aria-valuetext={`${formatTime(currentTime)} of ${formatTime(duration)}`}
+        className="range-slider"
+        style={{
+          "--range-bg": `linear-gradient(to right, #fff 0 ${pct}%, var(--color-pmred) ${pct}% ${bufferedPct}%, rgb(255 255 255 / 0.2) ${bufferedPct}% 100%)`
+        }}
+      />
+      <span className="w-12 text-neutral-500">
+        -{formatTime(Math.max(0, duration - currentTime))}
+      </span>
+    </div>
+  );
+}
+
+function IconButton({ label, onClick, active, className, children }) {
+  return (
+    <button
+      type="button"
+      aria-label={label}
+      title={label}
+      aria-pressed={active}
+      onClick={onClick}
+      className={classNames(
+        "flex shrink-0 items-center justify-center transition hover:scale-110 active:scale-100",
+        active ? "text-pmred" : "text-white/70 hover:text-white",
+        className
+      )}
+    >
+      {children}
+    </button>
+  );
+}
+
+// Sticky black player bar at the bottom of every page (mounted once in _app).
+export default function AudioPlayer() {
+  const player = usePlayer();
+  const { state, actions } = useStore();
+  const { openModal } = useUI();
+  const { track, isPlaying, volume, muted, repeat, shuffle } = player;
+  if (!track) return null;
+
+  const liked = Boolean(state.likes[track.id]);
+  const inPlaylist = state.playlist.some((t) => t.id === track.id);
+  const volumePct = muted ? 0 : volume * 100;
+
+  return (
+    <div className="sticky bottom-0 z-40 border-t border-white/5 bg-black text-white">
+      <div className="flex h-20 items-center gap-3 px-3 sm:gap-5 md:h-24 md:px-6 lg:px-8">
+        <div className="flex items-center gap-2 sm:gap-4">
+          <IconButton label="Previous track" onClick={player.prev} className="hidden sm:flex">
+            <BackwardIcon className="h-6 w-6" />
+          </IconButton>
+          <button
+            type="button"
+            onClick={player.togglePlay}
+            aria-label={isPlaying ? "Pause" : "Play"}
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/80 transition hover:scale-105 hover:border-pmred hover:bg-pmred active:scale-100 md:h-12 md:w-12"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M21 16.811c0 .864-.933 1.405-1.683.977l-7.108-4.062a1.125 1.125 0 010-1.953l7.108-4.062A1.125 1.125 0 0121 8.688v8.123zM11.25 16.811c0 .864-.933 1.405-1.683.977l-7.108-4.062a1.125 1.125 0 010-1.953L9.567 7.71a1.125 1.125 0 011.683.977v8.123z"
-            />
-          </svg>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={0.6}
-            stroke="white"
-            className="w-8 h-8 md:w-12 md:h-12 click-animation group-hover:scale-110 cursor-pointer"
-            onClick={() => setOnPause(!onPause)}
-          >
-            {onPause ? (
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M14.25 9v6m-4.5 0V9M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
+            {isPlaying ? (
+              <PauseIcon className="h-5 w-5" />
             ) : (
-              <>
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M15.91 11.672a.375.375 0 010 .656l-5.603 3.113a.375.375 0 01-.557-.328V8.887c0-.286.307-.466.557-.327l5.603 3.112z"
-                />
-              </>
+              <PlayIcon className="ml-0.5 h-5 w-5" />
             )}
-          </svg>
+          </button>
+          <IconButton label="Next track" onClick={player.next}>
+            <ForwardIcon className="h-6 w-6" />
+          </IconButton>
+        </div>
 
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={0.6}
-            stroke="white"
-            className="w-4 h-4 md:w-8 md:h-8 click-animation group-hover:scale-110 cursor-pointer"
+        <div className="flex min-w-0 flex-1 items-center gap-4">
+          <Link
+            href={track.albumId ? `/albums/${track.albumId}` : "/musics"}
+            className="relative hidden h-12 w-12 shrink-0 overflow-hidden bg-neutral-800 sm:block md:h-14 md:w-14"
+            aria-label={`Open ${track.albumName || track.title}`}
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M3 8.688c0-.864.933-1.405 1.683-.977l7.108 4.062a1.125 1.125 0 010 1.953l-7.108 4.062A1.125 1.125 0 013 16.81V8.688zM12.75 8.688c0-.864.933-1.405 1.683-.977l7.108 4.062a1.125 1.125 0 010 1.953l-7.108 4.062a1.125 1.125 0 01-1.683-.977V8.688z"
-            />
-          </svg>
+            {track.cover && (
+              <Image src={track.cover} alt="" fill sizes="56px" className="object-cover" />
+            )}
+            {isPlaying && (
+              <span className="absolute inset-x-0 bottom-0 flex h-4 items-end justify-center gap-0.5 bg-linear-to-t from-black/70 pb-0.5">
+                {[0, 1, 2].map((i) => (
+                  <span
+                    key={i}
+                    className="w-0.5 origin-bottom animate-equalizer bg-pmred"
+                    style={{ height: "100%", animationDelay: `${i * 0.15}s` }}
+                  />
+                ))}
+              </span>
+            )}
+          </Link>
+          <div className="min-w-0 flex-1">
+            <div className="mb-0.5 flex min-w-0 items-baseline gap-2 text-sm">
+              <span className="truncate font-semibold">{track.title}</span>
+              <span className="hidden truncate text-xs font-light text-neutral-400 sm:inline">
+                {track.artist}
+              </span>
+            </div>
+            <Progress fallbackDuration={track.duration} />
+          </div>
         </div>
 
-        <div className="col-span-2 md:col-span-7 transparent-selection w-full px-1 md:px-4">
-          <div className="text-white flex flex-col space-y-1 w-full">
-            <span>{curMusic || "Draft Punk"}</span>
+        <div className="flex items-center gap-3 md:gap-4">
+          <IconButton
+            label={liked ? "Unlike" : "Like"}
+            active={liked}
+            onClick={() => actions.toggleLike(track.id)}
+            className="hidden sm:flex"
+          >
+            {liked ? <HeartSolidIcon className="h-5 w-5" /> : <HeartIcon className="h-5 w-5" />}
+          </IconButton>
+          <div className="hidden items-center gap-2 lg:flex">
+            <IconButton label={muted ? "Unmute" : "Mute"} onClick={player.toggleMute}>
+              {muted || volume === 0 ? (
+                <SpeakerXMarkIcon className="h-5 w-5" />
+              ) : (
+                <SpeakerWaveIcon className="h-5 w-5" />
+              )}
+            </IconButton>
             <input
-              className="slider cursor-pointer accent-white  bg-white"
               type="range"
-              min="1"
-              max="100"
-              value={musicProgressValue}
-              onChange={(e) => setMusicProgressValue(e.target.value)}
-              onMouseMove={(e) => setMusicProgressValue(e.target.value)}
+              min={0}
+              max={1}
+              step={0.01}
+              value={muted ? 0 : volume}
+              onChange={(e) => player.setVolume(Number(e.target.value))}
+              aria-label="Volume"
+              className="range-slider w-24"
+              style={{ "--range-pct": `${volumePct}%` }}
             />
-            <div className="font-light">
-              <span className="border-r border-gray-600 pr-2">01:56</span>
-              <span className="pl-2 text-gray-600">03:45</span>
-            </div>
           </div>
-        </div>
-
-        <div className="col-span-2 md:col-span-3">
-          <div className="flex items-center">
-            <div className="flex space-x-1 md:space-x-2 lg:space-x-4 xl:border-r-2 border-gray-500 py-2 pr-5">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={0.8}
-                stroke="white"
-                className="w-6 h-6 click-animation group-hover:scale-110 cursor-pointer"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M19.114 5.636a9 9 0 010 12.728M16.463 8.288a5.25 5.25 0 010 7.424M6.75 8.25l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75z"
-                />
-              </svg>
-              <input
-                className="slider cursor-pointer accent-white  bg-white"
-                type="range"
-                min="1"
-                max="100"
-                value={volumeValue}
-                onChange={(e) => setVolumeValue(e.target.value)}
-                onMouseMove={(e) => setVolumeValue(e.target.value)}
-              />
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={0.8}
-                stroke="white"
-                className="w-6 h-6 click-animation group-hover:scale-110 cursor-pointer rotate-180"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M15 15l6-6m0 0l-6-6m6 6H9a6 6 0 000 12h3"
-                />
-              </svg>
-            </div>
-            <div className="pl-5 hidden xl:inline">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="#FF0646"
-                className="w-8 h-8 click-animation group-hover:scale-110 cursor-pointer"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 9a.75.75 0 00-1.5 0v2.25H9a.75.75 0 000 1.5h2.25V15a.75.75 0 001.5 0v-2.25H15a.75.75 0 000-1.5h-2.25V9z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </div>
-          </div>
+          <IconButton
+            label={`Repeat: ${repeat}`}
+            active={repeat !== "off"}
+            onClick={player.cycleRepeat}
+            className="relative hidden md:flex"
+          >
+            <ArrowPathRoundedSquareIcon className="h-5 w-5" />
+            {repeat === "one" && (
+              <span className="absolute -right-1.5 -top-1.5 text-[9px] font-bold">1</span>
+            )}
+          </IconButton>
+          <IconButton
+            label={shuffle ? "Shuffle on" : "Shuffle off"}
+            active={shuffle}
+            onClick={player.toggleShuffle}
+            className="hidden md:flex"
+          >
+            <ArrowsRightLeftIcon className="h-5 w-5" />
+          </IconButton>
+          <span className="hidden h-8 w-px bg-white/15 md:block" />
+          <IconButton label="Queue and playlist (P)" onClick={() => openModal("playlist")}>
+            <QueueListIcon className="h-6 w-6" />
+          </IconButton>
+          <button
+            type="button"
+            aria-label={inPlaylist ? "In your playlist" : "Add to playlist"}
+            title={inPlaylist ? "In your playlist" : "Add to playlist"}
+            onClick={() => {
+              if (inPlaylist) {
+                openModal("playlist");
+                return;
+              }
+              actions.addToPlaylist(track);
+              toast.success(`Added “${track.title}” to your playlist`);
+            }}
+            className="shrink-0 text-pmred transition hover:scale-110 active:scale-100"
+          >
+            <PlusCircleIcon className={classNames("h-9 w-9", inPlaylist && "opacity-60")} />
+          </button>
         </div>
       </div>
     </div>

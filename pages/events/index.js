@@ -1,109 +1,93 @@
+import { useState } from "react";
 import AppContainer from "../../components/AppContainer";
+import EventCard from "../../components/events/EventCard";
+import { classNames } from "../../lib/format";
 import { getEvents } from "../../utils/getFakeEvents";
 
-function getFormattedData(year, month, day) {
-  // let dateStr = day < 10 ? `0${day}` : `${day}`;
-  let dateStr = `${day < 10 ? "0" : ""}${day}`;
-  let monthStr = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December"
-  ][month - 1];
-  return `${dateStr} ${monthStr} ${year}`;
-}
-
 export default function EventsHome({ eventData }) {
+  const [month, setMonth] = useState(null);
+  const [city, setCity] = useState("All cities");
+  const cities = [...new Set(eventData.map((event) => event.city))];
+  const filtered = eventData.filter(
+    (event) =>
+      (!month || event.date.startsWith(month)) && (city === "All cities" || event.city === city)
+  );
+  function selectThisMonth() {
+    const now = new Date();
+    setMonth(`${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`);
+  }
   return (
-    <AppContainer curMenu={"Events"}>
-      <ul
-        role="list"
-        className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-      >
-        {eventData.map((x) => (
-          <div
-            className="py-5 flex flex-col border cursor-pointer hover:bg-pmred group min-h-fit"
-            key={x.title}
+    <AppContainer
+      title="Events"
+      curMenu="Events"
+      description="Live shows, intimate sessions, and nights with the Projct Music community."
+    >
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-neutral-200 px-6 py-5 sm:px-8">
+        <div className="flex items-center gap-6 text-xs font-bold uppercase tracking-widest">
+          <h1 className="sr-only">Events</h1>
+          <button
+            type="button"
+            onClick={() => setMonth(null)}
+            aria-pressed={!month}
+            className={classNames(
+              "cursor-pointer py-2",
+              !month ? "text-pmred" : "text-neutral-400"
+            )}
           >
-            <div className="grid grid-rows-2">
-              <div className="uppercase flex flex-col items-end text-black group-hover:text-white mb-10 mr-10 mt-5">
-                <h1 className="font-medium text-xs">
-                  {getFormattedData(x.year, x.month, x.day)}
-                </h1>
-                <time className="font-semibold text-lg flex items-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="w-5 h-5 text-pmred mr-1 group-hover:text-white group-hover:text-opacity-70"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                  {x.time}
-                </time>
-              </div>
-
-              <div className="uppercase grid grid-cols-8 relative">
-                <span className="absolute text-6xl text-neutral-200 z-0 group-hover:text-white -top-10 px-4 font-extralight scale-x-110">
-                  {`${x.day < 10 ? "0" : ""}${x.day}`}
-                </span>
-                <div className="z-10 col-start-2 col-end-8 py-4 pl-4 pr-8 bg-white group-hover:bg-black flex items-center">
-                  <h1 className="font-bold text-pmred group-hover:text-white text-3xl">
-                    {x.title}
-                  </h1>
-                </div>
-                <div className="bg-white group-hover:bg-black z-10"></div>
-              </div>
-            </div>
-
-            <div>
-              <div className="grid grid-cols-8 relative mt-5">
-                <div className="flex flex-col col-start-2 col-end-8 py-10 pl-4 pr-8 border-y border-gray-200 group-hover:border-opacity-50">
-                  <h1 className="uppercase font-semibold text-black group-hover:text-white text-medium">
-                    {x.name}
-                  </h1>
-                  {x.address?.map((segment) => (
-                    <h2
-                      key={segment}
-                      className="font-light text-neutral-400 group-hover:text-white text-sm group-hover:text-opacity-70"
-                    >
-                      {segment}
-                    </h2>
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex flex-col items-center pt-6 pb-3">
-                <button className="uppercase rounded-full cursor-pointer px-4 py-1 items-center text-sm click-animation border-pmred border-2 text-pmred font-semibold group-hover:border-white group-hover:bg-white">
-                  Get Tickets
-                </button>
-              </div>
-            </div>
-          </div>
+            All events
+          </button>
+          <button
+            type="button"
+            onClick={selectThisMonth}
+            aria-pressed={!!month}
+            className={classNames("cursor-pointer py-2", month ? "text-pmred" : "text-neutral-400")}
+          >
+            This month
+          </button>
+        </div>
+        <label className="flex items-center gap-3 text-xs text-neutral-500">
+          City
+          <select
+            aria-label="Filter by city"
+            value={city}
+            onChange={(event) => setCity(event.target.value)}
+            className="cursor-pointer rounded-full border border-neutral-200 bg-white px-4 py-2 text-xs text-neutral-900"
+          >
+            <option>All cities</option>
+            {cities.map((value) => (
+              <option key={value}>{value}</option>
+            ))}
+          </select>
+        </label>
+      </div>
+      <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {filtered.map((event) => (
+          <li key={event.id}>
+            <EventCard event={event} />
+          </li>
         ))}
       </ul>
+      {!filtered.length && (
+        <div className="px-6 py-24 text-center">
+          <p className="text-sm text-neutral-500">
+            No shows match these filters. More good nights are on the way.
+          </p>
+          <button
+            type="button"
+            onClick={() => {
+              setMonth(null);
+              setCity("All cities");
+            }}
+            className="mt-5 cursor-pointer text-xs font-bold uppercase tracking-widest text-pmred"
+          >
+            See all events
+          </button>
+        </div>
+      )}
     </AppContainer>
   );
 }
 
 export async function getStaticProps() {
-  return {
-    props: {
-      eventData: getEvents()
-    }
-  };
+  return { props: { eventData: getEvents() } };
 }
