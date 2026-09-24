@@ -64,7 +64,7 @@ export default function Shop({ products, categories }) {
               alt="Black Truth Studios T-shirt with a vivid multicolor graphic"
               fill
               sizes="(max-width: 768px) 100vw, 50vw"
-              priority
+              preload
               className="object-cover motion-safe:transition-transform motion-safe:duration-700 group-hover:scale-105"
             />
             <span className="absolute bottom-5 right-5 flex h-11 w-11 items-center justify-center rounded-full bg-white text-pmred">

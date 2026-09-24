@@ -53,7 +53,7 @@ export default function ArtistProfile({ artist, topArtists, albums, photos, even
               src={artist.imgUrl}
               alt={artist.name}
               fill
-              priority
+              preload
               sizes="208px"
               className="object-cover"
             />

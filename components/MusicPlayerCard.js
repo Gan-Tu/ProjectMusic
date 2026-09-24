@@ -41,7 +41,7 @@ export default function MusicPlayerCard({ musicData, track, queue, priority = fa
             alt={`${musicData.name} cover`}
             fill
             sizes="(max-width: 639px) 96px, 144px"
-            priority={priority}
+            preload={priority}
             className="object-cover transition duration-300 hover:scale-105"
           />
         </Link>

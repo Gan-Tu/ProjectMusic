@@ -17,7 +17,7 @@ export default function AboutPage() {
           alt="Hands raised in a concert crowd"
           fill
           sizes="100vw"
-          priority
+          preload
           className="object-cover"
         />
         <div className="absolute inset-0 bg-pmred/30" />

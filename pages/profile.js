@@ -128,7 +128,7 @@ export default function Profile({ albums, topArtists, photos, videos }) {
                 alt={`${user?.name || "Nick Breton"} portrait`}
                 unoptimized={portrait.startsWith("data:")}
                 fill
-                priority
+                preload
                 sizes="(max-width: 639px) 38vw, 25vw"
                 className="object-cover object-top"
               />
@@ -138,7 +138,7 @@ export default function Profile({ albums, topArtists, photos, videos }) {
                 src="/profile/canal.webp"
                 alt=""
                 fill
-                priority
+                preload
                 sizes="(max-width: 1023px) 70vw, 50vw"
                 className="object-cover opacity-30"
               />

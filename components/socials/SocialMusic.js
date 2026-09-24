@@ -56,7 +56,7 @@ export function TrackList({ tracks, singleColumn = false }) {
                 alt={`${track.albumName} cover`}
                 fill
                 sizes="128px"
-                priority={index === 0}
+                preload={index === 0}
                 className="object-cover transition-transform duration-500 group-hover:scale-105 motion-reduce:transform-none"
               />
               <span className="absolute inset-0 flex items-center justify-center bg-black/25 text-white">
@@ -138,7 +138,7 @@ export function MyspaceProfile({ friends, tracks }) {
             alt="A microphone in the Truth Studios live room"
             fill
             sizes="300px"
-            priority
+            preload
             className="object-cover"
           />
         </div>

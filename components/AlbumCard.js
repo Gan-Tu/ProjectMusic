@@ -15,7 +15,7 @@ export default function AlbumCard({ musicData, num, tracks, linked = false, prio
         alt={`${musicData.name} by ${musicData.artist || "Various Artists"}`}
         fill
         sizes="(max-width: 639px) 50vw, (max-width: 1023px) 33vw, 20vw"
-        priority={priority}
+        preload={priority}
         className="object-cover transition duration-300 group-hover:scale-105 group-hover:brightness-50 group-focus-within:brightness-50"
       />
       {linked && (

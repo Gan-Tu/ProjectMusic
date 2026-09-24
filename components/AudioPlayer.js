@@ -34,7 +34,7 @@ function Progress({ fallbackDuration }) {
 
   return (
     <div className="flex items-center gap-3 text-xs font-medium tabular-nums">
-      <span className="w-10 text-right text-white">{formatTime(currentTime)}</span>
+      <span className="w-10 shrink-0 text-right text-white">{formatTime(currentTime)}</span>
       <input
         type="range"
         min={0}
@@ -44,12 +44,12 @@ function Progress({ fallbackDuration }) {
         onChange={(e) => seek(Number(e.target.value))}
         aria-label="Seek"
         aria-valuetext={`${formatTime(currentTime)} of ${formatTime(duration)}`}
-        className="range-slider"
+        className="range-slider min-w-0 flex-1"
         style={{
           "--range-bg": `linear-gradient(to right, #fff 0 ${pct}%, var(--color-pmred) ${pct}% ${bufferedPct}%, rgb(255 255 255 / 0.2) ${bufferedPct}% 100%)`
         }}
       />
-      <span className="w-12 text-neutral-500">
+      <span className="w-12 shrink-0 text-neutral-500">
         -{formatTime(Math.max(0, duration - currentTime))}
       </span>
     </div>
@@ -168,9 +168,9 @@ export default function AudioPlayer() {
 
   return (
     <div className="sticky bottom-0 z-40 border-t border-white/5 bg-black text-white">
-      <div className="flex h-20 items-center gap-3 px-3 sm:gap-5 md:h-24 md:px-6 lg:px-8">
+      <div className="flex h-16 items-center gap-3 px-3 sm:h-20 sm:gap-5 md:h-24 md:px-6 lg:px-8">
         <div className="flex items-center gap-2 sm:gap-4">
-          <IconButton label="Previous track" onClick={player.prev} className="hidden sm:flex">
+          <IconButton label="Previous track" onClick={player.prev}>
             <BackwardIcon className="h-6 w-6" />
           </IconButton>
           <button
@@ -212,14 +212,14 @@ export default function AudioPlayer() {
             )}
           </Link>
           <div className="min-w-0 flex-1">
-            <div className="mb-0.5 flex min-w-0 items-baseline gap-2 text-sm">
+            <div className="flex min-w-0 flex-col text-sm sm:mb-0.5 sm:flex-row sm:items-baseline sm:gap-2">
               <span className="truncate font-semibold">{track.title}</span>
-              <span className="hidden truncate text-xs font-light text-neutral-400 sm:inline">
-                {track.artist}
-              </span>
+              <span className="truncate text-xs font-light text-neutral-400">{track.artist}</span>
               <SongDNA trackId={track.id} dark className="hidden md:inline-flex" />
             </div>
-            <Progress fallbackDuration={track.duration} />
+            <div className="hidden sm:block">
+              <Progress fallbackDuration={track.duration} />
+            </div>
           </div>
         </div>
 
@@ -293,6 +293,10 @@ export default function AudioPlayer() {
             <PlusCircleIcon className={classNames("h-9 w-9", inPlaylist && "opacity-60")} />
           </button>
         </div>
+      </div>
+      {/* Phones: the seek bar gets a full-width row of its own. */}
+      <div className="px-3 pb-2 sm:hidden">
+        <Progress fallbackDuration={track.duration} />
       </div>
     </div>
   );

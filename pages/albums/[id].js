@@ -111,7 +111,7 @@ export default function AlbumDetail({ album, tracks, more }) {
                 alt={`${album.name} album cover`}
                 fill
                 sizes="(max-width: 1023px) 75vw, 40vw"
-                priority
+                preload
                 className="object-cover"
               />
             </div>

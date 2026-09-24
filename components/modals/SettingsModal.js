@@ -24,7 +24,7 @@ function ToggleRow({ label, checked, onChange }) {
   );
 }
 
-function EditableRow({ label, value, type = "text", editing, onEdit, onChange, display }) {
+function EditableRow({ label, value, type = "text", editing, onEdit, onChange }) {
   return (
     <div className="grid grid-cols-[7rem_1fr_auto] items-center gap-4 py-3.5">
       <span className="text-sm text-neutral-700">{label}</span>
@@ -39,7 +39,7 @@ function EditableRow({ label, value, type = "text", editing, onEdit, onChange, d
           className="h-8 min-w-0 rounded-full border border-neutral-200 px-3 text-right text-sm focus:border-pmred focus:outline-none"
         />
       ) : (
-        <span className="truncate text-right text-sm text-pmred">{display ?? value}</span>
+        <span className="truncate text-right text-sm text-pmred">{value}</span>
       )}
       <button
         type="button"
@@ -47,6 +47,31 @@ function EditableRow({ label, value, type = "text", editing, onEdit, onChange, d
         className="text-2xs font-bold uppercase tracking-wider text-pmred hover:text-pmred-dark"
       >
         {editing ? "Done" : "Edit"}
+      </button>
+    </div>
+  );
+}
+
+// Demo access takes any password (see the login page), so there's none to change:
+// "Edit" explains that instead of offering a field that would be ignored.
+function PasswordRow({ open, onToggle }) {
+  return (
+    <div className="grid grid-cols-[7rem_1fr_auto] items-center gap-4 py-3.5">
+      <span className="text-sm text-neutral-700">Password</span>
+      {open ? (
+        <span className="text-right text-xs text-neutral-500">
+          Demo access: any password signs you in, so there&apos;s nothing to change.
+        </span>
+      ) : (
+        <span className="truncate text-right text-sm text-pmred">••••••••</span>
+      )}
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={open}
+        className="text-2xs font-bold uppercase tracking-wider text-pmred hover:text-pmred-dark"
+      >
+        {open ? "Done" : "Edit"}
       </button>
     </div>
   );
@@ -86,7 +111,6 @@ export default function SettingsModal({ open, onClose, tab: initialTab = "genera
   const [profile, setProfile] = useState(() => ({
     username: session.user?.username || "",
     email: session.user?.email || "",
-    password: "",
     avatar: session.user?.avatar
   }));
   const [editing, setEditing] = useState(null);
@@ -102,20 +126,20 @@ export default function SettingsModal({ open, onClose, tab: initialTab = "genera
     const settingsPatch = Object.fromEntries(
       Object.entries(draft).filter(([key, value]) => changed(value, initial.settings[key]))
     );
-    if (Object.keys(settingsPatch).length) actions.updateSettings(settingsPatch);
+    const hasSettings = Object.keys(settingsPatch).length > 0;
+    if (hasSettings) actions.updateSettings(settingsPatch);
     const profilePatch = Object.fromEntries(
       ["username", "email", "avatar"]
         .filter((key) => profile[key] !== initial.profile[key])
         .map((key) => [key, profile[key]])
     );
-    const saved =
-      !session.user || !Object.keys(profilePatch).length || session.updateProfile(profilePatch);
-    if (saved) {
-      toast.success(profile.password ? "Settings and password updated" : "Settings saved");
-    } else {
+    const hasProfile = Boolean(session.user) && Object.keys(profilePatch).length > 0;
+    if (hasProfile && !session.updateProfile(profilePatch)) {
       toast.error(
         "Profile updated for this visit only: this browser won't save it (storage is full or blocked)."
       );
+    } else if (hasSettings || hasProfile) {
+      toast.success("Settings saved");
     }
     onClose();
   }
@@ -206,14 +230,9 @@ export default function SettingsModal({ open, onClose, tab: initialTab = "genera
                   onEdit={() => toggleEdit("email")}
                   onChange={(email) => setProfile((p) => ({ ...p, email }))}
                 />
-                <EditableRow
-                  label="Password"
-                  type="password"
-                  value={profile.password}
-                  display="••••••••"
-                  editing={editing === "password"}
-                  onEdit={() => toggleEdit("password")}
-                  onChange={(password) => setProfile((p) => ({ ...p, password }))}
+                <PasswordRow
+                  open={editing === "password"}
+                  onToggle={() => toggleEdit("password")}
                 />
               </div>
               <label className="flex cursor-pointer flex-col items-center gap-2 self-center">

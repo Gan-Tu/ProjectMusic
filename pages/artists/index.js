@@ -119,7 +119,7 @@ export default function ArtistsHome({ artistsData }) {
                   src={artist.imgUrl}
                   alt={artist.name}
                   fill
-                  priority={index < 3}
+                  preload={index < 3}
                   sizes="(max-width: 767px) 50vw, (max-width: 1279px) 25vw, 17vw"
                   className="object-cover opacity-90 transition duration-300 group-hover:scale-105 group-hover:opacity-100 motion-reduce:transition-none"
                 />

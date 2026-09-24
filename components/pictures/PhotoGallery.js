@@ -103,7 +103,7 @@ export default function PhotoGallery({ photos, polaroids = false }) {
                 src={item.src}
                 alt={item.caption}
                 fill
-                priority={index === 0}
+                preload={index === 0}
                 sizes="(max-width: 767px) 50vw, (max-width: 1023px) 33vw, 25vw"
                 className="object-cover transition duration-500 group-hover:scale-105 motion-reduce:transition-none"
               />

@@ -22,7 +22,7 @@ export default function ArticleDetail({ post, related, section }) {
             src={post.imgUrl}
             fill
             sizes="100vw"
-            priority
+            preload
             alt={post.title}
             className="object-cover object-top"
           />

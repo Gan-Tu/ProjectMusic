@@ -22,7 +22,7 @@ export default function Pictures({ categories }) {
               src={category.image}
               alt={category.description}
               fill
-              priority={index < 2}
+              preload={index < 2}
               sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 25vw"
               className="object-cover grayscale transition-transform duration-700 group-hover:scale-105 motion-reduce:transition-none"
             />

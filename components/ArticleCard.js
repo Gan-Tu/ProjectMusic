@@ -27,7 +27,7 @@ export default function ArticleCard({
           fill
           sizes="(max-width: 640px) 40vw, (max-width: 1024px) 50vw, 25vw"
           alt={imageAlt || imgAlt || title}
-          priority={priority}
+          preload={priority}
           className="object-cover transition-transform duration-500 motion-safe:group-hover:scale-105"
         />
       </Link>

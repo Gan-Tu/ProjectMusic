@@ -19,7 +19,8 @@ function FilteredArticles({ posts, section, active }) {
       <ul className="grid gap-px bg-neutral-200 lg:grid-cols-2">
         {filtered.slice(0, visible).map((post, index) => (
           <li key={post.id}>
-            <ArticleCard {...post} href={`/${section}/${post.id}`} priority={index === 0} />
+            {/* The first row (two cards on desktop) is visible on load. */}
+            <ArticleCard {...post} href={`/${section}/${post.id}`} priority={index < 2} />
           </li>
         ))}
       </ul>

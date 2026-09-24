@@ -21,7 +21,7 @@ export default function EventDetail({ event }) {
           src={event.image}
           alt={`Live concert atmosphere for ${event.title}`}
           fill
-          priority
+          preload
           sizes="100vw"
           className="object-cover opacity-65"
         />

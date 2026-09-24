@@ -49,7 +49,7 @@ export default function HomeHero({ videos }) {
           src={video.poster}
           alt={`${video.artist} — ${video.title}`}
           fill
-          priority
+          preload
           sizes="(max-width: 768px) 100vw, 50vw"
           className="object-cover transition duration-500 group-hover:scale-[1.025] motion-reduce:transition-none motion-reduce:transform-none"
         />

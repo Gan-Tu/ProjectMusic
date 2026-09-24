@@ -47,7 +47,7 @@ export default function WikipediaArticle({ article }) {
               alt="Electric guitar in the recording studio"
               fill
               sizes="(max-width: 639px) 90vw, 224px"
-              priority
+              preload
               className="object-cover"
             />
           </div>

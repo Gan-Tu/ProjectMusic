@@ -142,7 +142,7 @@ export function PhotoFeed({ posts, pinterest = false }) {
                   alt={item.alt}
                   fill
                   sizes="(max-width: 767px) 50vw, 25vw"
-                  priority={index === 0}
+                  preload={index === 0}
                   className="object-cover transition duration-500 group-hover:scale-105 group-hover:brightness-75 motion-reduce:transform-none motion-reduce:transition-none"
                 />
                 <div className="absolute inset-0 flex items-center justify-center gap-6 bg-black/20 text-sm font-semibold text-white opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
@@ -353,7 +353,7 @@ export function JournalFeed({ posts, tumblr = false }) {
                   alt={post.alt}
                   fill
                   sizes="(max-width: 767px) 100vw, 50vw"
-                  priority={index === 0}
+                  preload={index === 0}
                   className="object-cover"
                 />
               </div>
@@ -452,7 +452,7 @@ export function VideoFeed({ posts, network }) {
                 alt={post.alt}
                 fill
                 sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw"
-                priority={index === 0}
+                preload={index === 0}
                 className="object-cover brightness-75 transition duration-500 group-hover:scale-105 group-hover:brightness-100 motion-reduce:transform-none motion-reduce:transition-none"
               />
               <span className="absolute inset-0 flex items-center justify-center">

@@ -77,7 +77,7 @@ export default function VideoStage({ video, videos, related }) {
                   src={video.poster}
                   alt={`${video.artist} — ${video.title}`}
                   fill
-                  priority
+                  preload
                   sizes={creditsOpen ? "(max-width: 1024px) 100vw, 80vw" : "100vw"}
                   className="object-cover"
                 />

@@ -90,7 +90,7 @@ export default function ProductVisual({
           ? "(max-width: 768px) 100vw, 50vw"
           : "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
       }
-      priority={priority}
+      preload={priority}
       className={classNames(
         "object-contain motion-safe:transition-transform motion-safe:duration-500 group-hover:scale-[1.035]",
         className

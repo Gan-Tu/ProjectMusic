@@ -17,7 +17,7 @@ export default function VolunteerPage() {
           src="/content/about-crowd.webp"
           fill
           sizes="100vw"
-          priority
+          preload
           alt="A crowd coming together for live music"
           className="object-cover opacity-35"
         />
