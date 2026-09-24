@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/router";
 import Image, { getImageProps } from "next/image";
 import {
   ArrowDownTrayIcon,
@@ -31,20 +32,6 @@ export default function PhotoGallery({ photos, polaroids = false }) {
   const [downloading, setDownloading] = useState(false);
   const { state, actions } = useStore();
   const photo = selected === null ? null : photos[selected];
-  useEffect(() => {
-    if (selected === null || !photos.length) return;
-    const onKey = (event) => {
-      if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
-        event.preventDefault();
-        event.stopPropagation();
-        setSelected(
-          (index) => (index + (event.key === "ArrowRight" ? 1 : -1) + photos.length) % photos.length
-        );
-      }
-    };
-    window.addEventListener("keydown", onKey, true);
-    return () => window.removeEventListener("keydown", onKey, true);
-  }, [selected, photos.length]);
   async function download() {
     setDownloading(true);
     try {
@@ -78,31 +65,64 @@ export default function PhotoGallery({ photos, polaroids = false }) {
         toast.error("Could not share this photo. Copy the page address instead.");
     }
   }
-  // The URL fragment names the open photo (#photo-id): links and Back/Forward open
-  // and close the lightbox, and browsing inside it keeps the fragment in step
-  // (replaceState, so flipping through photos doesn't pile up history entries).
-  const hashRead = useRef(false);
+  // The URL fragment names the open photo (#photo-id). Opening a photo adds a
+  // history entry, flipping through photos replaces it, and closing goes back to
+  // the gallery entry; deep links and Back/Forward open and close the lightbox.
+  const router = useRouter();
+  const pushed = useRef(false); // the open photo has its own entry (added by opening it)
+  const galleryUrl = () => window.location.pathname + window.location.search;
+  function show(index, { push = false } = {}) {
+    setSelected(index);
+    const url = `${galleryUrl()}#${photos[index].id}`;
+    // Keep Next's route info for this page, with the fragment in its URL too.
+    const state = { ...window.history.state, as: url };
+    if (push) {
+      pushed.current = true;
+      window.history.pushState({ ...state, photoEntry: true }, "", url);
+    } else {
+      window.history.replaceState(state, "", url);
+    }
+  }
+  function close() {
+    setSelected(null);
+    if (pushed.current) {
+      pushed.current = false;
+      window.history.back();
+    } else if (window.location.hash) {
+      window.history.replaceState({ ...window.history.state, as: galleryUrl() }, "", galleryUrl());
+    }
+  }
+  useEffect(() => {
+    if (selected === null || !photos.length) return;
+    const onKey = (event) => {
+      if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+        event.preventDefault();
+        event.stopPropagation();
+        const step = event.key === "ArrowRight" ? 1 : -1;
+        show((selected + step + photos.length) % photos.length);
+      }
+    };
+    window.addEventListener("keydown", onKey, true);
+    return () => window.removeEventListener("keydown", onKey, true);
+  });
   useEffect(() => {
     const syncFromHash = () => {
-      hashRead.current = true;
       const index = photos.findIndex((item) => `#${item.id}` === window.location.hash);
+      // Forward onto an entry added by opening a photo: closing should go back again.
+      pushed.current = index >= 0 && Boolean(window.history.state?.photoEntry);
       setSelected(index >= 0 ? index : null);
     };
     const timer = window.setTimeout(syncFromHash, 0);
     window.addEventListener("hashchange", syncFromHash);
+    // Back/Forward between this gallery and one of its photos only changes the
+    // fragment: handle it here, so Next doesn't re-run the route (and scroll to top).
+    router.beforePopState(({ as }) => as.split("#")[0] !== router.asPath.split("#")[0]);
     return () => {
       window.clearTimeout(timer);
       window.removeEventListener("hashchange", syncFromHash);
+      router.beforePopState(() => true);
     };
-  }, [photos]);
-  useEffect(() => {
-    if (!hashRead.current) return; // a deep link's fragment hasn't been read yet
-    const id = selected === null ? null : photos[selected]?.id;
-    const hash = id ? `#${id}` : "";
-    if (window.location.hash === hash) return;
-    const { pathname, search } = window.location;
-    window.history.replaceState(window.history.state, "", `${pathname}${search}${hash}`);
-  }, [selected, photos]);
+  }, [photos, router]);
   return (
     <>
       <ul
@@ -122,7 +142,7 @@ export default function PhotoGallery({ photos, polaroids = false }) {
           >
             <button
               type="button"
-              onClick={() => setSelected(index)}
+              onClick={() => show(index, { push: true })}
               aria-label={`Open photo: ${item.caption}`}
               className="group relative block aspect-square w-full cursor-pointer overflow-hidden bg-neutral-100"
             >
@@ -150,7 +170,7 @@ export default function PhotoGallery({ photos, polaroids = false }) {
       </ul>
       <Modal
         open={!!photo}
-        onClose={() => setSelected(null)}
+        onClose={close}
         title={photo?.caption || "Photo"}
         size="full"
         bodyClassName="p-0"
@@ -211,14 +231,14 @@ export default function PhotoGallery({ photos, polaroids = false }) {
             </div>
             <div className="absolute inset-x-0 top-1/2 flex -translate-y-1/2 justify-between">
               <button
-                onClick={() => setSelected((selected + photos.length - 1) % photos.length)}
+                onClick={() => show((selected + photos.length - 1) % photos.length)}
                 aria-label="Previous photo"
                 className="cursor-pointer bg-pmred p-3 text-white"
               >
                 <ArrowLeftIcon className="h-5 w-5" />
               </button>
               <button
-                onClick={() => setSelected((selected + 1) % photos.length)}
+                onClick={() => show((selected + 1) % photos.length)}
                 aria-label="Next photo"
                 className="cursor-pointer bg-pmred p-3 text-white"
               >

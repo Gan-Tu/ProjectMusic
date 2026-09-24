@@ -115,6 +115,7 @@ export default function SettingsModal({ open, onClose, tab: initialTab = "genera
     avatar: session.user?.avatar
   }));
   const [editing, setEditing] = useState(null);
+  const [profileError, setProfileError] = useState("");
   // What the pop-up opened with, to save only the fields changed here.
   const [initial] = useState(() => ({ settings: { ...draft }, profile: { ...profile } }));
   const [blockName, setBlockName] = useState("");
@@ -123,16 +124,31 @@ export default function SettingsModal({ open, onClose, tab: initialTab = "genera
   const toggleEdit = (field) => setEditing((current) => (current === field ? null : field));
 
   async function accept() {
+    // Nothing is saved until the profile fields are valid.
+    const username = profile.username.trim();
+    const email = profile.email.trim();
+    const invalid = !username
+      ? ["username", "Please enter a username."]
+      : !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+        ? ["email", "Please enter a valid e-mail address."]
+        : null;
+    if (invalid) {
+      setTab("general");
+      setEditing(invalid[0]);
+      setProfileError(invalid[1]);
+      return;
+    }
     const changed = (a, b) => JSON.stringify(a) !== JSON.stringify(b);
     const settingsPatch = Object.fromEntries(
       Object.entries(draft).filter(([key, value]) => changed(value, initial.settings[key]))
     );
     const hasSettings = Object.keys(settingsPatch).length > 0;
     if (hasSettings) actions.updateSettings(settingsPatch);
+    const cleaned = { ...profile, username, email };
     const profilePatch = Object.fromEntries(
       ["username", "email", "avatar"]
-        .filter((key) => profile[key] !== initial.profile[key])
-        .map((key) => [key, profile[key]])
+        .filter((key) => cleaned[key] !== initial.profile[key])
+        .map((key) => [key, cleaned[key]])
     );
     const hasProfile = Boolean(session.user) && Object.keys(profilePatch).length > 0;
     if (hasProfile && !(await session.updateProfile(profilePatch))) {
@@ -218,7 +234,10 @@ export default function SettingsModal({ open, onClose, tab: initialTab = "genera
                   value={profile.username}
                   editing={editing === "username"}
                   onEdit={() => toggleEdit("username")}
-                  onChange={(username) => setProfile((p) => ({ ...p, username }))}
+                  onChange={(username) => {
+                    setProfile((p) => ({ ...p, username }));
+                    setProfileError("");
+                  }}
                 />
                 <EditableRow
                   label="E-mail"
@@ -226,12 +245,20 @@ export default function SettingsModal({ open, onClose, tab: initialTab = "genera
                   value={profile.email}
                   editing={editing === "email"}
                   onEdit={() => toggleEdit("email")}
-                  onChange={(email) => setProfile((p) => ({ ...p, email }))}
+                  onChange={(email) => {
+                    setProfile((p) => ({ ...p, email }));
+                    setProfileError("");
+                  }}
                 />
                 <PasswordRow
                   open={editing === "password"}
                   onToggle={() => toggleEdit("password")}
                 />
+                {profileError && (
+                  <p role="alert" className="py-3 text-right text-xs font-semibold text-pmred-dark">
+                    {profileError}
+                  </p>
+                )}
               </div>
               <label className="flex cursor-pointer flex-col items-center gap-2 self-center">
                 <span className="relative h-24 w-24 overflow-hidden bg-neutral-100">
