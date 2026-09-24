@@ -125,13 +125,23 @@ function ActivityCard({ audit, activity }) {
           {entries.map((entry) => (
             <li
               key={entry.id}
-              className="flex flex-wrap items-baseline gap-x-3 gap-y-1 px-5 py-2.5 text-sm"
+              className="grid grid-cols-1 gap-0.5 px-5 py-2.5 sm:grid-cols-[5.5rem_minmax(0,1fr)_minmax(0,14rem)] sm:items-baseline sm:gap-3"
             >
-              <span className="w-20 shrink-0 text-xs text-neutral-400">
-                {timeAgo(entry.created_at)}
+              <span className="flex min-w-0 items-baseline gap-2 text-xs text-neutral-400">
+                <span className="shrink-0">{timeAgo(entry.created_at)}</span>
+                <span className="min-w-0 truncate sm:hidden" title={entry.actor}>
+                  {entry.actor}
+                </span>
               </span>
-              <span className="min-w-0 flex-1 first-letter:uppercase">{describeAudit(entry)}</span>
-              <span className="truncate text-xs text-neutral-400">{entry.actor}</span>
+              <span className="min-w-0 text-sm wrap-anywhere first-letter:uppercase">
+                {describeAudit(entry)}
+              </span>
+              <span
+                className="hidden min-w-0 truncate text-right text-xs text-neutral-400 sm:block"
+                title={entry.actor}
+              >
+                {entry.actor}
+              </span>
             </li>
           ))}
         </ul>
@@ -197,13 +207,13 @@ export default function Dashboard() {
             <Tile label="Unread inbox" value={compact(counts.inbox_new)} href="/crm/inbox" />
           </section>
 
-          <div className="grid items-start gap-6 xl:grid-cols-2">
+          <div className="grid grid-cols-1 items-start gap-6 xl:grid-cols-2">
             <Card
               title="Recent orders"
               actions={
                 <Link
                   href="/crm/orders"
-                  className="text-2xs font-bold uppercase tracking-widest text-pmred-dark hover:underline"
+                  className="inline-flex min-h-10 items-center text-2xs font-bold uppercase tracking-widest text-pmred-dark hover:underline"
                 >
                   All orders
                 </Link>
@@ -242,7 +252,7 @@ export default function Dashboard() {
               actions={
                 <Link
                   href="/crm/members"
-                  className="text-2xs font-bold uppercase tracking-widest text-pmred-dark hover:underline"
+                  className="inline-flex min-h-10 items-center text-2xs font-bold uppercase tracking-widest text-pmred-dark hover:underline"
                 >
                   All members
                 </Link>
@@ -276,7 +286,7 @@ export default function Dashboard() {
               actions={
                 <Link
                   href="/crm/comments"
-                  className="text-2xs font-bold uppercase tracking-widest text-pmred-dark hover:underline"
+                  className="inline-flex min-h-10 items-center text-2xs font-bold uppercase tracking-widest text-pmred-dark hover:underline"
                 >
                   Moderate
                 </Link>
@@ -315,7 +325,7 @@ export default function Dashboard() {
               actions={
                 <Link
                   href="/crm/inbox"
-                  className="text-2xs font-bold uppercase tracking-widest text-pmred-dark hover:underline"
+                  className="inline-flex min-h-10 items-center text-2xs font-bold uppercase tracking-widest text-pmred-dark hover:underline"
                 >
                   Inbox
                 </Link>

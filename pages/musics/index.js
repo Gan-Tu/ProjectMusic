@@ -106,7 +106,9 @@ export default function MusicOverview({ musics }) {
       </ul>
       {!filtered.length && !searching && (
         <p className="px-6 py-24 text-center text-sm text-neutral-500">
-          No tracks found. Try another artist or release.
+          {q
+            ? "No tracks found. Try another artist or release."
+            : "No music yet — check back soon."}
         </p>
       )}
       {limit < available && (

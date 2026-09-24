@@ -1,5 +1,11 @@
 import { sql } from "../../lib/server/db";
-import { getSessionUser, publicUser } from "../../lib/server/auth";
+import {
+  destroySession,
+  getSessionUser,
+  parseCookies,
+  publicUser,
+  USER_COOKIE
+} from "../../lib/server/auth";
 import { apiHandler, HttpError, requireUser, str } from "../../lib/server/http";
 import {
   assertAvailable,
@@ -14,7 +20,11 @@ import {
 // location?, bio? } -> { user }.
 export default apiHandler({
   GET: async (req, res) => {
-    res.json({ user: publicUser(await getSessionUser(req)) });
+    const user = await getSessionUser(req);
+    // A cookie whose session is gone (logged out elsewhere, account deleted or
+    // suspended): drop it so the browser is simply a guest again.
+    if (!user && parseCookies(req)[USER_COOKIE]) await destroySession(req, res, "user");
+    res.json({ user: publicUser(user) });
   },
   PATCH: async (req, res) => {
     const user = await requireUser(req);

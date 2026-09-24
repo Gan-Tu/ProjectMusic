@@ -4,6 +4,11 @@ import { attachThreadTitles } from "../../../lib/server/crm/threads";
 
 // Dashboard: counts, recent orders, newest members, latest comments, unread inbox and
 // the audit log.
+
+// CRM edits and resets; sign-ins (admin or member), sign-ups and form posts go to the
+// separate "Site activity" feed.
+const CRM_EDIT = `(actor like 'admin:%' or actor = 'system')
+  and action not in ('login', 'login_failed', 'logout')`;
 export default apiHandler({
   GET: async (req, res) => {
     await requireAdmin(req);
@@ -41,10 +46,10 @@ export default apiHandler({
       // CRM edits (and resets) vs. site activity (member sign-ups/logins, form posts,
       // failed logins) — the latter is high-volume, so it gets its own feed.
       sql.query(`select id::text as id, actor, action, entity, entity_id, detail, created_at
-        from audit_log where actor like 'admin:%' or actor = 'system'
+        from audit_log where ${CRM_EDIT}
         order by created_at desc, id desc limit 12`),
       sql.query(`select id::text as id, actor, action, entity, entity_id, detail, created_at
-        from audit_log where not (actor like 'admin:%' or actor = 'system')
+        from audit_log where not (${CRM_EDIT})
         order by created_at desc, id desc limit 12`)
     ]);
     await attachThreadTitles(comments);

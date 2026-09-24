@@ -9,6 +9,7 @@ import {
   BackwardIcon,
   ForwardIcon,
   HeartIcon,
+  MusicalNoteIcon,
   QueueListIcon,
   SpeakerWaveIcon,
   SpeakerXMarkIcon
@@ -136,7 +137,7 @@ function MobileOptions({ player }) {
   );
 }
 
-function IconButton({ label, onClick, active, className, children }) {
+function IconButton({ label, onClick, active, disabled, className, children }) {
   return (
     <button
       type="button"
@@ -144,8 +145,9 @@ function IconButton({ label, onClick, active, className, children }) {
       title={label}
       aria-pressed={active}
       onClick={onClick}
+      disabled={disabled}
       className={classNames(
-        "flex shrink-0 items-center justify-center transition hover:scale-110 active:scale-100",
+        "flex shrink-0 items-center justify-center transition hover:scale-110 active:scale-100 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:scale-100",
         active ? "text-pmred" : "text-white/70 hover:text-white",
         className
       )}
@@ -155,30 +157,31 @@ function IconButton({ label, onClick, active, className, children }) {
   );
 }
 
-// Sticky black player bar at the bottom of every page (mounted once in _app).
+// Sticky black player bar at the bottom of every page (mounted once in _app). With an
+// empty queue it invites the listener to pick something (track controls disabled).
 export default function AudioPlayer() {
   const player = usePlayer();
   const { state, actions } = useStore();
   const { openModal } = useUI();
   const { track, isPlaying, volume, muted, repeat, shuffle } = player;
-  if (!track) return null;
 
-  const liked = Boolean(state.likes[track.id]);
-  const inPlaylist = state.playlist.some((t) => t.id === track.id);
+  const liked = Boolean(track && state.likes[track.id]);
+  const inPlaylist = Boolean(track) && state.playlist.some((t) => t.id === track.id);
   const volumePct = muted ? 0 : volume * 100;
 
   return (
     <div className="sticky bottom-0 z-40 border-t border-white/5 bg-black text-white">
       <div className="flex h-16 items-center gap-3 px-3 sm:h-20 sm:gap-5 md:h-24 md:px-6 lg:px-8">
         <div className="flex items-center gap-2 sm:gap-4">
-          <IconButton label="Previous track" onClick={player.prev}>
+          <IconButton label="Previous track" onClick={player.prev} disabled={!track}>
             <BackwardIcon className="h-6 w-6" />
           </IconButton>
           <button
             type="button"
             onClick={player.togglePlay}
+            disabled={!track}
             aria-label={isPlaying ? "Pause" : "Play"}
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/80 transition hover:scale-105 hover:border-pmred hover:bg-pmred active:scale-100 md:h-12 md:w-12"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/80 transition hover:scale-105 hover:border-pmred hover:bg-pmred active:scale-100 disabled:cursor-not-allowed disabled:border-white/30 disabled:text-white/40 disabled:hover:scale-100 disabled:hover:bg-transparent md:h-12 md:w-12"
           >
             {isPlaying ? (
               <PauseIcon className="h-5 w-5" />
@@ -186,49 +189,68 @@ export default function AudioPlayer() {
               <PlayIcon className="ml-0.5 h-5 w-5" />
             )}
           </button>
-          <IconButton label="Next track" onClick={player.next}>
+          <IconButton label="Next track" onClick={player.next} disabled={!track}>
             <ForwardIcon className="h-6 w-6" />
           </IconButton>
         </div>
 
-        <div className="flex min-w-0 flex-1 items-center gap-4">
-          <Link
-            href={track.albumId ? `/albums/${track.albumId}` : "/musics"}
-            className="relative hidden h-12 w-12 shrink-0 overflow-hidden bg-neutral-800 sm:block md:h-14 md:w-14"
-            aria-label={`Open ${track.albumName || track.title}`}
-          >
-            {track.cover && (
-              <Image src={track.cover} alt="" fill sizes="56px" className="object-cover" />
-            )}
-            {isPlaying && (
-              <span className="absolute inset-x-0 bottom-0 flex h-4 items-end justify-center gap-0.5 bg-linear-to-t from-black/70 pb-0.5">
-                {[0, 1, 2].map((i) => (
-                  <span
-                    key={i}
-                    className="w-0.5 origin-bottom animate-equalizer bg-pmred"
-                    style={{ height: "100%", animationDelay: `${i * 0.15}s` }}
-                  />
-                ))}
-              </span>
-            )}
-          </Link>
-          <div className="min-w-0 flex-1">
-            <div className="flex min-w-0 flex-col text-sm sm:mb-0.5 sm:flex-row sm:items-baseline sm:gap-2">
-              <span className="truncate font-semibold">{track.title}</span>
-              <span className="truncate text-xs font-light text-neutral-400">{track.artist}</span>
-              <SongDNA trackId={track.id} dark className="hidden md:inline-flex" />
-            </div>
-            <div className="hidden sm:block">
-              <Progress fallbackDuration={track.duration} />
+        {track ? (
+          <div className="flex min-w-0 flex-1 items-center gap-4">
+            <Link
+              href={track.albumId ? `/albums/${track.albumId}` : "/musics"}
+              className="relative hidden h-12 w-12 shrink-0 overflow-hidden bg-neutral-800 sm:block md:h-14 md:w-14"
+              aria-label={`Open ${track.albumName || track.title}`}
+            >
+              {track.cover && (
+                <Image src={track.cover} alt="" fill sizes="56px" className="object-cover" />
+              )}
+              {isPlaying && (
+                <span className="absolute inset-x-0 bottom-0 flex h-4 items-end justify-center gap-0.5 bg-linear-to-t from-black/70 pb-0.5">
+                  {[0, 1, 2].map((i) => (
+                    <span
+                      key={i}
+                      className="w-0.5 origin-bottom animate-equalizer bg-pmred"
+                      style={{ height: "100%", animationDelay: `${i * 0.15}s` }}
+                    />
+                  ))}
+                </span>
+              )}
+            </Link>
+            <div className="min-w-0 flex-1">
+              <div className="flex min-w-0 flex-col text-sm sm:mb-0.5 sm:flex-row sm:items-baseline sm:gap-2">
+                <span className="truncate font-semibold">{track.title}</span>
+                <span className="truncate text-xs font-light text-neutral-400">{track.artist}</span>
+                <SongDNA trackId={track.id} dark className="hidden md:inline-flex" />
+              </div>
+              <div className="hidden sm:block">
+                <Progress fallbackDuration={track.duration} />
+              </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <div className="flex min-w-0 flex-1 items-center gap-4">
+            <Link
+              href="/musics"
+              aria-label="Browse music"
+              className="hidden h-12 w-12 shrink-0 items-center justify-center bg-neutral-800 text-white/50 transition hover:text-white sm:flex md:h-14 md:w-14"
+            >
+              <MusicalNoteIcon className="h-6 w-6" />
+            </Link>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-semibold">Pick something to play</p>
+              <p className="truncate text-xs font-light text-neutral-400">
+                Press play on any track, album or playlist.
+              </p>
+            </div>
+          </div>
+        )}
 
         <div className="flex items-center gap-3 md:gap-4">
           <MobileOptions player={player} />
           <IconButton
             label={liked ? "Unlike" : "Like"}
             active={liked}
+            disabled={!track}
             onClick={() => actions.toggleLike(track.id)}
             className="hidden sm:flex"
           >
@@ -281,6 +303,7 @@ export default function AudioPlayer() {
             type="button"
             aria-label={inPlaylist ? "In your playlist" : "Add to playlist"}
             title={inPlaylist ? "In your playlist" : "Add to playlist"}
+            disabled={!track}
             onClick={() => {
               if (inPlaylist) {
                 openModal("playlist");
@@ -289,16 +312,18 @@ export default function AudioPlayer() {
               actions.addToPlaylist(track);
               toast.success(`Added “${track.title}” to your playlist`);
             }}
-            className="shrink-0 text-pmred transition hover:scale-110 active:scale-100"
+            className="shrink-0 text-pmred transition hover:scale-110 active:scale-100 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:scale-100"
           >
             <PlusCircleIcon className={classNames("h-9 w-9", inPlaylist && "opacity-60")} />
           </button>
         </div>
       </div>
       {/* Phones: the seek bar gets a full-width row of its own. */}
-      <div className="px-3 pb-2 sm:hidden">
-        <Progress fallbackDuration={track.duration} />
-      </div>
+      {track && (
+        <div className="px-3 pb-2 sm:hidden">
+          <Progress fallbackDuration={track.duration} />
+        </div>
+      )}
     </div>
   );
 }

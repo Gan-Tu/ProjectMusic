@@ -14,7 +14,9 @@ export default function PictureCategory({ category, photos }) {
           >
             ← All pictures
           </Link>
-          <h1 className="mt-4 text-xl font-extrabold uppercase tracking-wider">{category.name}</h1>
+          <h1 className="mt-4 text-xl font-extrabold uppercase tracking-wider wrap-anywhere">
+            {category.name}
+          </h1>
           <p className="mt-2 text-sm text-neutral-500">{category.description}</p>
         </div>
         <p className="text-sm text-neutral-500">

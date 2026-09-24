@@ -12,6 +12,13 @@ import { loginHref, useSessionContext } from "../../lib/SessionProvider";
 import { useUI } from "../../lib/ui";
 import { classNames, formatCredits, formatNumber, formatUSD } from "../../lib/format";
 
+// Why checkout refused a line, shown on that line.
+const LINE_PROBLEMS = {
+  unavailable: "No longer available: remove it to check out.",
+  item_changed: "Changed since you added it: remove it and add it again.",
+  sales_ended: "Ticket sales have ended: remove it to check out."
+};
+
 function Price({ item }) {
   return (
     <span className="flex flex-col items-end text-sm">
@@ -38,6 +45,7 @@ export default function CartDrawer({ open, onClose }) {
 
   const [busy, setBusy] = useState(false);
   const [undo, setUndo] = useState(null);
+  const [problem, setProblem] = useState(null); // { key, code } of a refused line
 
   async function checkout() {
     if (busy) return;
@@ -52,8 +60,10 @@ export default function CartDrawer({ open, onClose }) {
     }
     if (!result.ok) {
       toast.error(result.error);
+      setProblem(result.key && LINE_PROBLEMS[result.code] ? result : null);
       return;
     }
+    setProblem(null);
     openModal("thankYou", { orderId: result.purchase.id });
   }
 
@@ -198,7 +208,13 @@ export default function CartDrawer({ open, onClose }) {
           </div>
           <ul className="divide-y divide-neutral-200">
             {state.cart.map((line) => (
-              <li key={line.key} className="flex gap-4 px-6 py-5">
+              <li
+                key={line.key}
+                className={classNames(
+                  "flex gap-4 px-6 py-5",
+                  problem?.key === line.key && "bg-pmred/5"
+                )}
+              >
                 <span className="relative flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden bg-pmred text-center text-2xs font-bold uppercase text-white">
                   {line.image ? (
                     <Image src={line.image} alt="" fill sizes="80px" className="object-cover" />
@@ -218,6 +234,11 @@ export default function CartDrawer({ open, onClose }) {
                           {Object.entries(line.options)
                             .map(([k, v]) => `${k}: ${v}`)
                             .join(" · ")}
+                        </p>
+                      )}
+                      {problem?.key === line.key && (
+                        <p role="alert" className="mt-1 text-xs font-semibold text-pmred-dark">
+                          {LINE_PROBLEMS[problem.code]}
                         </p>
                       )}
                     </div>

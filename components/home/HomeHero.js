@@ -60,7 +60,7 @@ export default function HomeHero({ videos }) {
           <p className="mb-2 text-2xs font-bold uppercase tracking-[0.25em] text-white/75">
             Projct Music / In focus
           </p>
-          <h1 className="text-2xl font-extrabold uppercase tracking-tight md:text-4xl">
+          <h1 className="text-2xl font-extrabold uppercase tracking-tight wrap-anywhere md:text-4xl">
             {video.artist}
           </h1>
           <p className="mt-2 text-sm text-neutral-200">{video.title}</p>

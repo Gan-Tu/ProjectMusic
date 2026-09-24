@@ -26,9 +26,9 @@ import {
 } from "./format";
 
 const SMALL_BUTTON =
-  "flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-neutral-200 text-neutral-500 transition hover:border-pmred hover:text-pmred disabled:cursor-not-allowed disabled:opacity-30";
+  "flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-neutral-200 text-neutral-500 transition hover:border-pmred hover:text-pmred disabled:cursor-not-allowed disabled:opacity-30 sm:h-8 sm:w-8";
 const ADD_BUTTON =
-  "inline-flex items-center gap-1.5 self-start rounded-full border border-dashed border-neutral-300 px-4 py-1.5 text-2xs font-bold uppercase tracking-wider text-neutral-500 transition hover:border-pmred hover:text-pmred";
+  "inline-flex items-center gap-1.5 self-start rounded-full border border-dashed border-neutral-300 px-4 py-2.5 text-2xs font-bold uppercase tracking-wider text-neutral-500 transition hover:border-pmred hover:text-pmred sm:py-1.5";
 
 function move(list, index, delta) {
   const next = [...list];
@@ -168,7 +168,7 @@ function TagsInput({ id, value, onChange, placeholder }) {
             type="button"
             onClick={() => onChange(tags.filter((_, i) => i !== index))}
             aria-label={`Remove ${tag}`}
-            className="rounded-full p-0.5 text-white/70 hover:text-white"
+            className="relative rounded-full p-0.5 text-white/70 after:absolute after:-inset-2.5 after:content-[''] hover:text-white"
           >
             <XMarkIcon className="h-3.5 w-3.5" />
           </button>
@@ -188,7 +188,7 @@ function TagsInput({ id, value, onChange, placeholder }) {
         }}
         onBlur={() => text.trim() && add(text)}
         placeholder={tags.length ? "Add…" : placeholder || "Type and press Enter"}
-        className="h-7 min-w-24 flex-1 bg-transparent text-sm focus:outline-none"
+        className="h-10 min-w-24 flex-1 bg-transparent text-sm focus:outline-none sm:h-7"
       />
     </div>
   );
@@ -296,7 +296,10 @@ function ListInput({ field, value, onChange }) {
                         : event.target.value
                     )
                   }
-                  className={classNames(CONTROL, "h-9 w-full border-neutral-200 px-3 text-sm")}
+                  className={classNames(
+                    CONTROL,
+                    "h-10 w-full border-neutral-200 px-3 text-sm sm:h-9"
+                  )}
                 />
               </label>
             ))}
@@ -534,6 +537,26 @@ export default function FieldInput({ entity, field, value, values, onChange, isN
     case "audio":
     case "video":
     case "link":
+      // A photo the member uploaded is stored as a data: URL; show it, don't dump it.
+      if (field.avatar && typeof value === "string" && value.startsWith("data:")) {
+        return (
+          <div className="flex items-center gap-4">
+            <ImagePreview src={value} className="h-20 w-20" />
+            <div className="flex flex-col items-start gap-2">
+              <p className="text-xs text-neutral-500">
+                Uploaded photo · {Math.round((value.length * 3) / 4 / 1024)} KB
+              </p>
+              <button
+                type="button"
+                onClick={() => onChange("")}
+                className="rounded-full border border-neutral-200 px-3 py-1 text-2xs font-bold uppercase tracking-wider text-neutral-500 transition hover:border-pmred hover:text-pmred"
+              >
+                Replace with a URL
+              </button>
+            </div>
+          </div>
+        );
+      }
       return (
         <div className="flex flex-col gap-3">
           <UrlInput id={id} value={value} onChange={onChange} required={field.required} />
@@ -643,7 +666,7 @@ export default function FieldInput({ entity, field, value, values, onChange, isN
                 aria-checked={active}
                 onClick={() => onChange(status.value)}
                 className={classNames(
-                  "rounded-full border px-4 py-1.5 text-2xs font-bold uppercase tracking-wider transition-colors",
+                  "rounded-full border px-4 py-2.5 text-2xs font-bold uppercase tracking-wider transition-colors sm:py-1.5",
                   active
                     ? status.value === statuses[0].value
                       ? "border-emerald-600 bg-emerald-600 text-white"

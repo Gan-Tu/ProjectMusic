@@ -156,13 +156,31 @@ export default function ProfileContent({ tab, albums, photos, videos, topArtists
         title="Selected for your next session"
         detail="An eclectic mix from the Projct Music catalog."
       >
-        <AlbumGrid albums={albums.slice(0, 12)} />
+        {albums.length ? (
+          <AlbumGrid albums={albums.slice(0, 12)} />
+        ) : (
+          <Empty
+            title="New music is on its way"
+            text="The catalog is being updated. Check back soon for fresh picks."
+            href="/"
+            action="Back to home"
+          />
+        )}
       </Section>
     );
   if (tab === "pictures")
     return (
       <Section title="Your photo wall" detail="Studio favorites and moments from the archive.">
-        <PhotoGallery photos={photos} polaroids />
+        {photos.length ? (
+          <PhotoGallery photos={photos} polaroids />
+        ) : (
+          <Empty
+            title="No photos yet"
+            text="Photos from the studio archive will show up here."
+            href="/pictures"
+            action="Browse pictures"
+          />
+        )}
       </Section>
     );
   if (tab === "videos")
@@ -469,25 +487,31 @@ const LEDGER_REASONS = {
 // Balance, "Buy credits" and the credit history (GET /api/me/credits).
 function Credits() {
   const { state } = useStore();
+  const session = useSession();
   const { openModal } = useUI();
-  const [history, setHistory] = useState(null); // null while loading
-  const [error, setError] = useState("");
-  // Reloaded whenever the balance changes (e.g. after buying credits).
+  const memberId = session.user?.id || null;
+  // { memberId, entries, error } as last loaded; only shown for that member.
+  const [loaded, setLoaded] = useState(null);
+  // Reloaded whenever the balance changes (e.g. after buying credits) or another
+  // member logs in (e.g. in another tab); answers for anyone else are dropped.
   useEffect(() => {
+    if (!memberId) return;
     let current = true;
     requestJson("/api/me/credits").then((result) => {
-      if (!current) return;
-      if (result.ok) {
-        setHistory(result.history || []);
-        setError("");
-      } else {
-        setError(result.error);
-      }
+      if (!current || (result.ok && result.userId !== memberId)) return;
+      setLoaded({
+        memberId,
+        entries: result.ok ? result.history || [] : null,
+        error: result.ok ? "" : result.error
+      });
     });
     return () => {
       current = false;
     };
-  }, [state.credits]);
+  }, [memberId, state.credits]);
+  const mine = loaded?.memberId === memberId ? loaded : null;
+  const history = mine?.entries ?? null;
+  const error = mine?.error || "";
   return (
     <div className="grid gap-12 lg:grid-cols-[18rem_minmax(0,1fr)]">
       <div>
@@ -684,7 +708,7 @@ function Statistics({ artists }) {
           </div>
         ))}
       </div>
-      <div className="lg:col-span-2">
+      <div className={artists.length ? "lg:col-span-2" : "hidden"}>
         <h3 className="mb-5 text-xs font-bold uppercase tracking-widest">Top artists</h3>
         <ol className="grid gap-x-10 sm:grid-cols-2 lg:grid-cols-5">
           {artists.slice(0, 5).map((artist, index) => (

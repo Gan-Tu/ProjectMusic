@@ -24,7 +24,7 @@ export function SectionTabs({ section }) {
             href={`/crm/${item}`}
             aria-current={active ? "page" : undefined}
             className={classNames(
-              "rounded-full border px-4 py-2 text-2xs font-bold uppercase tracking-wider transition-colors",
+              "inline-flex items-center rounded-full border px-4 py-2 text-2xs font-bold uppercase tracking-wider transition-colors max-sm:min-h-10",
               active
                 ? "border-neutral-900 bg-neutral-900 text-white"
                 : "border-neutral-200 bg-white text-neutral-500 hover:border-pmred hover:text-pmred"

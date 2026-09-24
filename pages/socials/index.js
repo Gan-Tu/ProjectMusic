@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowUpRightIcon } from "@heroicons/react/24/outline";
 import AppContainer from "../../components/AppContainer";
+import EmptyState from "../../components/ui/EmptyState";
 import { SocialIcon, FollowButton } from "../../components/socials/SocialProfile";
 import { listSocialNetworks } from "../../lib/server/content";
 import { formatNumber } from "../../lib/format";
@@ -23,6 +24,11 @@ export default function SocialsPage({ profiles }) {
           Sessions, sounds, and everything in between. Stay connected.
         </p>
       </div>
+      {!profiles.length && (
+        <EmptyState title="No channels yet">
+          Our social channels will be listed here soon.
+        </EmptyState>
+      )}
       <div className="grid grid-cols-1 md:grid-cols-2">
         {profiles.map((profile) => (
           <article

@@ -103,20 +103,33 @@ export default function PlaylistDrawer({ open, onClose }) {
           />
         )}
         {tab === "queue" ? (
-          <ul className="py-2">
-            {player.queue.map((track, i) => (
-              <TrackRow
-                key={track.id}
-                track={track}
-                current={i === player.index}
-                playing={i === player.index && player.isPlaying}
-                onPlay={() => (i === player.index ? player.togglePlay() : player.jumpTo(i))}
-                onRemove={
-                  player.queue.length > 1 ? () => player.removeFromQueue(track.id) : undefined
-                }
-              />
-            ))}
-          </ul>
+          player.queue.length ? (
+            <ul className="py-2">
+              {player.queue.map((track, i) => (
+                <TrackRow
+                  key={track.id}
+                  track={track}
+                  current={i === player.index}
+                  playing={i === player.index && player.isPlaying}
+                  onPlay={() => (i === player.index ? player.togglePlay() : player.jumpTo(i))}
+                  onRemove={
+                    player.queue.length > 1 ? () => player.removeFromQueue(track.id) : undefined
+                  }
+                />
+              ))}
+            </ul>
+          ) : (
+            <div className="flex flex-col items-center gap-3 px-8 py-16 text-center">
+              <MusicalNoteIcon className="h-10 w-10 text-neutral-200" />
+              <p className="text-sm font-bold uppercase tracking-wider">Nothing queued yet</p>
+              <p className="text-xs text-neutral-500">
+                Press play on any track or album to start listening.
+              </p>
+              <Button href="/musics" variant="outline" onClick={onClose}>
+                Discover music
+              </Button>
+            </div>
+          )
         ) : state.playlist.length ? (
           <>
             <div className="flex items-center gap-3 px-6 py-4">

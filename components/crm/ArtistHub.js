@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 import { ArrowTopRightOnSquareIcon, PlusIcon, XMarkIcon } from "@heroicons/react/20/solid";
-import Button from "../ui/Button";
 import { classNames } from "../../lib/format";
 import { ENTITIES, entityPk } from "./entityDefs";
 import { crmFetch, entityApi, invalidateOptions, queryString, useCrmData, useOptions } from "./api";
@@ -11,9 +10,19 @@ import { confirmDelete } from "./EntityListView";
 import EntityEditor from "./EntityEditor";
 import OrderedPicker from "./OrderedPicker";
 import { formatCount } from "./format";
-import { CONTROL, Card, EmptyState, ErrorNote, INPUT, Spinner, TEXTAREA, Thumb } from "./ui";
+import {
+  CONTROL,
+  Card,
+  EmptyState,
+  ErrorNote,
+  INPUT,
+  Spinner,
+  TEXTAREA,
+  Thumb,
+  CrmButton as Button
+} from "./ui";
 
-const HUB_SELECT = `${CONTROL} h-9 cursor-pointer border-neutral-200 pl-4 pr-8 text-xs`;
+const HUB_SELECT = `${CONTROL} h-10 cursor-pointer border-neutral-200 pl-4 pr-8 text-xs sm:h-9`;
 
 const TABS = [
   { id: "profile", label: "Profile" },
@@ -307,7 +316,7 @@ function RemoveFromLineup({ artistId, eventId, onChanged }) {
           toast.error(error.message);
         }
       }}
-      className="rounded-full border border-neutral-200 px-3 py-1 text-2xs font-bold uppercase tracking-wider text-neutral-500 transition hover:border-pmred hover:text-pmred"
+      className="rounded-full border border-neutral-200 px-3 py-1 text-2xs font-bold uppercase tracking-wider text-neutral-500 transition hover:border-pmred hover:text-pmred max-sm:min-h-10"
     >
       Remove from line-up
     </button>
@@ -443,7 +452,7 @@ export default function ArtistHub({ id }) {
       )}
 
       {tab === "music" && (
-        <div className="grid gap-6 2xl:grid-cols-[minmax(0,1fr)_28rem]">
+        <div className="grid grid-cols-1 gap-6 2xl:grid-cols-[minmax(0,1fr)_28rem]">
           <Card
             title="Discography"
             actions={

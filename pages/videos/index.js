@@ -1,5 +1,6 @@
 import AppContainer from "../../components/AppContainer";
 import VideoStage from "../../components/videos/VideoStage";
+import EmptyState from "../../components/ui/EmptyState";
 import { getVideoPage } from "../../lib/server/content";
 
 export default function Videos({ video, videos, related }) {
@@ -12,9 +13,9 @@ export default function Videos({ video, videos, related }) {
       {video ? (
         <VideoStage key={video.id} video={video} videos={videos} related={related} />
       ) : (
-        <p className="bg-black px-6 py-32 text-center text-sm text-neutral-400">
+        <EmptyState dark title="No videos yet" className="min-h-[50vh] justify-center">
           New films are on the way. Check back soon.
-        </p>
+        </EmptyState>
       )}
     </AppContainer>
   );

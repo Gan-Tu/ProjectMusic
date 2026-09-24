@@ -8,7 +8,16 @@ import {
 } from "../../components/socials/SocialFeeds";
 import { TrackList, MyspaceProfile } from "../../components/socials/SocialMusic";
 import WikipediaArticle from "../../components/socials/WikipediaArticle";
+import EmptyState from "../../components/ui/EmptyState";
 import { getSocialPage } from "../../lib/server/content";
+
+// Whether a network page has nothing to show yet.
+function isEmpty(network, content) {
+  if (network === "wikipedia") return !content.article;
+  if (network === "myspace") return !content.friends?.length && !content.tracks?.length;
+  if (content.tracks) return !content.tracks.length;
+  return !content.posts?.length;
+}
 
 // Networks without a layout of their own (e.g. added in the CRM) get the feed that
 // suits most of their posts.
@@ -54,7 +63,13 @@ export default function SocialNetworkPage({ profile, content }) {
       description={`Explore the Truth Studios ${profile.name} archive: music, studio sessions and the people behind the sound.`}
     >
       <SocialProfile profile={profile} count={content.posts?.length ?? content.tracks?.length} />
-      <NetworkContent key={profile.id} network={profile.id} content={content} />
+      {isEmpty(profile.id, content) ? (
+        <EmptyState title="Nothing posted yet">
+          New posts from {profile.name} will show up here soon.
+        </EmptyState>
+      ) : (
+        <NetworkContent key={profile.id} network={profile.id} content={content} />
+      )}
     </AppContainer>
   );
 }

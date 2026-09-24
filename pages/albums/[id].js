@@ -30,7 +30,8 @@ export default function AlbumDetail({ album, tracks, more }) {
   const { actions } = useStore();
   const { openModal } = useUI();
   const item = useMemo(() => albumPurchaseItem({ ...album, tracks }), [album, tracks]);
-  useCartCandidate(tierLine(item, "download"));
+  // An album without tracks (yet) can't be bought.
+  useCartCandidate(tracks.length ? tierLine(item, "download") : null);
   const totalTime = tracks.reduce((total, track) => total + track.duration, 0);
   return (
     <AppContainer
@@ -50,7 +51,7 @@ export default function AlbumDetail({ album, tracks, more }) {
             <p className="mt-8 text-xs font-bold uppercase tracking-[0.2em] text-pmred">
               {album.artist}
             </p>
-            <h1 className="mt-3 text-3xl font-extrabold uppercase leading-tight tracking-tight sm:text-4xl">
+            <h1 className="mt-3 text-3xl wrap-anywhere font-extrabold uppercase leading-tight tracking-tight sm:text-4xl">
               {album.name}
             </h1>
             <p className="mt-4 text-xs text-neutral-500">
@@ -74,6 +75,7 @@ export default function AlbumDetail({ album, tracks, more }) {
               <Button
                 variant="outline"
                 className="cursor-pointer"
+                disabled={!tracks.length}
                 onClick={() => {
                   tracks.forEach(actions.addToPlaylist);
                   toast.success("Album added to your playlist");
@@ -84,6 +86,7 @@ export default function AlbumDetail({ album, tracks, more }) {
               <Button
                 variant="dark"
                 className="cursor-pointer"
+                disabled={!tracks.length}
                 onClick={() => openModal("purchase", { item })}
               >
                 Buy · $9.99
@@ -95,6 +98,11 @@ export default function AlbumDetail({ album, tracks, more }) {
               <AlbumTrackRow key={track.id} track={track} queue={tracks} number={index + 1} />
             ))}
           </ol>
+          {!tracks.length && (
+            <p className="border-b border-neutral-200 px-6 py-8 text-sm text-neutral-500 sm:px-10">
+              The tracks of this release are on the way.
+            </p>
+          )}
           <div className="mt-6 flex flex-wrap items-center gap-6 px-6 text-2xs font-bold uppercase tracking-widest text-neutral-500 sm:px-10">
             <button
               type="button"

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 import { ListBulletIcon, PlusIcon, Squares2X2Icon } from "@heroicons/react/20/solid";
-import Button from "../ui/Button";
 import { PLACEMENTS } from "../../lib/placements";
 import { classNames } from "../../lib/format";
 import { ENTITIES, crmPath, entityPk, rowTitle } from "./entityDefs";
@@ -16,7 +15,15 @@ import {
   useOptions
 } from "./api";
 import ContentRow from "./ContentRow";
-import { EmptyState, ErrorNote, INLINE_SELECT, Pagination, SearchInput, Spinner } from "./ui";
+import {
+  EmptyState,
+  ErrorNote,
+  INLINE_SELECT,
+  Pagination,
+  SearchInput,
+  Spinner,
+  CrmButton as Button
+} from "./ui";
 
 const GRID_ENTITIES = new Set(["albums", "photos", "products", "videos", "artists"]);
 
@@ -245,7 +252,7 @@ export default function EntityListView({
                   aria-label={`${key} view`}
                   onClick={() => setParams({ view: key === initialView ? undefined : key })}
                   className={classNames(
-                    "flex h-9 w-9 items-center justify-center rounded-full transition",
+                    "flex h-10 w-10 items-center justify-center rounded-full transition sm:h-9 sm:w-9",
                     view === key ? "bg-neutral-900 text-white" : "text-neutral-400 hover:text-pmred"
                   )}
                 >

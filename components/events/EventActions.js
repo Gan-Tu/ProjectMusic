@@ -11,6 +11,14 @@ export function TicketButton({ event, tier, className = "" }) {
   const { actions } = useStore();
   const { openModal } = useUI();
   const now = useNow();
+  // No tiers yet: nothing to sell.
+  if (!tier && !event.tiers?.length) {
+    return (
+      <Button variant="muted" className={className} disabled>
+        Tickets coming soon
+      </Button>
+    );
+  }
   const item = {
     id: `ticket:${event.id}`,
     name: event.title,

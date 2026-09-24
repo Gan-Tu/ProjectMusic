@@ -36,7 +36,7 @@ export default function EventDetail({ event }) {
           <p className="mt-8 text-xs font-bold uppercase tracking-[0.2em] text-pmred">
             Projct Music presents · {event.city}
           </p>
-          <h1 className="mt-3 max-w-3xl text-4xl font-extrabold uppercase leading-none tracking-tight sm:text-6xl">
+          <h1 className="mt-3 max-w-3xl text-4xl font-extrabold uppercase leading-none tracking-tight wrap-anywhere sm:text-6xl">
             {event.title}
           </h1>
           <div className="mt-6 flex flex-wrap gap-x-6 gap-y-3 text-xs text-white/80">
@@ -100,7 +100,9 @@ export default function EventDetail({ event }) {
           >
             <div className="relative m-6 bg-white p-6 text-center shadow-lg">
               <MapPinIcon className="mx-auto mb-3 h-7 w-7 text-pmred" />
-              <p className="text-xs font-bold uppercase tracking-wider">{event.address[0]}</p>
+              <p className="text-xs font-bold uppercase tracking-wider wrap-anywhere">
+                {event.address[0]}
+              </p>
               <address className="mt-2 text-xs not-italic leading-5 text-neutral-500">
                 {event.address.slice(1).join(", ")}
               </address>

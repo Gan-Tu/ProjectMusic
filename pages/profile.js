@@ -10,7 +10,7 @@ import ProfileContent from "../components/profile/ProfileContent";
 import { loginHref, useSessionContext } from "../lib/SessionProvider";
 import { useStore } from "../lib/store";
 import { useUI } from "../lib/ui";
-import { formatNumber } from "../lib/format";
+import { classNames, formatNumber } from "../lib/format";
 import { getVideoSrc } from "../lib/media";
 import { listAlbums, listArtists, listPhotos } from "../lib/server/content";
 
@@ -96,7 +96,12 @@ export default function Profile({ albums, topArtists, photos, videos }) {
       curMenu="Profile"
       description="Your music, your community, your Projct Music profile."
     >
-      <div className="grid bg-neutral-950 text-white lg:grid-cols-[minmax(0,3fr)_minmax(270px,1fr)]">
+      <div
+        className={classNames(
+          "grid bg-neutral-950 text-white",
+          topArtists.length > 0 && "lg:grid-cols-[minmax(0,3fr)_minmax(270px,1fr)]"
+        )}
+      >
         <div className="min-w-0">
           <div className="flex flex-wrap items-center justify-between gap-6 bg-neutral-900 px-5 py-5 sm:px-10">
             <nav
@@ -204,7 +209,7 @@ export default function Profile({ albums, topArtists, photos, videos }) {
             </div>
           </div>
         </div>
-        <TopArtists artists={topArtists} />
+        {topArtists.length > 0 && <TopArtists artists={topArtists} />}
       </div>
       <PeopleTabs tabs={TABS} active={tab} />
       <div className="min-h-80">

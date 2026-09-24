@@ -30,7 +30,7 @@ export default function EventCard({ event }) {
         href={`/events/${event.id}`}
         className="relative ml-6 mt-[-8px] flex min-h-24 cursor-pointer items-center bg-white px-5 py-4 text-pmred transition-colors group-hover:bg-black group-hover:text-white group-focus-within:bg-black group-focus-within:text-white"
       >
-        <h2 className="text-xl font-extrabold uppercase leading-tight tracking-tight">
+        <h2 className="min-w-0 text-xl font-extrabold uppercase leading-tight tracking-tight wrap-anywhere">
           {event.title}
         </h2>
       </Link>
@@ -38,7 +38,7 @@ export default function EventCard({ event }) {
         <p className="mb-3 text-xs font-bold uppercase tracking-wide group-hover:text-white group-focus-within:text-white">
           {event.name}
         </p>
-        <address className="text-xs font-light not-italic leading-6 text-neutral-500 group-hover:text-white/80 group-focus-within:text-white/80">
+        <address className="text-xs font-light not-italic leading-6 text-neutral-500 wrap-anywhere group-hover:text-white/80 group-focus-within:text-white/80">
           {event.address.map((line) => (
             <span className="block" key={line}>
               {line}
@@ -46,7 +46,7 @@ export default function EventCard({ event }) {
           ))}
         </address>
         <p className="mt-4 text-2xs font-semibold uppercase tracking-wider text-neutral-500 group-hover:text-white/80 group-focus-within:text-white/80">
-          From {formatUSD(event.price)}
+          {event.tiers?.length ? `From ${formatUSD(event.price)}` : "Tickets coming soon"}
         </p>
       </div>
       <div className="flex flex-col items-center gap-2 px-6">

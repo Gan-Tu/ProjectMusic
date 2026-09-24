@@ -4,9 +4,10 @@ const pad = (n) => String(n).padStart(2, "0");
 
 // Same rule as the server's url() helper: empty, an http(s) URL, or a site path
 // ("/shop/x.webp", not "//host").
-export function isValidUrlInput(value) {
+export function isValidUrlInput(value, { dataImage = false } = {}) {
   const text = String(value ?? "").trim();
   if (!text) return true;
+  if (dataImage && /^data:image\/(jpeg|png|webp);base64,/.test(text)) return true;
   if (text.startsWith("/")) return !text.startsWith("//");
   try {
     const { protocol } = new URL(text);

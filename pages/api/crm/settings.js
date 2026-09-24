@@ -1,6 +1,7 @@
 import { apiHandler, HttpError, int, requireAdmin } from "../../../lib/server/http";
 import { sql, withTransaction } from "../../../lib/server/db";
 import { audit } from "../../../lib/server/crm/engine";
+import { validateWikipediaArticle } from "../../../lib/server/crm/settings";
 import { pathsForChange, revalidatePaths } from "../../../lib/server/revalidate";
 
 // GET all site_settings; PUT { values: { key: value } } upserts them.
@@ -21,9 +22,12 @@ export default apiHandler({
       if (!/^[a-z0-9_]{1,60}$/.test(key)) throw new HttpError(400, `Bad setting key "${key}".`);
       if (key === "signup_bonus_credits") {
         values[key] = int(value, { min: 0, max: 1000000, field: "Sign-up bonus" });
-      } else if (value === undefined || JSON.stringify(value).length > 500000) {
-        throw new HttpError(400, `The value of ${key} is missing or too large.`);
+        continue;
       }
+      if (value === undefined || JSON.stringify(value).length > 500000) {
+        throw new HttpError(400, `The value of ${key} is missing or too large.`, { field: key });
+      }
+      if (key === "wikipedia_article") validateWikipediaArticle(value);
     }
     await withTransaction(async (client) => {
       const q = async (text, params) => (await client.query(text, params)).rows;

@@ -5,7 +5,7 @@ import { useOptions } from "./api";
 import { SELECT, Thumb } from "./ui";
 
 const SMALL_BUTTON =
-  "flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-neutral-400 transition hover:bg-neutral-100 hover:text-pmred disabled:opacity-30";
+  "flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-neutral-400 transition hover:bg-neutral-100 hover:text-pmred disabled:opacity-30 sm:h-8 sm:w-8";
 
 // Ordered multi-select of `type` options (artists for a line-up, albums for "On
 // rotation"): pick from a select, reorder with the arrows, remove with ×.

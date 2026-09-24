@@ -66,7 +66,7 @@ export function PlacementChips({ entity, row, onChange, className }) {
             title={`${on ? "Shown on" : "Not on"}: ${placement.hint}`}
             onClick={() => toggle(placement.key)}
             className={classNames(
-              "inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-2xs font-bold uppercase tracking-wider transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pmred",
+              "inline-flex items-center gap-1 rounded-full border px-2.5 py-2 text-2xs font-bold uppercase tracking-wider transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pmred max-sm:min-h-10 sm:py-1",
               on
                 ? "border-pmred bg-pmred text-white hover:bg-pmred-dark"
                 : "border-neutral-200 bg-white text-neutral-400 hover:border-pmred hover:text-pmred"
@@ -113,7 +113,7 @@ export function StatusToggle({ entity, row, onChange }) {
         value={row.status}
         onChange={(event) => setStatus(event.target.value)}
         aria-label="Status"
-        className="h-8 cursor-pointer rounded-full border border-neutral-200 bg-white px-3 text-2xs font-bold uppercase tracking-wider focus:border-pmred focus:outline-none"
+        className="h-10 cursor-pointer rounded-full border border-neutral-200 bg-white px-3 text-2xs font-bold uppercase tracking-wider focus:border-pmred focus:outline-none sm:h-8"
       >
         {statuses.map((status) => (
           <option key={status.value} value={status.value}>
@@ -138,7 +138,7 @@ export function StatusToggle({ entity, row, onChange }) {
           : `Click to set ${statuses[0].label.toLowerCase()}`
       }
       className={classNames(
-        "inline-flex items-center gap-2 rounded-full border py-1 pl-1 pr-3 text-2xs font-bold uppercase tracking-wider transition-colors",
+        "inline-flex items-center gap-2 rounded-full border py-2 pl-1.5 pr-3 text-2xs font-bold uppercase tracking-wider transition-colors max-sm:min-h-10 sm:py-1 sm:pl-1",
         on
           ? "border-emerald-600/30 bg-emerald-50 text-emerald-700"
           : "border-neutral-200 bg-neutral-50 text-neutral-500"
@@ -264,7 +264,7 @@ export function editHref(entity, row) {
 }
 
 const ICON_LINK =
-  "flex h-8 w-8 items-center justify-center rounded-full text-neutral-400 transition hover:bg-neutral-100 hover:text-pmred";
+  "flex h-10 w-10 items-center justify-center rounded-full text-neutral-400 transition hover:bg-neutral-100 hover:text-pmred sm:h-8 sm:w-8";
 
 // A content row: thumbnail, title, summary, status switch, placement chips, and
 // Edit / View on site / Delete. Used by every list and the artist hub.
@@ -321,7 +321,10 @@ export default function ContentRow({ entity, row, onChange, onDelete, children, 
         </Link>
         <div className="flex flex-1 flex-col gap-2 p-3">
           <div className="min-w-0">
-            <Link href={href} className="line-clamp-2 text-sm font-bold leading-5 hover:text-pmred">
+            <Link
+              href={href}
+              className="-my-2.5 line-clamp-2 py-2.5 text-sm font-bold leading-5 hover:text-pmred"
+            >
               {title}
             </Link>
             {summary && (

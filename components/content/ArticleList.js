@@ -32,10 +32,16 @@ function FilteredArticles({ posts, section, active }) {
       {filtered.length === 0 && (
         <div className="px-6 py-24 text-center">
           <h2 className="text-xl font-bold uppercase">No stories here yet</h2>
-          <p className="my-4 text-neutral-500">Try another topic from the list above.</p>
-          <Button href={`/${section}`} variant="outline">
-            All stories
-          </Button>
+          {posts.length > 0 ? (
+            <>
+              <p className="my-4 text-neutral-500">Try another topic from the list above.</p>
+              <Button href={`/${section}`} variant="outline">
+                All stories
+              </Button>
+            </>
+          ) : (
+            <p className="my-4 text-neutral-500">New stories are on the way. Check back soon.</p>
+          )}
         </div>
       )}
       {filtered.length > visible ? (
@@ -94,25 +100,27 @@ export default function ArticleList({ posts, section }) {
               {category || "All"}
             </Link>
           ))}
-          <select
-            aria-label="Filter by tag"
-            value={tags.includes(active) ? active : ""}
-            onChange={(event) =>
-              router.push(
-                event.target.value
-                  ? { pathname: `/${section}`, query: { tag: event.target.value } }
-                  : `/${section}`,
-                undefined,
-                { shallow: true, scroll: false }
-              )
-            }
-            className="max-w-40 cursor-pointer rounded-full border border-neutral-200 bg-white px-3 py-1.5 text-xs text-neutral-600"
-          >
-            <option value="">All tags</option>
-            {tags.map((tag) => (
-              <option key={tag}>{tag}</option>
-            ))}
-          </select>
+          {tags.length > 0 && (
+            <select
+              aria-label="Filter by tag"
+              value={tags.includes(active) ? active : ""}
+              onChange={(event) =>
+                router.push(
+                  event.target.value
+                    ? { pathname: `/${section}`, query: { tag: event.target.value } }
+                    : `/${section}`,
+                  undefined,
+                  { shallow: true, scroll: false }
+                )
+              }
+              className="max-w-40 cursor-pointer rounded-full border border-neutral-200 bg-white px-3 py-1.5 text-xs text-neutral-600"
+            >
+              <option value="">All tags</option>
+              {tags.map((tag) => (
+                <option key={tag}>{tag}</option>
+              ))}
+            </select>
+          )}
         </nav>
       </div>
       <FilteredArticles key={active} posts={posts} section={section} active={active} />

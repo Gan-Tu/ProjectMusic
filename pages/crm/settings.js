@@ -1,7 +1,7 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { ArrowPathIcon, ExclamationTriangleIcon } from "@heroicons/react/20/solid";
-import Button from "../../components/ui/Button";
+import { CrmButton as Button } from "../../components/crm/ui";
 import CrmLayout from "../../components/crm/CrmLayout";
 import { crmFetch, useCrmData } from "../../components/crm/api";
 import { formatDateTime } from "../../components/crm/format";
@@ -31,14 +31,16 @@ function SettingsForm({ settings, onSaved }) {
     )
   );
   const [busy, setBusy] = useState(false);
+  const [serverError, setServerError] = useState(null); // { key, message } from the API
   const errors = {};
   for (const [key, text] of Object.entries(texts)) {
     try {
       JSON.parse(text);
     } catch (error) {
-      errors[key] = error.message;
+      errors[key] = `Invalid JSON: ${error.message}`;
     }
   }
+  if (serverError && !errors[serverError.key]) errors[serverError.key] = serverError.message;
   const invalid = Object.keys(errors).length > 0 || !/^\d+$/.test(bonus.trim());
 
   async function save(event) {
@@ -55,6 +57,8 @@ function SettingsForm({ settings, onSaved }) {
       toast.success("Settings saved.");
       onSaved(saved);
     } catch (error) {
+      const key = String(error.data?.field || "").split(/[.[]/)[0];
+      if (key) setServerError({ key, message: error.message });
       toast.error(error.message);
     } finally {
       setBusy(false);
@@ -95,19 +99,20 @@ function SettingsForm({ settings, onSaved }) {
               htmlFor={`setting-${key}`}
               help={
                 key === "wikipedia_article"
-                  ? "The article shown on /socials/wikipedia. Edit the JSON carefully; it's validated as you type."
+                  ? "The article on /socials/wikipedia: title, subtitle, intro, facts [[label, value]], sections [{ id, title, paragraphs }], discography [[year, title, type, role]], references [{ title, href }]."
                   : undefined
               }
-              error={errors[key] && `Invalid JSON: ${errors[key]}`}
+              error={errors[key]}
             >
               <textarea
                 id={`setting-${key}`}
                 value={text}
                 rows={key === "wikipedia_article" ? 18 : 6}
                 spellCheck={false}
-                onChange={(event) =>
-                  setTexts((current) => ({ ...current, [key]: event.target.value }))
-                }
+                onChange={(event) => {
+                  setTexts((current) => ({ ...current, [key]: event.target.value }));
+                  if (serverError?.key === key) setServerError(null);
+                }}
                 className={textareaClass({ invalid: Boolean(errors[key]), mono: true })}
               />
             </Field>
@@ -223,7 +228,7 @@ export default function SettingsPage() {
   const settings = data?.settings;
   return (
     <CrmLayout title="Settings">
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_24rem]">
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_24rem]">
         <div className="min-w-0">
           {error && <ErrorNote>{error}</ErrorNote>}
           {!settings && !error && <Spinner />}

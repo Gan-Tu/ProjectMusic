@@ -2,7 +2,7 @@ import { useState } from "react";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { ArrowLeftIcon } from "@heroicons/react/20/solid";
-import Button from "../../../components/ui/Button";
+import { CrmButton as Button } from "../../../components/crm/ui";
 import CrmLayout from "../../../components/crm/CrmLayout";
 import { crmFetch, useCrmData } from "../../../components/crm/api";
 import { formatCount, formatDateTime, formatMoney } from "../../../components/crm/format";
@@ -91,14 +91,14 @@ export default function OrderPage({ id }) {
     <CrmLayout title={`Order ${id}`}>
       <Link
         href="/crm/orders"
-        className="mb-5 inline-flex items-center gap-1.5 text-2xs font-bold uppercase tracking-widest text-neutral-500 transition hover:text-pmred"
+        className="mb-3 inline-flex min-h-10 items-center gap-1.5 text-2xs font-bold uppercase tracking-widest text-neutral-500 transition hover:text-pmred"
       >
         <ArrowLeftIcon className="h-4 w-4" /> All orders
       </Link>
       {error && <ErrorNote>{error}</ErrorNote>}
       {!data && !error && <Spinner />}
       {order && (
-        <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_22rem]">
+        <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_22rem]">
           <Card title={`Items (${(order.items || []).length})`} bodyClassName="overflow-x-auto p-0">
             <table className="w-full min-w-[36rem] text-sm">
               <thead className="border-b border-neutral-100">
@@ -199,7 +199,7 @@ export default function OrderPage({ id }) {
                     <dt className="text-2xs font-bold uppercase tracking-widest text-neutral-500">
                       {label}
                     </dt>
-                    <dd className="text-right">{value}</dd>
+                    <dd className="min-w-0 text-right wrap-anywhere">{value}</dd>
                   </div>
                 ))}
               </dl>

@@ -4,6 +4,8 @@ import AppContainer from "../components/AppContainer";
 import HomeHero from "../components/home/HomeHero";
 import NewReleases from "../components/home/NewReleases";
 import VideoStrip from "../components/videos/VideoStrip";
+import EmptyState from "../components/ui/EmptyState";
+import Button from "../components/ui/Button";
 import { getHomePage } from "../lib/server/content";
 
 export default function Home({ videos, albums, artists }) {
@@ -13,6 +15,20 @@ export default function Home({ videos, albums, artists }) {
       curMenu="Home"
       description="Independent sounds, original films and the artists behind them. Discover the world of Projct Music and Truth Studios."
     >
+      {!videos.length && !albums.length && !artists.length && (
+        <EmptyState
+          dark
+          title="New sounds are on the way"
+          className="min-h-[60vh] justify-center"
+          action={
+            <Button href="/about" variant="light">
+              About Projct Music
+            </Button>
+          }
+        >
+          Films, releases and the artists behind them will appear here soon.
+        </EmptyState>
+      )}
       {videos.length > 0 && (
         <>
           <HomeHero videos={videos} />

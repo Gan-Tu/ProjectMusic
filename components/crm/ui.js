@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element -- admin-pasted URLs from any host, shown as-is */
 import { useState } from "react";
 import { PhotoIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import Button from "../ui/Button";
 import { classNames } from "../../lib/format";
 
 // Small building blocks for the CRM, in the site's visual language: square white
@@ -24,6 +25,11 @@ export function textareaClass({ invalid = false, mono = false } = {}) {
     invalid ? "border-pmred" : "border-neutral-200",
     mono ? "font-mono text-xs leading-5" : "text-sm leading-6"
   );
+}
+
+// The site's pill Button, at least 40px tall on phones (tap targets).
+export function CrmButton({ className, ...props }) {
+  return <Button className={classNames("max-sm:min-h-10", className)} {...props} />;
 }
 
 export function Card({ title, actions, children, className, bodyClassName }) {
@@ -176,7 +182,7 @@ export function Pagination({ page, pageSize, total, onPage }) {
   const pages = Math.max(1, Math.ceil(total / pageSize));
   if (pages <= 1) return null;
   const button =
-    "rounded-full border border-neutral-200 px-4 py-1.5 text-2xs font-bold uppercase tracking-wider transition hover:border-pmred hover:text-pmred disabled:cursor-not-allowed disabled:opacity-40";
+    "rounded-full border border-neutral-200 px-4 py-2.5 text-2xs font-bold uppercase tracking-wider transition hover:border-pmred hover:text-pmred disabled:cursor-not-allowed disabled:opacity-40 sm:py-1.5";
   return (
     <nav aria-label="Pages" className="flex items-center justify-between gap-3 pt-4">
       <button
@@ -215,7 +221,7 @@ export function Segmented({ options, value, onChange, label, className }) {
             aria-pressed={active}
             onClick={() => onChange(option.value)}
             className={classNames(
-              "rounded-full border px-4 py-1.5 text-2xs font-bold uppercase tracking-wider transition-colors",
+              "rounded-full border px-4 py-2.5 text-2xs font-bold uppercase tracking-wider transition-colors sm:py-1.5",
               active
                 ? "border-pmred bg-pmred text-white"
                 : "border-neutral-200 bg-white text-neutral-500 hover:border-pmred hover:text-pmred"

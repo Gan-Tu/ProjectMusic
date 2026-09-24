@@ -39,7 +39,7 @@ export default function ArticleCard({
             {category}
           </p>
         )}
-        <h2 className="text-sm font-extrabold uppercase leading-snug tracking-wide sm:text-lg">
+        <h2 className="text-sm font-extrabold uppercase leading-snug tracking-wide wrap-anywhere sm:text-lg">
           <Link href={href} className="hover:text-pmred">
             {title}
           </Link>

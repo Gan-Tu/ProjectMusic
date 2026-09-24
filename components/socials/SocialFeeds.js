@@ -21,6 +21,13 @@ import { parseVideoUrl } from "../../lib/media";
 
 const FIRST_BATCH = 12; // photos shown before "Load more"
 
+// A Pinterest pin's aspect ratio ("3 / 4", "1.5"), or portrait when missing or invalid.
+function pinRatio(ratio) {
+  const match = /^\s*(\d+(?:\.\d+)?)\s*(?:\/\s*(\d+(?:\.\d+)?))?\s*$/.exec(String(ratio || ""));
+  const [width, height] = match ? [Number(match[1]), Number(match[2] ?? 1)] : [0, 0];
+  return width > 0 && height > 0 ? `${width} / ${height}` : "3 / 4";
+}
+
 function CommentCount({ post }) {
   const count = useCommentCount(`social:${post.id}`);
   return count ?? <span className="sr-only">Loading</span>;
@@ -130,7 +137,7 @@ export function PhotoFeed({ posts, pinterest = false }) {
             >
               <div
                 className="relative w-full overflow-hidden"
-                style={{ aspectRatio: pinterest ? item.ratio : "1 / 1" }}
+                style={{ aspectRatio: pinterest ? pinRatio(item.ratio) : "1 / 1" }}
               >
                 <Image
                   src={item.image}
@@ -203,7 +210,7 @@ export function PhotoFeed({ posts, pinterest = false }) {
                 <time dateTime={post.date} className="mt-2 text-xs text-neutral-500">
                   {formatLongDate(post.date)}
                 </time>
-                <p className="mt-6 text-sm leading-7 text-neutral-700">
+                <p className="mt-6 text-sm leading-7 text-neutral-700 wrap-anywhere">
                   <RichText text={post.caption} />
                 </p>
                 <div className="mt-5 border-y border-neutral-200 py-2">
@@ -285,7 +292,7 @@ export function TwitterFeed({ posts }) {
               </div>
               <ArrowUpRightIcon className="h-4 w-4 shrink-0 text-pmred group-hover:text-white group-focus-visible:text-white" />
             </div>
-            <p className="my-6 text-sm leading-6">
+            <p className="my-6 text-sm leading-6 wrap-anywhere">
               <RichText text={item.text} />
             </p>
             <div className="mt-auto flex items-center gap-5 text-2xs text-neutral-500 group-hover:text-white/80 group-focus-visible:text-white/80">
@@ -316,7 +323,7 @@ export function TwitterFeed({ posts }) {
             <time dateTime={post.date} className="text-xs text-neutral-500">
               {formatLongDate(post.date)}
             </time>
-            <p className="mb-8 mt-5 text-xl leading-relaxed">
+            <p className="mb-8 mt-5 text-xl leading-relaxed wrap-anywhere">
               <RichText text={post.text} />
             </p>
             <TweetActions post={post} />
@@ -371,7 +378,7 @@ export function JournalFeed({ posts, tumblr = false }) {
                   </cite>
                 </blockquote>
               ) : (
-                <p className="my-5 text-sm leading-7 text-neutral-600">
+                <p className="my-5 text-sm leading-7 text-neutral-600 wrap-anywhere">
                   <RichText text={post.caption} />
                 </p>
               )}
@@ -410,7 +417,7 @@ function VideoPreview({ post, pause, loop }) {
         <VideoEmbed src={post.src} title={post.title} className="aspect-video w-full bg-black" />
       )}
       <div className="px-7 py-6">
-        <p className="text-sm text-neutral-600">{post.caption}</p>
+        <p className="text-sm text-neutral-600 wrap-anywhere">{post.caption}</p>
         {failed && (
           <p role="alert" className="mt-3 text-sm text-pmred">
             This preview couldn&apos;t load.{" "}

@@ -1,14 +1,12 @@
-import { sql } from "../../../lib/server/db";
-import {
-  createSession,
-  destroyUserSessions,
-  hashPassword,
-  verifyPassword
-} from "../../../lib/server/auth";
+import { withTransaction } from "../../../lib/server/db";
+import { createSession, hashPassword, verifyPassword } from "../../../lib/server/auth";
 import { apiHandler, HttpError, requireUser } from "../../../lib/server/http";
 import { parsePassword } from "../../../lib/server/accounts";
 
-// POST { current, next } -> { ok }. Signs out every other session of the member.
+const CHANGED_ELSEWHERE = "Your password was changed elsewhere — please log in again.";
+
+// POST { current, next } -> { ok }. Signs out every session of the member and starts a
+// new one for this browser.
 export default apiHandler({
   POST: async (req, res) => {
     const user = await requireUser(req);
@@ -27,9 +25,32 @@ export default apiHandler({
       throw new HttpError(400, "Your current password is wrong.");
     }
     const passwordHash = await hashPassword(password);
-    await sql`update users set password_hash = ${passwordHash} where id = ${user.id}`;
-    await destroyUserSessions(user.id);
-    await createSession(req, res, { kind: "user", userId: user.id });
+    // Only over the password just verified: if it changed meanwhile (e.g. a reset from
+    // the CRM), that change wins.
+    let changed;
+    try {
+      changed = await withTransaction(async (client) => {
+        const { rows } = await client.query(
+          `update users set password_hash = $2
+           where id = $1 and password_hash = $3 and status = 'active' returning id`,
+          [user.id, passwordHash, user.password_hash]
+        );
+        if (!rows.length) return false;
+        await client.query("delete from sessions where user_id = $1", [user.id]);
+        return true;
+      });
+    } catch (error) {
+      // Deadlocked / serialized against another change to this account: that one won.
+      if (error?.code !== "40P01" && error?.code !== "40001") throw error;
+      changed = false;
+    }
+    if (!changed) throw new HttpError(409, CHANGED_ELSEWHERE, { code: "password_changed" });
+    const started = await createSession(req, res, {
+      kind: "user",
+      userId: user.id,
+      passwordHash
+    });
+    if (!started) throw new HttpError(409, CHANGED_ELSEWHERE, { code: "password_changed" });
     res.json({ ok: true });
   }
 });

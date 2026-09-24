@@ -2,7 +2,7 @@ import { useState } from "react";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { ArrowLeftIcon } from "@heroicons/react/20/solid";
-import Button from "../../../components/ui/Button";
+import { CrmButton as Button } from "../../../components/crm/ui";
 import CrmLayout from "../../../components/crm/CrmLayout";
 import EntityEditor from "../../../components/crm/EntityEditor";
 import { crmFetch, useCrmData } from "../../../components/crm/api";
@@ -131,7 +131,7 @@ export default function MemberPage({ id }) {
     <CrmLayout title={member ? member.name : "Member"}>
       <Link
         href="/crm/members"
-        className="mb-5 inline-flex items-center gap-1.5 text-2xs font-bold uppercase tracking-widest text-neutral-500 transition hover:text-pmred"
+        className="mb-3 inline-flex min-h-10 items-center gap-1.5 text-2xs font-bold uppercase tracking-widest text-neutral-500 transition hover:text-pmred"
       >
         <ArrowLeftIcon className="h-4 w-4" /> All members
       </Link>

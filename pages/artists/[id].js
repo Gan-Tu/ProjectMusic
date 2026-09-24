@@ -102,7 +102,7 @@ export default function ArtistProfile({
             <p className="text-2xs font-bold uppercase tracking-[0.25em] text-pmred-light">
               Artist{artist.location && ` / ${artist.location}`}
             </p>
-            <h1 className="mt-3 break-words text-4xl font-extrabold uppercase leading-none tracking-tight sm:text-5xl">
+            <h1 className="mt-3 text-4xl wrap-anywhere font-extrabold uppercase leading-none tracking-tight sm:text-5xl">
               {artist.name}
             </h1>
             <p className="mt-4 max-w-sm text-sm leading-relaxed text-neutral-400">
@@ -199,18 +199,38 @@ export default function ArtistProfile({
                       {formatLongDate(post.isoDate)}
                     </time>
                   </p>
-                  {article && (
-                    <h3 className="mt-3 text-sm font-extrabold uppercase tracking-wide">
-                      <Link href={`/${post.section}/${post.id}`} className="hover:text-pmred">
-                        {post.title}
-                      </Link>
+                  {post.title && (
+                    <h3 className="mt-3 text-sm font-extrabold uppercase tracking-wide wrap-anywhere">
+                      {article ? (
+                        <Link href={`/${post.section}/${post.id}`} className="hover:text-pmred">
+                          {post.title}
+                        </Link>
+                      ) : (
+                        post.title
+                      )}
                     </h3>
                   )}
-                  {(article ? [post.snippet] : post.body).filter(Boolean).map((paragraph) => (
-                    <p key={paragraph} className="mt-4 text-sm leading-7 text-neutral-600">
-                      {paragraph}
-                    </p>
-                  ))}
+                  {post.imgUrl && (
+                    <div className="relative mt-4 aspect-video overflow-hidden bg-neutral-100">
+                      <Image
+                        src={post.imgUrl}
+                        alt={post.title || `${artist.name} on the timeline`}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 768px"
+                        className="object-cover"
+                      />
+                    </div>
+                  )}
+                  {(article || !post.body.length ? [post.snippet] : post.body)
+                    .filter(Boolean)
+                    .map((paragraph, index) => (
+                      <p
+                        key={index}
+                        className="mt-4 text-sm leading-7 text-neutral-600 wrap-anywhere"
+                      >
+                        {paragraph}
+                      </p>
+                    ))}
                   <div className="mt-4 flex items-center gap-6">
                     <button
                       type="button"
@@ -283,7 +303,7 @@ export default function ArtistProfile({
           <div className="max-w-3xl">
             <SectionHeading title={`About ${artist.name}`} />
             {artist.bio ? (
-              <p className="whitespace-pre-line text-base leading-8 text-neutral-500">
+              <p className="whitespace-pre-line text-base leading-8 text-neutral-500 wrap-anywhere">
                 {artist.bio}
               </p>
             ) : (

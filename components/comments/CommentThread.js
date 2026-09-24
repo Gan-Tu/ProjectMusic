@@ -147,7 +147,9 @@ function CommentItem({ comment, threadId, loggedIn, compact, dark, now, onReply,
       <Avatar src={comment.avatar} name={comment.author} compact={compact} />
       <div className="min-w-0 flex-1">
         <p className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
-          <span className="text-xs font-bold text-pmred">{comment.author}</span>
+          <span className="min-w-0 text-xs font-bold text-pmred wrap-anywhere">
+            {comment.author}
+          </span>
           <time
             dateTime={comment.at}
             className={classNames(
@@ -195,7 +197,7 @@ function CommentItem({ comment, threadId, loggedIn, compact, dark, now, onReply,
                 )}
               >
                 <p className="font-semibold">Meanwhile, this comment was changed to:</p>
-                <p className="mt-1 whitespace-pre-wrap break-words">{conflict}</p>
+                <p className="mt-1 whitespace-pre-wrap wrap-anywhere">{conflict}</p>
                 <div className="mt-3 flex flex-wrap gap-4">
                   <ActionButton
                     dark={dark}
@@ -237,7 +239,7 @@ function CommentItem({ comment, threadId, loggedIn, compact, dark, now, onReply,
         ) : (
           <p
             className={classNames(
-              "mt-1 whitespace-pre-wrap break-words",
+              "mt-1 whitespace-pre-wrap wrap-anywhere",
               dark ? "text-neutral-300" : "text-neutral-600",
               compact ? "text-xs leading-5" : "text-sm leading-relaxed"
             )}

@@ -3,7 +3,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 import Logo from "../../components/Logo";
-import Button from "../../components/ui/Button";
+import { CrmButton as Button } from "../../components/crm/ui";
 import { crmFetch } from "../../components/crm/api";
 import { getSessionAdmin } from "../../lib/server/auth";
 import { safeNext } from "../../lib/server/crm/guard";

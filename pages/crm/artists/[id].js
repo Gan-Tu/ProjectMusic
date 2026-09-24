@@ -17,7 +17,7 @@ export default function ArtistPage({ id, name }) {
     <CrmLayout title={name} viewHref={id === "new" ? "/artists" : `/artists/${id}`}>
       <Link
         href="/crm/artists"
-        className="mb-5 inline-flex items-center gap-1.5 text-2xs font-bold uppercase tracking-widest text-neutral-500 transition hover:text-pmred"
+        className="mb-3 inline-flex min-h-10 items-center gap-1.5 text-2xs font-bold uppercase tracking-widest text-neutral-500 transition hover:text-pmred"
       >
         <ArrowLeftIcon className="h-4 w-4" /> All artists
       </Link>

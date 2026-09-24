@@ -6,7 +6,6 @@ import {
   DocumentDuplicateIcon,
   TrashIcon
 } from "@heroicons/react/20/solid";
-import Button from "../ui/Button";
 import { classNames } from "../../lib/format";
 import { ENTITIES, crmPath, emptyRow, entityPk, publicPathFor, rowTitle } from "./entityDefs";
 import { crmFetch, entityApi, invalidateOptions, notifyBadges, useCrmData } from "./api";
@@ -15,7 +14,7 @@ import FieldInput from "./FieldInput";
 import TracksEditor from "./TracksEditor";
 import OrderedPicker from "./OrderedPicker";
 import { formatDateTime } from "./format";
-import { Card, ErrorNote, Field, Spinner } from "./ui";
+import { Card, ErrorNote, Field, Spinner, CrmButton as Button } from "./ui";
 
 const WIDTHS = { half: "col-span-6 sm:col-span-3", third: "col-span-6 sm:col-span-2" };
 
@@ -109,13 +108,21 @@ export default function EntityEditor({ entity, id, prefill, hide = [], onSaved, 
   async function save(event) {
     event?.preventDefault();
     if (saving || !values) return;
+    // A new row sends everything; an edit sends only what changed, so values the form
+    // didn't touch (e.g. a member's uploaded photo) can't block the save.
+    const changed = (name) => isNew || JSON.stringify(values[name]) !== JSON.stringify(base[name]);
     const payload = {};
     for (const field of fields) {
-      if (field.readonly || (field.createOnly && !isNew)) continue;
-      payload[field.name] = values[field.name];
+      if (field.readonly || field.virtual || (field.createOnly && !isNew)) continue;
+      if (changed(field.name)) payload[field.name] = values[field.name];
     }
-    if (entity === "albums") payload.tracks = values.tracks || [];
-    if (entity === "events") payload.lineup = values.lineup || [];
+    if (entity === "albums" && changed("tracks")) payload.tracks = values.tracks || [];
+    if (entity === "events" && changed("lineup")) payload.lineup = values.lineup || [];
+    if (!isNew && !Object.keys(payload).length) {
+      setBase(values);
+      toast.success("Nothing to save.");
+      return;
+    }
     setSaving(true);
     try {
       if (isNew) {
@@ -203,7 +210,10 @@ export default function EntityEditor({ entity, id, prefill, hide = [], onSaved, 
     <form
       id="crm-editor-form"
       onSubmit={save}
-      className={classNames("grid gap-6 xl:grid-cols-[minmax(0,1fr)_20rem]", dirty && "pb-20")}
+      className={classNames(
+        "grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_20rem]",
+        dirty && "pb-20"
+      )}
     >
       <div className="flex min-w-0 flex-col gap-6">
         <Card title={isNew ? `New ${def.label.toLowerCase()}` : "Details"}>

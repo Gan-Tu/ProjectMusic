@@ -35,7 +35,8 @@ function ProductDetail({ product, category, related }) {
     () => makeCartItem(product, { tier, size, color }),
     [product, tier, size, color]
   );
-  useCartCandidate({ ...item, qty: quantity });
+  // Tickets not on sale yet can't go in the cart (not even with the "B" shortcut).
+  useCartCandidate(product.comingSoon ? null : { ...item, qty: quantity });
   const isDigital = product.kind === "digital";
 
   function addToCart() {
@@ -117,7 +118,7 @@ function ProductDetail({ product, category, related }) {
           </p>
           <h1
             id="product-name"
-            className="max-w-xl text-2xl font-extrabold uppercase leading-tight tracking-tight sm:text-3xl lg:text-4xl"
+            className="max-w-xl text-2xl font-extrabold uppercase leading-tight tracking-tight wrap-anywhere sm:text-3xl lg:text-4xl"
           >
             {product.name}
           </h1>
@@ -127,7 +128,11 @@ function ProductDetail({ product, category, related }) {
             aria-atomic="true"
           >
             <span className="text-3xl font-light text-pmred">
-              {item.price != null ? formatUSD(item.price) : formatCredits(item.credits)}
+              {product.comingSoon
+                ? "Tickets coming soon"
+                : item.price != null
+                  ? formatUSD(item.price)
+                  : formatCredits(item.credits)}
             </span>
             {item.credits != null && item.price != null && (
               <span className="text-xs text-neutral-500">
@@ -217,7 +222,11 @@ function ProductDetail({ product, category, related }) {
                 </select>
               </label>
             )}
-            {now > 0 && salesEnded(item, now) ? (
+            {product.comingSoon ? (
+              <p className="mt-6 text-sm font-semibold text-neutral-600">
+                Tickets for this event go on sale soon. Check back shortly.
+              </p>
+            ) : now > 0 && salesEnded(item, now) ? (
               <p className="mt-6 text-sm font-semibold text-neutral-600">
                 Ticket sales have ended: this event has already taken place.
               </p>
@@ -240,7 +249,7 @@ function ProductDetail({ product, category, related }) {
           <h2 className="mb-3 text-2xs font-bold uppercase tracking-[0.15em]">
             Product description
           </h2>
-          <p className="max-w-xl text-sm font-light leading-7 text-neutral-500">
+          <p className="max-w-xl text-sm font-light leading-7 text-neutral-500 wrap-anywhere">
             {product.description}
           </p>
           {product.subtitle && (

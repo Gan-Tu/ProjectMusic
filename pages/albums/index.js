@@ -32,7 +32,9 @@ export default function Albums({ musics }) {
       </ul>
       {!filtered.length && (
         <p className="px-6 py-24 text-center text-sm text-neutral-500">
-          No releases found. Try another artist or album.
+          {query.trim()
+            ? "No releases found. Try another artist or album."
+            : "No releases yet — check back soon."}
         </p>
       )}
     </AppContainer>

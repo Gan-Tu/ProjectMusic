@@ -153,7 +153,7 @@ export default function CrmLayout({ title, viewHref = "/", actions, children }) 
           >
             <Bars3Icon className="h-6 w-6" />
           </button>
-          <Logo href="/crm" className="text-xs sm:text-sm" />
+          <Logo href="/crm" className="min-h-10 text-xs sm:text-sm" />
           <span className="bg-black px-1.5 py-0.5 text-2xs font-bold tracking-widest text-white">
             CRM
           </span>
@@ -177,21 +177,19 @@ export default function CrmLayout({ title, viewHref = "/", actions, children }) 
               href={viewHref}
               target="_blank"
               rel="noreferrer"
-              className="flex items-center gap-1.5 px-2 py-2 text-2xs font-bold uppercase tracking-widest text-neutral-600 transition hover:text-pmred"
+              className="hidden min-h-10 min-w-10 items-center justify-center gap-1.5 px-2 py-2 text-2xs font-bold uppercase tracking-widest text-neutral-600 transition hover:text-pmred sm:flex"
             >
               <ArrowTopRightOnSquareIcon className="h-4 w-4" aria-hidden="true" />
-              <span className="hidden sm:inline">View site</span>
-              <span className="sr-only sm:hidden">View site</span>
+              View site
             </a>
             <span className="hidden h-8 w-px bg-neutral-200 sm:block" aria-hidden="true" />
             <button
               type="button"
               onClick={logout}
-              className="flex items-center gap-1.5 px-2 py-2 text-2xs font-bold uppercase tracking-widest text-neutral-600 transition hover:text-pmred"
+              className="hidden min-h-10 min-w-10 items-center justify-center gap-1.5 px-2 py-2 text-2xs font-bold uppercase tracking-widest text-neutral-600 transition hover:text-pmred sm:flex"
             >
               <ArrowRightStartOnRectangleIcon className="h-4 w-4" aria-hidden="true" />
-              <span className="hidden sm:inline">Logout</span>
-              <span className="sr-only sm:hidden">Logout</span>
+              Logout
             </button>
           </div>
         </div>
@@ -226,6 +224,25 @@ export default function CrmLayout({ title, viewHref = "/", actions, children }) 
               </button>
             </div>
             <NavLinks onNavigate={() => setOpen(false)} badges={badges} />
+            <div className="mt-auto flex flex-col border-t border-white/10 py-4">
+              <a
+                href={viewHref}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-3 px-6 py-3 text-2xs font-bold uppercase tracking-widest text-neutral-400 transition hover:bg-white/5 hover:text-white"
+              >
+                <ArrowTopRightOnSquareIcon className="h-5 w-5" aria-hidden="true" />
+                View site
+              </a>
+              <button
+                type="button"
+                onClick={logout}
+                className="flex items-center gap-3 px-6 py-3 text-left text-2xs font-bold uppercase tracking-widest text-neutral-400 transition hover:bg-white/5 hover:text-white"
+              >
+                <ArrowRightStartOnRectangleIcon className="h-5 w-5" aria-hidden="true" />
+                Logout
+              </button>
+            </div>
           </DialogPanel>
         </div>
       </Dialog>

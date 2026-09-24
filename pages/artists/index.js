@@ -91,7 +91,14 @@ export default function ArtistsHome({ artistsData }) {
           ))}
         </div>
       </section>
-      {!artists.length ? (
+      {!artistsData.length ? (
+        <div className="px-6 py-24 text-center">
+          <h2 className="text-sm font-bold uppercase tracking-widest">No artists yet</h2>
+          <p className="mt-3 text-sm text-neutral-500">
+            The directory is getting ready. New voices are on the way.
+          </p>
+        </div>
+      ) : !artists.length ? (
         <div className="px-6 py-24 text-center">
           <h2 className="text-sm font-bold uppercase tracking-widest">No artists found</h2>
           <p className="mt-3 text-sm text-neutral-500">

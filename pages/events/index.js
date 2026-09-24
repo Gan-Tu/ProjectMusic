@@ -67,7 +67,15 @@ export default function EventsHome({ eventData }) {
           </li>
         ))}
       </ul>
-      {!filtered.length && (
+      {!eventData.length && (
+        <div className="px-6 py-24 text-center">
+          <h2 className="text-sm font-bold uppercase tracking-widest">No events yet</h2>
+          <p className="mt-3 text-sm text-neutral-500">
+            New shows and sessions are on the way. Check back soon.
+          </p>
+        </div>
+      )}
+      {eventData.length > 0 && !filtered.length && (
         <div className="px-6 py-24 text-center">
           <p className="text-sm text-neutral-500">
             No shows match these filters. More good nights are on the way.

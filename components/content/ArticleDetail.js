@@ -34,7 +34,7 @@ export default function ArticleDetail({ post, related, section }) {
             >
               ← All {section === "news" ? "news" : "stories"}
             </Link>
-            <h1 className="max-w-3xl text-3xl font-extrabold uppercase leading-tight tracking-tight sm:text-5xl">
+            <h1 className="max-w-3xl text-3xl font-extrabold uppercase leading-tight tracking-tight wrap-anywhere sm:text-5xl">
               <span className="bg-pmred px-2 py-1 text-white [box-decoration-break:clone]">
                 {post.title}
               </span>
@@ -50,7 +50,7 @@ export default function ArticleDetail({ post, related, section }) {
             <p className="mb-8 text-xl font-light leading-relaxed text-neutral-800">
               {post.snippet}
             </p>
-            <div className="space-y-6 text-sm font-light leading-8 text-neutral-500">
+            <div className="space-y-6 text-sm font-light leading-8 text-neutral-500 wrap-anywhere">
               {post.body.map((paragraph, index) => (
                 <p key={index}>{paragraph}</p>
               ))}

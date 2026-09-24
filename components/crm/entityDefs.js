@@ -805,7 +805,14 @@ export const ENTITIES = {
       { name: "name", label: "Name", type: "text", required: true, max: 120, width: "half" },
       { name: "username", label: "Username", type: "text", required: true, max: 40, width: "half" },
       { name: "email", label: "Email", type: "text", required: true, max: 200 },
-      { name: "avatar_url", label: "Avatar URL", type: "image", nullable: true },
+      {
+        name: "avatar_url",
+        label: "Avatar URL",
+        type: "image",
+        nullable: true,
+        avatar: true,
+        help: "An https:// image URL. Photos members upload themselves are kept as-is."
+      },
       { name: "location", label: "Location", type: "text", max: 120, width: "half" },
       { name: "points", label: "Points", type: "int", min: 0, width: "half" },
       { name: "bio", label: "Bio", type: "textarea", max: 2000, rows: 3 },

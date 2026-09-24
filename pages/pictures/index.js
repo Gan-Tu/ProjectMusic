@@ -1,6 +1,7 @@
 import Image from "../../components/ui/SmartImage";
 import Link from "next/link";
 import AppContainer from "../../components/AppContainer";
+import EmptyState from "../../components/ui/EmptyState";
 import { listPhotoCategories } from "../../lib/server/content";
 
 export default function Pictures({ categories }) {
@@ -11,6 +12,11 @@ export default function Pictures({ categories }) {
       description="Studio moments, artist portraits, polaroids and places around Projct Music."
     >
       <h1 className="sr-only">Pictures</h1>
+      {!categories.length && (
+        <EmptyState title="No pictures yet">
+          Studio moments and portraits will appear here soon.
+        </EmptyState>
+      )}
       <div className="grid flex-1 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         {categories.map((category, index) => (
           <Link

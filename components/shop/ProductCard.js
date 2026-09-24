@@ -10,7 +10,8 @@ import { makeCartItem, showCartToast } from "./cart";
 export default function ProductCard({ product, priority = false }) {
   const { actions } = useStore();
   const now = useNow();
-  const ended = now > 0 && salesEnded(product, now); // past event: no quick add
+  // Past event, or tickets not on sale yet: no quick add.
+  const ended = product.comingSoon || (now > 0 && salesEnded(product, now));
   const { openModal } = useUI();
   const cheapestTier = product.tiers?.reduce(
     (best, tier) => (tier.price < best.price ? tier : best),
@@ -35,19 +36,23 @@ export default function ProductCard({ product, priority = false }) {
           <p className="mb-2 text-2xs font-semibold uppercase tracking-[0.18em] text-neutral-500">
             {product.category.replaceAll("-", " ")}
           </p>
-          <h3 className="pr-5 text-xs font-bold uppercase leading-relaxed tracking-wide transition-colors group-hover:text-pmred">
+          <h3 className="pr-5 text-xs font-bold uppercase leading-relaxed tracking-wide transition-colors wrap-anywhere group-hover:text-pmred">
             {product.name}
           </h3>
-          <p className="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1 text-sm font-bold text-pmred">
-            {product.tiers?.length > 1 && <span className="text-2xs font-medium">From</span>}
-            {price != null && formatUSD(price)}
-            {credits != null && (
-              <span className="text-2xs font-medium text-neutral-500">
-                {price != null ? "or " : ""}
-                {formatCredits(credits)}
-              </span>
-            )}
-          </p>
+          {product.comingSoon ? (
+            <p className="mt-2 text-xs font-bold text-neutral-500">Tickets coming soon</p>
+          ) : (
+            <p className="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1 text-sm font-bold text-pmred">
+              {product.tiers?.length > 1 && <span className="text-2xs font-medium">From</span>}
+              {price != null && formatUSD(price)}
+              {credits != null && (
+                <span className="text-2xs font-medium text-neutral-500">
+                  {price != null ? "or " : ""}
+                  {formatCredits(credits)}
+                </span>
+              )}
+            </p>
+          )}
         </div>
       </Link>
       {!ended && (

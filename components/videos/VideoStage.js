@@ -236,7 +236,7 @@ export default function VideoStage({ video, videos: listed, related }) {
           )}
           <h1
             id="video-title"
-            className="mt-3 text-2xl font-extrabold uppercase tracking-tight md:text-3xl"
+            className="mt-3 text-2xl font-extrabold uppercase tracking-tight wrap-anywhere md:text-3xl"
           >
             {video.title}
           </h1>

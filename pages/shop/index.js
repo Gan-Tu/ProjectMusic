@@ -36,7 +36,7 @@ export default function Shop({ products, featured, categories }) {
       curMenu="Shop"
       description="Music, studio essentials, and more. Shop the Truth Studios collection at Projct Music."
     >
-      {!category && (
+      {!category && products.length > 0 && (
         <section className="grid bg-pmred md:grid-cols-2" aria-label="Featured collection">
           <div className="flex flex-col items-start justify-center px-6 py-10 text-white motion-safe:animate-fade-in sm:px-12 md:py-16 lg:px-20">
             <p className="mb-6 text-2xs font-bold uppercase tracking-[0.3em]">
@@ -150,12 +150,18 @@ export default function Shop({ products, featured, categories }) {
         {visible.length === 0 && (
           <div className="px-6 py-24 text-center">
             <h3 className="font-bold uppercase tracking-wide">More good things are coming</h3>
-            <Link
-              href="/shop"
-              className="mt-4 inline-block cursor-pointer text-sm text-pmred underline"
-            >
-              Explore the full collection
-            </Link>
+            {products.length > 0 ? (
+              <Link
+                href="/shop"
+                className="mt-4 inline-block cursor-pointer text-sm text-pmred underline"
+              >
+                Explore the full collection
+              </Link>
+            ) : (
+              <p className="mt-3 text-sm text-neutral-500">
+                The shop is being restocked. Check back soon.
+              </p>
+            )}
           </div>
         )}
       </section>

@@ -19,7 +19,12 @@ export async function crmFetch(url, { method = "GET", body } = {}) {
     const next = `${window.location.pathname}${window.location.search}`;
     Router.replace(`/crm/login?next=${encodeURIComponent(next)}`);
   }
-  if (!res.ok) throw new Error(data?.error || `Request failed (${res.status}).`);
+  if (!res.ok) {
+    const error = new Error(data?.error || `Request failed (${res.status}).`);
+    error.status = res.status;
+    error.data = data; // e.g. { field } for validation errors
+    throw error;
+  }
   return data;
 }
 

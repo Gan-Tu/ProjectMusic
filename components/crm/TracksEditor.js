@@ -12,8 +12,8 @@ import { URL_HINT, fromMmSs, isValidUrlInput, toMmSs } from "./format";
 import { CONTROL } from "./ui";
 
 const SMALL_BUTTON =
-  "flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-neutral-400 transition hover:bg-neutral-100 hover:text-pmred disabled:opacity-30";
-const CELL_INPUT = classNames(CONTROL, "h-9 px-3 text-sm");
+  "flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-neutral-400 transition hover:bg-neutral-100 hover:text-pmred disabled:opacity-30 sm:h-8 sm:w-8";
+const CELL_INPUT = classNames(CONTROL, "h-10 px-3 text-sm sm:h-9");
 
 function DurationCell({ value, onChange, label }) {
   const [text, setText] = useState(null);
@@ -113,7 +113,7 @@ export default function TracksEditor({ value, onChange }) {
                     disabled={!track.audio_url}
                     aria-label={playing === index ? `Pause ${label}` : `Play ${label}`}
                     className={classNames(
-                      "flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition disabled:opacity-30",
+                      "flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition disabled:opacity-30 sm:h-9 sm:w-9",
                       playing === index
                         ? "bg-pmred text-white"
                         : "bg-neutral-900 text-white hover:bg-pmred"
@@ -192,7 +192,7 @@ export default function TracksEditor({ value, onChange }) {
         onClick={() =>
           onChange([...tracks, { title: "", duration: 180, audio_url: "", status: "published" }])
         }
-        className="inline-flex items-center gap-1.5 self-start rounded-full border border-dashed border-neutral-300 px-4 py-1.5 text-2xs font-bold uppercase tracking-wider text-neutral-500 transition hover:border-pmred hover:text-pmred"
+        className="inline-flex items-center gap-1.5 self-start rounded-full border border-dashed border-neutral-300 px-4 py-2.5 text-2xs font-bold uppercase tracking-wider text-neutral-500 transition hover:border-pmred hover:text-pmred sm:py-1.5"
       >
         <PlusIcon className="h-4 w-4" /> Add track
       </button>

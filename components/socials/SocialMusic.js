@@ -164,7 +164,7 @@ export function MyspaceProfile({ friends, tracks }) {
         </dl>
       </aside>
       <div className="min-w-0">
-        <section className="p-6 sm:p-8">
+        <section className="p-6 sm:p-8" hidden={!friends.length}>
           <div className="mb-6 flex items-center justify-between">
             <h2 className="text-sm font-bold uppercase tracking-[0.16em]">Our Top 8</h2>
             <Link href="/artists" className="cursor-pointer text-xs text-pmred hover:underline">
@@ -190,10 +190,14 @@ export function MyspaceProfile({ friends, tracks }) {
             ))}
           </div>
         </section>
-        <h2 className="border-y border-neutral-200 px-6 py-5 text-sm font-bold uppercase tracking-[0.16em] sm:px-8">
-          The profile playlist
-        </h2>
-        <TrackList tracks={tracks} singleColumn />
+        {tracks.length > 0 && (
+          <>
+            <h2 className="border-y border-neutral-200 px-6 py-5 text-sm font-bold uppercase tracking-[0.16em] sm:px-8">
+              The profile playlist
+            </h2>
+            <TrackList tracks={tracks} singleColumn />
+          </>
+        )}
       </div>
     </div>
   );

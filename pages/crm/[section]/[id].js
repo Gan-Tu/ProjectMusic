@@ -31,7 +31,7 @@ export default function SectionEditor({ section, id }) {
     <CrmLayout title={isNew ? `New ${def.label.toLowerCase()}` : def.label}>
       <Link
         href={crmPath(entity)}
-        className="mb-5 inline-flex items-center gap-1.5 text-2xs font-bold uppercase tracking-widest text-neutral-500 transition hover:text-pmred"
+        className="mb-3 inline-flex min-h-10 items-center gap-1.5 text-2xs font-bold uppercase tracking-widest text-neutral-500 transition hover:text-pmred"
       >
         <ArrowLeftIcon className="h-4 w-4" /> All {def.plural.toLowerCase()}
       </Link>
