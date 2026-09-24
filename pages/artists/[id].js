@@ -99,7 +99,7 @@ export default function ArtistProfile({
             />
           </div>
           <div className="min-w-0">
-            <p className="text-2xs font-bold uppercase tracking-[0.25em] text-pmred-light">
+            <p className="text-2xs font-bold uppercase tracking-[0.25em] text-pmred-light wrap-anywhere">
               Artist{artist.location && ` / ${artist.location}`}
             </p>
             <h1 className="mt-3 text-4xl wrap-anywhere font-extrabold uppercase leading-none tracking-tight sm:text-5xl">
@@ -315,7 +315,7 @@ export default function ArtistProfile({
                   <dt className="text-2xs font-bold uppercase tracking-widest text-pmred">
                     Based in
                   </dt>
-                  <dd className="mt-2 text-sm">{artist.location}</dd>
+                  <dd className="mt-2 text-sm wrap-anywhere">{artist.location}</dd>
                 </div>
               )}
               <div>
@@ -353,14 +353,14 @@ export default function ArtistProfile({
 function SectionHeading({ title, detail }) {
   return (
     <header className="mb-7">
-      <h2 className="text-sm font-extrabold uppercase tracking-widest">{title}</h2>
-      {detail && <p className="mt-2 text-xs text-neutral-500">{detail}</p>}
+      <h2 className="text-sm font-extrabold uppercase tracking-widest wrap-anywhere">{title}</h2>
+      {detail && <p className="mt-2 text-xs text-neutral-500 wrap-anywhere">{detail}</p>}
     </header>
   );
 }
 
 function EmptyState({ children }) {
-  return <p className="py-10 text-sm text-neutral-500">{children}</p>;
+  return <p className="py-10 text-sm text-neutral-500 wrap-anywhere">{children}</p>;
 }
 
 // Rendered on first request, so artists created in the CRM work without a rebuild.

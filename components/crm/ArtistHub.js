@@ -104,6 +104,7 @@ function LinkExisting({ entity, artistId, onLinked, label }) {
       setBusy(false);
     }
   }
+  if (!candidates.length) return null;
   return (
     <select
       value=""
@@ -189,6 +190,7 @@ function LineupAdd({ artistId, onChanged }) {
       setBusy(false);
     }
   }
+  if (!events.length) return null;
   return (
     <select
       value=""

@@ -58,6 +58,53 @@ function PanelEmpty({ icon: Icon, title, children, href, action }) {
   );
 }
 
+// Shown when there's no content at all (e.g. right after "Clear all data").
+function GettingStarted() {
+  const steps = [
+    [
+      "Create an artist",
+      "/crm/artists/new",
+      "Each artist gets a hub for their music, videos, events and merch."
+    ],
+    ["Add music", "/crm/music/new", "Albums or singles with tracks and audio links."],
+    ["Set up the shop", "/crm/shop-categories/new", "Create a category first, then products."],
+    ["Add pictures", "/crm/photo-categories/new", "Create a gallery, then photos."],
+    ["Add social networks", "/crm/socials/new", "Then posts for each network."],
+    ["Write news", "/crm/posts/new?section=news", "News, blog or artist timeline posts."]
+  ];
+  return (
+    <section className="border border-neutral-900 bg-neutral-900 p-5 text-white sm:p-8">
+      <p className="text-2xs font-bold uppercase tracking-[0.3em] text-pmred-light">Fresh start</p>
+      <h2 className="mt-2 text-2xl font-black uppercase tracking-tight">The site is empty</h2>
+      <p className="mt-2 max-w-2xl text-sm leading-6 text-neutral-300">
+        Start with an artist, then add their content. Or bring back the demo from{" "}
+        <Link href="/crm/settings" className="font-bold text-white underline">
+          Settings → Reset to demo data
+        </Link>
+        .
+      </p>
+      <ol className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+        {steps.map(([title, href, text], index) => (
+          <li key={href}>
+            <Link
+              href={href}
+              className="flex h-full gap-3 border border-white/15 p-4 transition hover:border-pmred-light"
+            >
+              <span className="text-lg font-black text-pmred-light">{index + 1}</span>
+              <span className="min-w-0">
+                <span className="block text-xs font-extrabold uppercase tracking-widest">
+                  {title}
+                </span>
+                <span className="mt-1 block text-xs leading-5 text-neutral-400">{text}</span>
+              </span>
+            </Link>
+          </li>
+        ))}
+      </ol>
+    </section>
+  );
+}
+
 function ListLink({ href, children }) {
   return (
     <li>
@@ -79,7 +126,9 @@ function describeAudit(entry) {
     case "placement":
       return `${detail.enabled ? "Showed" : "Hid"} ${entry.entity} ${entry.entity_id} ${detail.enabled ? "on" : "from"} ${detail.placement}`;
     case "reset":
-      return `Reset ${detail.scope || ""} data`;
+      return `Reset ${detail.scope === "all" ? "everything" : "content"} to the demo data`;
+    case "clear":
+      return `Cleared ${detail.scope === "all" ? "everything" : "all content"}`;
     case "login":
       return entry.entity === "crm" || entry.actor.startsWith("admin:")
         ? "Signed in to the CRM"
@@ -159,6 +208,16 @@ export default function Dashboard() {
       {!data && !error && <Spinner />}
       {data && (
         <div className="flex flex-col gap-6">
+          {[
+            "artists",
+            "albums",
+            "videos",
+            "events",
+            "products",
+            "photos",
+            "posts",
+            "social_posts"
+          ].every((key) => !counts[key]) && <GettingStarted />}
           <section
             aria-label="Totals"
             className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-6"

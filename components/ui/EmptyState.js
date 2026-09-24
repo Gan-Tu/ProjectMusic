@@ -11,11 +11,13 @@ export default function EmptyState({ title, children, action, dark = false, clas
         className
       )}
     >
-      <h2 className="text-sm font-extrabold uppercase tracking-widest">{title}</h2>
+      <h2 className="max-w-full text-sm font-extrabold uppercase tracking-widest wrap-anywhere">
+        {title}
+      </h2>
       {children && (
         <p
           className={classNames(
-            "mt-3 max-w-md text-sm leading-relaxed",
+            "mt-3 max-w-md text-sm leading-relaxed wrap-anywhere",
             dark ? "text-neutral-400" : "text-neutral-500"
           )}
         >

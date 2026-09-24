@@ -3,6 +3,7 @@ import { ArrowDownIcon, ArrowUpIcon, XMarkIcon } from "@heroicons/react/20/solid
 import { classNames } from "../../lib/format";
 import { useOptions } from "./api";
 import { SELECT, Thumb } from "./ui";
+import { MissingRef } from "./FieldInput";
 
 const SMALL_BUTTON =
   "flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-neutral-400 transition hover:bg-neutral-100 hover:text-pmred disabled:opacity-30 sm:h-8 sm:w-8";
@@ -96,6 +97,7 @@ export default function OrderedPicker({ type, value, onChange, addLabel = "Addâ€
           </option>
         ))}
       </select>
+      {Array.isArray(options) && options.length === 0 && <MissingRef type={type} />}
     </div>
   );
 }

@@ -27,6 +27,26 @@ import {
 
 const GRID_ENTITIES = new Set(["albums", "photos", "products", "videos", "artists"]);
 
+// What shows up in an empty list, and where it comes from.
+const EMPTY_HINTS = {
+  artists:
+    "Artists are the heart of the site: each one gets a page with their music, videos, events and merch.",
+  albums: "Albums and singles with their tracks feed the music pages and players.",
+  videos: "Add YouTube / Vimeo links or video files for the videos page.",
+  events: "Shows and parties for the events calendar, with tickets and line-ups.",
+  products: "Merch, digital products and tickets for the shop. Create a shop category first.",
+  product_categories: "Categories group the shop (T-shirts, Vinyl, Tickets…). Products need one.",
+  photos: "Photos for the pictures galleries and artist pages.",
+  photo_categories: "Galleries on the pictures page (Studio, Live…).",
+  posts: "News, blog and artist timeline posts.",
+  social_networks: "The networks on the socials page (Instagram, YouTube…). Social posts need one.",
+  social_posts: "Posts shown on each social network page. Create a social network first.",
+  comments: "Comments members leave on albums, videos, events and posts show up here.",
+  members: "Members appear here when people sign up on the site.",
+  orders: "Orders appear here when members check out.",
+  inbox: "Contact and feedback messages, newsletter, text and volunteer sign-ups arrive here."
+};
+
 // URL names of list filters that would clash with route params (/crm/[section]).
 const URL_KEYS = { section: "post_section" };
 const urlKey = (key) => URL_KEYS[key] || key;
@@ -268,9 +288,29 @@ export default function EntityListView({
       {loading && !data ? (
         <Spinner />
       ) : rows.length === 0 ? (
-        <EmptyState title={`No ${def.plural.toLowerCase()} found`}>
-          {emptyText || (query || status || placement ? "Try other filters." : null)}
-        </EmptyState>
+        (() => {
+          const filtered = Boolean(query || status || placement || Object.keys(filters).length);
+          return (
+            <EmptyState
+              title={
+                filtered
+                  ? `No ${def.plural.toLowerCase()} match`
+                  : `No ${def.noun || def.plural.toLowerCase()} yet`
+              }
+            >
+              <p>
+                {filtered
+                  ? "Try other filters or clear the search."
+                  : emptyText || EMPTY_HINTS[entity]}
+              </p>
+              {!filtered && canCreate && (
+                <Button href={createHref || `${crmPath(entity)}/new`} size="md" className="mt-4">
+                  <PlusIcon className="h-4 w-4" /> Create {def.label.toLowerCase()}
+                </Button>
+              )}
+            </EmptyState>
+          );
+        })()
       ) : (
         <div className={classNames(loading && "opacity-60 transition-opacity")}>
           <p

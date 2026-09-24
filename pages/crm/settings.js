@@ -223,6 +223,85 @@ function ResetCard({ onReset }) {
   );
 }
 
+function ClearCard({ onCleared }) {
+  const [scope, setScope] = useState("content");
+  const [confirm, setConfirm] = useState("");
+  const [busy, setBusy] = useState(false);
+  async function clear(event) {
+    event.preventDefault();
+    setBusy(true);
+    const pending = toast.loading("Clearing data…");
+    try {
+      const result = await crmFetch("/api/crm/clear", { method: "POST", body: { scope, confirm } });
+      const total = Object.values(result.counts || {}).reduce((sum, n) => sum + n, 0);
+      toast.success(`Cleared ${total} rows. The site is empty now.`, { id: pending });
+      setConfirm("");
+      onCleared();
+    } catch (error) {
+      toast.error(error.message, { id: pending });
+    } finally {
+      setBusy(false);
+    }
+  }
+  return (
+    <section className="border border-neutral-900 bg-neutral-900 text-white">
+      <header className="border-b border-white/10 px-5 py-4">
+        <h2 className="text-xs font-extrabold uppercase tracking-widest">Clear all data</h2>
+      </header>
+      <form onSubmit={clear} className="flex flex-col gap-4 p-5">
+        <p className="flex gap-2 text-sm leading-6 text-neutral-200">
+          <ExclamationTriangleIcon className="mt-1 h-4 w-4 shrink-0 text-pmred-light" />
+          Deletes everything to start fresh. This can&apos;t be undone — only &ldquo;Reset to demo
+          data&rdquo; brings content back (as the original demo, not your edits).
+        </p>
+        <div role="group" aria-label="What to clear" className="flex flex-wrap gap-2">
+          {[
+            { value: "content", label: "Content only" },
+            { value: "all", label: "Everything" }
+          ].map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              aria-pressed={scope === option.value}
+              onClick={() => setScope(option.value)}
+              className={classNames(
+                "rounded-full border px-4 py-2.5 text-2xs font-bold uppercase tracking-wider transition-colors sm:py-1.5",
+                scope === option.value
+                  ? "border-pmred bg-pmred text-white"
+                  : "border-white/30 text-neutral-300 hover:border-white hover:text-white"
+              )}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+        <p className="text-xs leading-5 text-neutral-400">
+          {scope === "content"
+            ? "Artists, music, videos, events, the shop (with categories), pictures, posts, socials and comments. Members, orders, the inbox and settings stay."
+            : "All content plus every member (the demo account too), their sessions, orders, credit history and the inbox. Your admin session stays."}
+        </p>
+        <label htmlFor="clear-confirm" className="flex flex-col gap-2">
+          <span className="text-2xs font-bold uppercase tracking-widest text-neutral-400">
+            Type &ldquo;CLEAR&rdquo; to confirm
+          </span>
+          <input
+            id="clear-confirm"
+            value={confirm}
+            onChange={(event) => setConfirm(event.target.value)}
+            autoComplete="off"
+            className="h-10 max-w-48 rounded-full border border-white/30 bg-transparent px-4 font-mono text-sm text-white focus:border-white focus:outline-none"
+          />
+        </label>
+        <div>
+          <Button type="submit" size="md" disabled={busy || confirm !== "CLEAR"}>
+            {busy ? "Clearing…" : "Clear all data"}
+          </Button>
+        </div>
+      </form>
+    </section>
+  );
+}
+
 export default function SettingsPage() {
   const { data, error, reload, setData } = useCrmData("/api/crm/settings");
   const settings = data?.settings;
@@ -243,6 +322,7 @@ export default function SettingsPage() {
         <div className="flex flex-col gap-6">
           <RefreshCard />
           <ResetCard onReset={reload} />
+          <ClearCard onCleared={reload} />
         </div>
       </div>
     </CrmLayout>

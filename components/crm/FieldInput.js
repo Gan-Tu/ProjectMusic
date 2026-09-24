@@ -485,6 +485,35 @@ function ReadonlyValue({ field, value }) {
   );
 }
 
+// Where to create the record a select points to (shown when there are none yet).
+const CREATE_REF = {
+  artists: { href: "/crm/artists/new", label: "an artist" },
+  albums: { href: "/crm/music/new", label: "an album" },
+  events: { href: "/crm/events/new", label: "an event" },
+  product_categories: { href: "/crm/shop-categories/new", label: "a shop category" },
+  photo_categories: { href: "/crm/photo-categories/new", label: "a photo category" },
+  social_networks: { href: "/crm/socials/new", label: "a social network" }
+};
+
+export function MissingRef({ type, required }) {
+  const target = CREATE_REF[type];
+  if (!target) return null;
+  return (
+    <p className="text-xs leading-5 text-neutral-500">
+      {required ? "Nothing to choose from yet — " : "None yet — "}
+      <a
+        href={target.href}
+        target="_blank"
+        rel="noreferrer"
+        className="font-bold text-pmred-dark hover:underline"
+      >
+        create {target.label}
+      </a>
+      {required ? " first (opens in a new tab), then come back." : " (opens in a new tab)."}
+    </p>
+  );
+}
+
 function RefSelect({ id, field, value, onChange }) {
   const options = useOptions([field.ref])[field.ref];
   const list = useMemo(() => {
@@ -494,23 +523,27 @@ function RefSelect({ id, field, value, onChange }) {
       ? [{ value, label: value }, ...items]
       : items;
   }, [options, value]);
+  const none = Array.isArray(options) && options.length === 0;
   return (
-    <select
-      id={id}
-      value={value || ""}
-      onChange={(event) => onChange(event.target.value || null)}
-      required={field.required}
-      className={SELECT}
-    >
-      <option value="">{field.required ? "Choose…" : "— None —"}</option>
-      {list.map((option) => (
-        <option key={option.value} value={option.value}>
-          {option.label}
-          {option.hint ? ` — ${option.hint}` : ""}
-          {option.status === "draft" ? " (draft)" : ""}
-        </option>
-      ))}
-    </select>
+    <>
+      <select
+        id={id}
+        value={value || ""}
+        onChange={(event) => onChange(event.target.value || null)}
+        required={field.required}
+        className={SELECT}
+      >
+        <option value="">{field.required ? "Choose…" : "— None —"}</option>
+        {list.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+            {option.hint ? ` — ${option.hint}` : ""}
+            {option.status === "draft" ? " (draft)" : ""}
+          </option>
+        ))}
+      </select>
+      {none && <MissingRef type={field.ref} required={field.required} />}
+    </>
   );
 }
 

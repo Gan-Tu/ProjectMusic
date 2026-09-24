@@ -134,11 +134,11 @@ export default function ArtistsHome({ artistsData }) {
               <div className="flex w-1/2 min-w-0 shrink-0 flex-col items-center justify-center px-3 py-5 text-center sm:px-6">
                 <Link
                   href={`/artists/${artist.id}`}
-                  className="w-full cursor-pointer border-b border-neutral-200 pb-3 text-xs font-extrabold uppercase tracking-wide hover:text-pmred"
+                  className="w-full cursor-pointer border-b border-neutral-200 pb-3 text-xs font-extrabold uppercase tracking-wide wrap-anywhere hover:text-pmred"
                 >
                   {artist.name}
                 </Link>
-                <p className="mt-3 text-2xs uppercase tracking-wide text-neutral-500">
+                <p className="mt-3 max-w-full text-2xs uppercase tracking-wide text-neutral-500 wrap-anywhere">
                   {artist.location}
                 </p>
                 <button
@@ -165,7 +165,7 @@ export default function ArtistsHome({ artistsData }) {
               >
                 <Link
                   href={`/artists/${artist.id}`}
-                  className="cursor-pointer text-xs font-bold uppercase tracking-wide hover:text-pmred"
+                  className="min-w-0 cursor-pointer text-xs font-bold uppercase tracking-wide wrap-anywhere hover:text-pmred"
                 >
                   {artist.name}
                 </Link>

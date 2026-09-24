@@ -16,7 +16,7 @@ export default function TopArtists({ artists }) {
             <span className="font-normal text-pmred-light">{pad2(index + 1)}</span>
             <Link
               href={`/artists/${artist.id}`}
-              className="cursor-pointer text-neutral-300 transition-colors hover:text-white"
+              className="min-w-0 cursor-pointer text-neutral-300 transition-colors wrap-anywhere hover:text-white"
             >
               {artist.name}
             </Link>

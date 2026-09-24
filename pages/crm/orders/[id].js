@@ -100,13 +100,13 @@ export default function OrderPage({ id }) {
       {order && (
         <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_22rem]">
           <Card title={`Items (${(order.items || []).length})`} bodyClassName="overflow-x-auto p-0">
-            <table className="w-full min-w-[36rem] text-sm">
+            <table className="w-full text-sm sm:min-w-[36rem]">
               <thead className="border-b border-neutral-100">
                 <tr>
                   <th className={TH}>Item</th>
-                  <th className={classNames(TH, "text-right")}>Qty</th>
-                  <th className={classNames(TH, "text-right")}>Each</th>
-                  <th className={classNames(TH, "text-right")}>Total</th>
+                  <th className={classNames(TH, "text-right max-sm:hidden")}>Qty</th>
+                  <th className={classNames(TH, "text-right max-sm:hidden")}>Each</th>
+                  <th className={classNames(TH, "text-right max-sm:hidden")}>Total</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-neutral-100">
@@ -120,6 +120,8 @@ export default function OrderPage({ id }) {
                       : credits
                         ? `₵${formatCount(value)}`
                         : formatMoney(value);
+                  const total =
+                    each === null || each === undefined ? "—" : money(Number(each) * qty);
                   return (
                     <tr key={item.key || `${item.id}-${index}`}>
                       <td className={TD}>
@@ -131,13 +133,25 @@ export default function OrderPage({ id }) {
                               <p className="text-xs text-neutral-500">{item.subtitle}</p>
                             )}
                             <ItemDetails item={item} />
+                            <p className="mt-1.5 text-xs tabular-nums text-neutral-600 sm:hidden">
+                              {qty} × {money(each)} = <strong>{total}</strong>
+                            </p>
                           </div>
                         </div>
                       </td>
-                      <td className={classNames(TD, "text-right tabular-nums")}>{qty}</td>
-                      <td className={classNames(TD, "text-right tabular-nums")}>{money(each)}</td>
-                      <td className={classNames(TD, "text-right font-bold tabular-nums")}>
-                        {each === null || each === undefined ? "—" : money(Number(each) * qty)}
+                      <td className={classNames(TD, "text-right tabular-nums max-sm:hidden")}>
+                        {qty}
+                      </td>
+                      <td className={classNames(TD, "text-right tabular-nums max-sm:hidden")}>
+                        {money(each)}
+                      </td>
+                      <td
+                        className={classNames(
+                          TD,
+                          "text-right font-bold tabular-nums max-sm:hidden"
+                        )}
+                      >
+                        {total}
                       </td>
                     </tr>
                   );
@@ -145,19 +159,17 @@ export default function OrderPage({ id }) {
               </tbody>
               <tfoot className="border-t border-neutral-200">
                 <tr>
-                  <td
-                    className={classNames(
-                      TD,
-                      "text-2xs font-bold uppercase tracking-widest text-neutral-500"
-                    )}
-                    colSpan={3}
-                  >
-                    Charged ({order.method})
-                  </td>
-                  <td className={classNames(TD, "text-right font-extrabold tabular-nums")}>
-                    {order.method === "credits"
-                      ? `₵${formatCount(order.total_credits)}`
-                      : formatMoney(order.total_usd)}
+                  <td className={TD} colSpan={4}>
+                    <div className="flex items-baseline justify-between gap-3">
+                      <span className="text-2xs font-bold uppercase tracking-widest text-neutral-500">
+                        Charged ({order.method})
+                      </span>
+                      <span className="font-extrabold tabular-nums">
+                        {order.method === "credits"
+                          ? `₵${formatCount(order.total_credits)}`
+                          : formatMoney(order.total_usd)}
+                      </span>
+                    </div>
                   </td>
                 </tr>
               </tfoot>

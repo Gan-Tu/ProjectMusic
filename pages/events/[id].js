@@ -34,7 +34,7 @@ export default function EventDetail({ event }) {
             ← All events
           </Link>
           <p className="mt-8 text-xs font-bold uppercase tracking-[0.2em] text-pmred">
-            Projct Music presents · {event.city}
+            Projct Music presents{event.city && ` · ${event.city}`}
           </p>
           <h1 className="mt-3 max-w-3xl text-4xl font-extrabold uppercase leading-none tracking-tight wrap-anywhere sm:text-6xl">
             {event.title}
@@ -58,10 +58,14 @@ export default function EventDetail({ event }) {
             <InterestedButton event={event} className="text-pmred" />
             <CalendarDownload event={event} />
           </div>
-          <h2 className="mt-8 text-xs font-bold uppercase tracking-[0.2em]">The night</h2>
-          <p className="mt-4 max-w-xl text-sm font-light leading-7 text-neutral-500">
-            {event.description}
-          </p>
+          {event.description && (
+            <>
+              <h2 className="mt-8 text-xs font-bold uppercase tracking-[0.2em]">The night</h2>
+              <p className="mt-4 max-w-xl text-sm font-light leading-7 text-neutral-500 wrap-anywhere">
+                {event.description}
+              </p>
+            </>
+          )}
           {event.lineup.length > 0 && (
             <>
               <h2 className="mb-5 mt-10 text-xs font-bold uppercase tracking-[0.2em]">

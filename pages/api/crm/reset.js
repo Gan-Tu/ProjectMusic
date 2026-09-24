@@ -2,11 +2,7 @@ import { apiHandler, HttpError, requireAdmin } from "../../../lib/server/http";
 import { applySeed } from "../../../lib/server/seed";
 import { audit } from "../../../lib/server/crm/engine";
 import { sql } from "../../../lib/server/db";
-import {
-  allDetailPaths,
-  allPublicListPaths,
-  revalidatePaths
-} from "../../../lib/server/revalidate";
+import { allDetailPaths, revalidateAfterBulkChange } from "../../../lib/server/revalidate";
 
 export const config = { maxDuration: 60 };
 
@@ -30,26 +26,7 @@ export default apiHandler({
       scope,
       counts: result.counts
     });
-    const after = await allDetailPaths();
-    const had = new Set(before);
-    const has = new Set(after);
-    const removed = before.filter((path) => !has.has(path));
-    const added = after.filter((path) => !had.has(path));
-    const unchanged = after.filter((path) => had.has(path));
-    const queue = [...(await allPublicListPaths()), ...removed, ...added, ...unchanged];
-    const revalidation = await revalidatePaths(res, queue, {
-      concurrency: 6,
-      deadline: started + 50000 // maxDuration is 60 s
-    });
-    res.json({
-      ...result,
-      revalidation: {
-        skipped: revalidation.skipped,
-        revalidated: revalidation.revalidated.length,
-        failed: revalidation.failed,
-        deferred: revalidation.deferred.length,
-        removedPaths: removed.length
-      }
-    });
+    const revalidation = await revalidateAfterBulkChange(res, before, started);
+    res.json({ ...result, revalidation });
   }
 });
