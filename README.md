@@ -168,5 +168,5 @@ public/           images (including crops from the design mock)
   Settings → **Reset to demo data** (or `npm run db:seed`) restores it.
 - Payments are simulated: card checkouts always succeed, credits are real balances on
   the member's account. Messages, likes, follows, playlists and notifications stay in the
-  browser; **Reset demo data** in the "…" menu or in Settings resets that browser state
-  (not the database).
+  browser; Settings → **Clear data on this device** clears that browser state (not the
+  database).

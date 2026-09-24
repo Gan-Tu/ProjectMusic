@@ -2,7 +2,6 @@ import { useRouter } from "next/router";
 import { CloseButton, Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
 import {
   ArrowLeftEndOnRectangleIcon,
-  ArrowPathIcon,
   ArrowRightStartOnRectangleIcon,
   ChatBubbleLeftRightIcon,
   Cog6ToothIcon,
@@ -40,7 +39,6 @@ export default function SettingsMenu() {
         { label: "Settings", Icon: Cog6ToothIcon, run: () => openModal("settings") },
         { label: "Playlist", Icon: QueueListIcon, run: () => openModal("playlist") },
         { label: "Quick Navigation", Icon: Squares2X2Icon, run: () => openModal("quickNav") },
-        { label: "Reset Demo Data", Icon: ArrowPathIcon, run: () => openModal("reset") },
         {
           label: "Logout",
           Icon: ArrowRightStartOnRectangleIcon,
@@ -63,8 +61,7 @@ export default function SettingsMenu() {
           run: () => router.push(loginHref(router.asPath, "/signup"))
         },
         { label: "Cart", Icon: ShoppingCartIcon, run: () => openModal("cart") },
-        { label: "Quick Navigation", Icon: Squares2X2Icon, run: () => openModal("quickNav") },
-        { label: "Reset Demo Data", Icon: ArrowPathIcon, run: () => openModal("reset") }
+        { label: "Quick Navigation", Icon: Squares2X2Icon, run: () => openModal("quickNav") }
       ];
 
   return (

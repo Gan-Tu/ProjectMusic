@@ -340,7 +340,7 @@ export default function SettingsModal({ open, onClose, tab: initialTab = "genera
           onClick={() => openModal("reset")}
           className="text-2xs font-bold uppercase tracking-wider text-neutral-500 transition hover:text-pmred"
         >
-          Reset demo data
+          Clear data on this device
         </button>
       }
       footer={

@@ -1,6 +1,6 @@
 import { Component } from "react";
 
-// Clears everything the demo saved in this browser (store, player, session).
+// Clears everything the site saved in this browser (store, player, session).
 function clearSavedData() {
   try {
     Object.keys(window.localStorage)
@@ -11,8 +11,8 @@ function clearSavedData() {
   }
 }
 
-// Last-resort screen: if rendering crashes, offer a reload or a reset of the saved
-// demo data instead of leaving a blank page.
+// Last-resort screen: if rendering crashes, offer a reload or clearing the data saved
+// in this browser instead of leaving a blank page.
 export default class ErrorBoundary extends Component {
   state = { error: null };
 
@@ -34,7 +34,7 @@ export default class ErrorBoundary extends Component {
         <h1 className="text-xl font-bold">Something went wrong</h1>
         <p className="max-w-md text-sm text-neutral-600">
           This page couldn&apos;t be displayed. Reloading usually fixes it. If it keeps happening,
-          reset the demo data saved in this browser.
+          clear the data this site saved in your browser (your account isn&apos;t affected).
         </p>
         <div className="flex flex-wrap justify-center gap-3">
           <button
@@ -52,7 +52,7 @@ export default class ErrorBoundary extends Component {
             }}
             className="rounded-full border-2 border-pmred bg-pmred px-6 py-2 text-xs font-semibold uppercase tracking-wider text-white hover:border-pmred-dark hover:bg-pmred-dark"
           >
-            Reset demo data
+            Clear saved data
           </button>
         </div>
       </main>

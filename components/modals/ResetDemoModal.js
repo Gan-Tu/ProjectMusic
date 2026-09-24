@@ -1,27 +1,27 @@
 import toast from "react-hot-toast";
-import { ArrowPathIcon } from "@heroicons/react/24/outline";
+import { TrashIcon } from "@heroicons/react/24/outline";
 import Modal from "../ui/Modal";
 import Button from "../ui/Button";
 import { useStore } from "../../lib/store";
 import { usePlayer } from "../../lib/player";
 
-const WHAT_RESETS = [
+const WHAT_CLEARS = [
   "Cart, likes, follows and RSVPs",
   "Chats, notifications and feedback",
   "Playlist, play queue and player settings",
   "Settings and sign-up preferences"
 ];
 
-// Puts what this browser saved for the demo back to its original state. Accounts,
-// orders, credits and comments live on the server and aren't touched.
+// Clears what this browser saved (the site's browser-local state). Accounts, orders,
+// credits and comments live on the server and aren't touched.
 export default function ResetDemoModal({ open, onClose }) {
   const { actions } = useStore();
   const player = usePlayer();
 
-  function reset() {
+  function clear() {
     actions.resetDemo();
     player.reset();
-    toast.success("This browser's demo data was reset");
+    toast.success("Cleared the data saved on this device");
     onClose();
   }
 
@@ -29,26 +29,26 @@ export default function ResetDemoModal({ open, onClose }) {
     <Modal
       open={open}
       onClose={onClose}
-      title="Reset demo data"
+      title="Clear data on this device"
       size="md"
       footer={
         <>
           <Button variant="muted" size="xs" onClick={onClose}>
             Cancel
           </Button>
-          <Button size="sm" onClick={reset}>
-            <ArrowPathIcon className="h-4 w-4" />
-            Reset this browser
+          <Button size="sm" onClick={clear}>
+            <TrashIcon className="h-4 w-4" />
+            Clear this device
           </Button>
         </>
       }
     >
       <p className="text-sm text-neutral-600">
-        This clears what this browser saved while you explored the demo and puts it back the way it
-        was on your first visit. It can&apos;t be undone.
+        This removes what this browser saved while you used the site and starts it fresh. It
+        can&apos;t be undone.
       </p>
       <ul className="mt-5 space-y-2 text-sm text-neutral-500">
-        {WHAT_RESETS.map((item) => (
+        {WHAT_CLEARS.map((item) => (
           <li key={item} className="flex gap-3">
             <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-pmred" />
             {item}
