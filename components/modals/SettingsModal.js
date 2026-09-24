@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
 import toast from "react-hot-toast";
 import Modal from "../ui/Modal";
@@ -116,6 +116,8 @@ export default function SettingsModal({ open, onClose, tab: initialTab = "genera
   }));
   const [editing, setEditing] = useState(null);
   const [profileError, setProfileError] = useState("");
+  const [avatarBusy, setAvatarBusy] = useState(false); // a chosen photo is being resized
+  const avatarJob = useRef(0); // only the latest chosen photo counts
   // What the pop-up opened with, to save only the fields changed here.
   const [initial] = useState(() => ({ settings: { ...draft }, profile: { ...profile } }));
   const [blockName, setBlockName] = useState("");
@@ -124,6 +126,7 @@ export default function SettingsModal({ open, onClose, tab: initialTab = "genera
   const toggleEdit = (field) => setEditing((current) => (current === field ? null : field));
 
   async function accept() {
+    if (avatarBusy) return;
     // Nothing is saved until the profile fields are valid.
     const username = profile.username.trim();
     const email = profile.email.trim();
@@ -164,11 +167,15 @@ export default function SettingsModal({ open, onClose, tab: initialTab = "genera
   async function onAvatar(e) {
     const file = e.target.files?.[0];
     if (!file) return;
+    const job = ++avatarJob.current;
+    setAvatarBusy(true);
     try {
       const avatar = await readAvatar(file);
-      setProfile((p) => ({ ...p, avatar }));
+      if (job === avatarJob.current) setProfile((p) => ({ ...p, avatar }));
     } catch {
-      toast.error("That image couldn't be read.");
+      if (job === avatarJob.current) toast.error("That image couldn't be read.");
+    } finally {
+      if (job === avatarJob.current) setAvatarBusy(false);
     }
   }
 
@@ -218,8 +225,8 @@ export default function SettingsModal({ open, onClose, tab: initialTab = "genera
           <Button variant="muted" size="xs" onClick={onClose}>
             Cancel
           </Button>
-          <Button size="sm" onClick={accept}>
-            Accept
+          <Button size="sm" onClick={accept} disabled={avatarBusy}>
+            {avatarBusy ? "Processing photo…" : "Accept"}
           </Button>
         </>
       }

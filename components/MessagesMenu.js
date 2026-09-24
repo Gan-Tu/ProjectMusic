@@ -3,7 +3,8 @@ import { CloseButton, Popover, PopoverButton, PopoverPanel } from "@headlessui/r
 import { EnvelopeIcon } from "@heroicons/react/24/outline";
 import { useStore, visibleChats } from "../lib/store";
 import { useUI } from "../lib/ui";
-import { classNames } from "../lib/format";
+import { chatTime, classNames } from "../lib/format";
+import { useNow } from "../lib/useNow";
 
 export function lastMessage(chat) {
   return chat.messages[chat.messages.length - 1];
@@ -15,6 +16,7 @@ export default function MessagesMenu() {
   const { openModal } = useUI();
   const chats = visibleChats(state);
   const unread = chats.reduce((sum, c) => sum + c.unread, 0);
+  const now = useNow();
 
   function openChat(chatId) {
     actions.markChatRead(chatId);
@@ -76,7 +78,7 @@ export default function MessagesMenu() {
                         : "No messages yet"}
                     </span>
                     <span className="text-2xs font-semibold uppercase tracking-wider text-neutral-500 group-hover:text-white/80">
-                      {last ? last.time || "Just now" : "New"}
+                      {last ? last.time || chatTime(last.at, now) || "Just now" : "New"}
                     </span>
                   </span>
                 </CloseButton>

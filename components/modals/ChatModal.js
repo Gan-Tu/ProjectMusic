@@ -11,7 +11,8 @@ import Modal from "../ui/Modal";
 import { TabList, tabPanelProps } from "../ui/Tabs";
 import { isHiddenContact, useStore, visibleChats } from "../../lib/store";
 import { useMediaQuery } from "../../lib/useMediaQuery";
-import { classNames } from "../../lib/format";
+import { chatTime, classNames } from "../../lib/format";
+import { useNow } from "../../lib/useNow";
 import { getArtistHomePageData } from "../../utils/getFakeArtistsData";
 
 function Avatar({ src, online, size = "h-10 w-10" }) {
@@ -36,6 +37,7 @@ function Avatar({ src, online, size = "h-10 w-10" }) {
 // the thread on the right (stacked on small screens).
 export default function ChatModal({ open, onClose, chatId: initialChatId }) {
   const { state, actions } = useStore();
+  const now = useNow(); // seeded messages carry a display `time`; sent ones an ISO `at`
   const [tab, setTab] = useState("chats");
   const [activeId, setActiveId] = useState(initialChatId || null);
   const [query, setQuery] = useState("");
@@ -169,7 +171,7 @@ export default function ChatModal({ open, onClose, chatId: initialChatId }) {
                                 selected ? "text-white" : "text-neutral-500"
                               )}
                             >
-                              {last?.time || (last ? "Now" : "")}
+                              {last ? last.time || chatTime(last.at, now) || "Now" : ""}
                             </span>
                           </span>
                           <span
@@ -302,14 +304,14 @@ export default function ChatModal({ open, onClose, chatId: initialChatId }) {
                       )}
                     >
                       {m.text}
-                      {m.time && (
+                      {(m.time || m.at) && (
                         <span
                           className={classNames(
                             "mt-1 block text-2xs",
                             m.from === "me" ? "text-white" : "text-neutral-500"
                           )}
                         >
-                          {m.time}
+                          {m.time || chatTime(m.at, now)}
                         </span>
                       )}
                     </div>
