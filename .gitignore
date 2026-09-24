@@ -37,3 +37,7 @@ next-env.d.ts
 
 # custom data
 tmpData
+.env*
+
+# parallel dev build folders
+/.next-*/

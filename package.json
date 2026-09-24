@@ -9,7 +9,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "db:migrate": "node scripts/db-migrate.mjs",
+    "db:seed": "tsx scripts/db-seed.mjs",
+    "db:reset": "npm run db:migrate && npm run db:seed"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^7.3.1",
@@ -18,6 +21,7 @@
     "@fortawesome/react-fontawesome": "^3.5.0",
     "@headlessui/react": "^2.2.10",
     "@heroicons/react": "^2.2.0",
+    "@neondatabase/serverless": "^1.1.0",
     "next": "16.3.6",
     "react": "19.3.0",
     "react-dom": "19.3.0",
@@ -28,6 +32,7 @@
     "eslint": "^9.39.5",
     "eslint-config-next": "16.3.6",
     "postcss": "^8.5.28",
-    "tailwindcss": "^4.3.3"
+    "tailwindcss": "^4.3.3",
+    "tsx": "^4.23.15"
   }
 }
