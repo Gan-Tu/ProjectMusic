@@ -15,10 +15,10 @@ Live: https://project-music.tugan.app
   tracklists, likes, comments, "buy" (stream / stream + download) and add-to-playlist.
 - **Global audio player**: queue, play/pause, seek with buffering, previous/next,
   shuffle, repeat (all/one), volume/mute, now-playing art. Playback continues across page
-  navigation, the session survives reloads, and it integrates with OS media keys (Media
-  Session API).
-- **Videos**: video stage with poster, player, credits panel, carousel, likes, share and
-  comments.
+  navigation, the session (including the playback position) survives reloads, and it
+  integrates with OS media keys (Media Session API).
+- **Videos**: video stage with poster, player (with captions), credits panel, carousel,
+  likes, share and comments.
 - **Artists and profile**: searchable A–Z artist directory with follows, artist pages with
   music, pictures, timeline, events and bio, plus the user's profile (playlist, liked music,
   purchases, rewards, statistics, feedback).
@@ -53,6 +53,9 @@ Live: https://project-music.tugan.app
 | <kbd>M</kbd> | Mute |
 | <kbd>?</kbd> | Quick navigation |
 | <kbd>Esc</kbd> | Close menus and pop-ups |
+
+The single-key shortcuts (letters, numbers, <kbd>?</kbd>) can be turned off in
+Settings → General.
 
 ## Tech stack
 
@@ -95,6 +98,8 @@ public/           images (including crops from the design mock)
   projctmusic.com S3 bucket, and extra imagery was cropped from the design mock or comes
   from picsum.photos placeholders.
 - Audio uses the SoundHelix sample MP3s and video uses public sample clips (W3C, MDN,
-  test-videos.co.uk) until licensed media is available.
-- Purchases, credits and messages are simulated. Clear the site's local storage to reset
-  the demo.
+  test-videos.co.uk) until licensed media is available. Clips with sound have English
+  captions in `public/captions`.
+- Purchases, credits and messages are simulated and saved in this browser (kept in step
+  across open tabs). **Reset demo data** in the "…" menu or in Settings puts everything
+  back to the original demo state.
