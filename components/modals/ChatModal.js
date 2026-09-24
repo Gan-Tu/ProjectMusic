@@ -8,7 +8,7 @@ import {
   TrashIcon
 } from "@heroicons/react/24/outline";
 import Modal from "../ui/Modal";
-import { useStore } from "../../lib/store";
+import { useStore, visibleChats } from "../../lib/store";
 import { classNames } from "../../lib/format";
 import { getArtistHomePageData } from "../../utils/getFakeArtistsData";
 
@@ -41,8 +41,7 @@ export default function ChatModal({ open, onClose, chatId: initialChatId }) {
   const [confirmDelete, setConfirmDelete] = useState(null);
   const threadRef = useRef(null);
 
-  const blocked = state.settings.hideBlockedMessages ? state.settings.blockedUsers : [];
-  const chats = state.chats.filter((c) => !blocked.includes(c.name));
+  const chats = visibleChats(state);
   const active = chats.find((c) => c.id === activeId) || null;
   const friends = useMemo(() => getArtistHomePageData().slice(0, 24), []);
 

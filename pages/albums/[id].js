@@ -63,7 +63,7 @@ export default function AlbumDetail({ album, tracks, more }) {
             <div className="my-6 flex flex-wrap gap-2">
               <Button
                 className="cursor-pointer"
-                onClick={() => player.playTrack(tracks[0], tracks)}
+                onClick={() => player.playQueue(tracks)}
               >
                 Play all
               </Button>

@@ -33,6 +33,10 @@ export default function Profile({ albums, topArtists, photos, videos }) {
   const { state } = useStore();
   const { openModal } = useUI();
   const { tab } = usePeopleTab(TABS, "overview");
+  const user = session.user;
+  // An uploaded photo replaces the default portrait from the mock.
+  const portrait =
+    user?.avatar && user.avatar !== DEFAULT_USER.avatar ? user.avatar : "/profile/nick-breton.webp";
   if (!session.user)
     return (
       <AppContainer title="Your profile" curMenu="Profile">
@@ -120,8 +124,9 @@ export default function Profile({ albums, topArtists, photos, videos }) {
           <div className="relative flex min-h-80 overflow-hidden sm:min-h-96">
             <div className="relative w-[38%] shrink-0 sm:w-[32%]">
               <Image
-                src="/profile/nick-breton.webp"
-                alt="Nick Breton portrait"
+                src={portrait}
+                alt={`${user?.name || "Nick Breton"} portrait`}
+                unoptimized={portrait.startsWith("data:")}
                 fill
                 priority
                 sizes="(max-width: 639px) 38vw, 25vw"

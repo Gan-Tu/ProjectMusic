@@ -31,7 +31,7 @@ export default function KeyboardShortcuts() {
   useEffect(() => {
     function onKeyDown(e) {
       if (!latest.current || e.defaultPrevented || e.metaKey || e.ctrlKey || e.altKey) return;
-      if (isTypingTarget(e.target)) return;
+      if (isTypingTarget(e.target) || e.target?.closest?.("video, audio")) return;
       const { player: p, ui: u, actions: a } = latest.current;
 
       if (e.key === "Escape" && u.megaMenu.open) {

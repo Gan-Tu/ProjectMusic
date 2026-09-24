@@ -217,7 +217,8 @@ const ARTICLE = {
 export function getSocialPage(network) {
   const profile = getSocialProfiles().find((item) => item.id === network);
   if (!profile) return null;
-  const images = photos();
+  // Namespace post ids per network: likes and comment threads are keyed by id.
+  const images = photos().map((post) => ({ ...post, id: `${network}-${post.id}` }));
   let content;
   switch (network) {
     case "instagram":

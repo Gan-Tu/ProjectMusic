@@ -115,7 +115,7 @@ export default function PlaylistDrawer({ open, onClose }) {
       ) : state.playlist.length ? (
         <>
           <div className="flex items-center gap-3 px-6 py-4">
-            <Button size="xs" onClick={() => player.playTrack(state.playlist[0], state.playlist)}>
+            <Button size="xs" onClick={() => player.playQueue(state.playlist)}>
               <PlayIcon className="h-3.5 w-3.5" /> Play all
             </Button>
             <Button
@@ -123,8 +123,10 @@ export default function PlaylistDrawer({ open, onClose }) {
               variant="outline"
               onClick={() => {
                 if (!player.shuffle) player.toggleShuffle();
-                const start = state.playlist[Math.floor(Math.random() * state.playlist.length)];
-                player.playTrack(start, state.playlist);
+                player.playQueue(
+                  state.playlist,
+                  Math.floor(Math.random() * state.playlist.length)
+                );
               }}
             >
               Shuffle

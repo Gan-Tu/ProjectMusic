@@ -76,7 +76,15 @@ export default function ArtistProfile({ artist, topArtists, albums, photos, even
               >
                 {following ? "Following" : "Follow"}
               </Button>
-              <Button className="cursor-pointer" variant="light" onClick={() => openModal("chat")}>
+              <Button
+                className="cursor-pointer"
+                variant="light"
+                onClick={() => {
+                  const chatId = `artist-${artist.id}`;
+                  actions.startChat({ id: chatId, name: artist.name, avatar: artist.imgUrl });
+                  openModal("chat", { chatId });
+                }}
+              >
                 Message
               </Button>
             </div>

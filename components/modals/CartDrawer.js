@@ -4,7 +4,7 @@ import { MinusIcon, PlusIcon, ShoppingCartIcon, TrashIcon } from "@heroicons/rea
 import toast from "react-hot-toast";
 import { Drawer } from "../ui/Modal";
 import Button from "../ui/Button";
-import { cartTotals, useStore } from "../../lib/store";
+import { cartTotals, MAX_QTY, useStore } from "../../lib/store";
 import { useUI } from "../../lib/ui";
 import { classNames, formatCredits, formatNumber, formatUSD } from "../../lib/format";
 
@@ -138,15 +138,14 @@ export default function CartDrawer({ open, onClose }) {
             <button
               type="button"
               onClick={() => {
-                const saved = state.cart;
-                actions.clearCart();
+                const undo = actions.clearCartWithUndo();
                 toast((t) => (
                   <span className="flex items-center gap-4">
                     Cart cleared
                     <button
                       type="button"
                       onClick={() => {
-                        saved.forEach((line) => actions.addToCart(line, line.qty));
+                        undo();
                         toast.dismiss(t.id);
                       }}
                       className="text-xs font-bold uppercase tracking-wider text-pmred"
@@ -205,6 +204,7 @@ export default function CartDrawer({ open, onClose }) {
                       <button
                         type="button"
                         aria-label="Increase quantity"
+                        disabled={line.qty >= MAX_QTY}
                         onClick={() => actions.updateCartQty(line.key, line.qty + 1)}
                         className="p-1.5 text-neutral-500 hover:text-pmred"
                       >

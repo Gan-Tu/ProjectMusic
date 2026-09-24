@@ -11,7 +11,7 @@ const WHAT_RESETS = [
   "Comments, likes, follows and RSVPs",
   "Chats, notifications and feedback",
   "Playlist, play queue and player settings",
-  "Settings, subscriptions and profile edits (you stay logged in as Nick)"
+  "Settings, subscriptions and profile edits (you'll be logged in as Nick)"
 ];
 
 // Puts the whole single-user demo back to its original state.
@@ -23,7 +23,7 @@ export default function ResetDemoModal({ open, onClose }) {
   function reset() {
     actions.resetDemo();
     player.reset();
-    dispatch({ type: "set_user", user: {} });
+    dispatch({ type: "reset" });
     toast.success("Demo data reset to the original state");
     onClose();
   }

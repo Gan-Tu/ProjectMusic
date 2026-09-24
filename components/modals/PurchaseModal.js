@@ -41,7 +41,7 @@ export default function PurchaseModal({ open, onClose, item }) {
     const result = actions.checkout(method, [line]);
     if (!result.ok) {
       toast.error(result.error);
-      if (method === "credits" && tier.credits > state.credits) openModal("credits");
+      if (method === "credits" && tier.credits * qty > state.credits) openModal("credits");
       return;
     }
     openModal("thankYou", { orderId: result.purchase.id });

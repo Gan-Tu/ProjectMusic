@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { CloseButton, Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
 import { EnvelopeIcon } from "@heroicons/react/24/outline";
-import { useStore } from "../lib/store";
+import { useStore, visibleChats } from "../lib/store";
 import { useUI } from "../lib/ui";
 import { classNames } from "../lib/format";
 
@@ -13,7 +13,8 @@ export function lastMessage(chat) {
 export default function MessagesMenu() {
   const { state, actions } = useStore();
   const { openModal } = useUI();
-  const unread = state.chats.reduce((sum, c) => sum + c.unread, 0);
+  const chats = visibleChats(state);
+  const unread = chats.reduce((sum, c) => sum + c.unread, 0);
 
   function openChat(chatId) {
     actions.markChatRead(chatId);
@@ -42,7 +43,7 @@ export default function MessagesMenu() {
           Messages
         </div>
         <ul className="max-h-[26rem] divide-y divide-neutral-200 overflow-y-auto">
-          {state.chats.map((chat) => {
+          {chats.map((chat) => {
             const last = lastMessage(chat);
             return (
               <li key={chat.id}>

@@ -38,7 +38,7 @@ function ProductDetail({ product, category, related }) {
     () => makeCartItem(product, { tier, size, color }),
     [product, tier, size, color]
   );
-  useCartCandidate(item);
+  useCartCandidate({ ...item, qty: quantity });
   const isDigital = product.kind === "digital";
 
   function addToCart() {

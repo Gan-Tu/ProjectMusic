@@ -227,7 +227,7 @@ function Playlist() {
     <>
       <Button
         className="mb-5 cursor-pointer"
-        onClick={() => player.playTrack(state.playlist[0], state.playlist)}
+        onClick={() => player.playQueue(state.playlist)}
       >
         <PlayIcon className="h-4 w-4" />
         Play all
