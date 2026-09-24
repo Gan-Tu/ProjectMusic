@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import toast from "react-hot-toast";
 import { HeartIcon } from "@heroicons/react/24/outline";
@@ -91,6 +91,20 @@ function CommentItem({
   const canDelete = loggedIn && (comment.mine || canModerate);
   const editing = mode === "edit" && canEdit;
   const confirming = mode === "confirm" && canDelete;
+
+  // Keep keyboard focus with the action: into the confirmation, and back to Edit or
+  // Delete when editing or confirming ends.
+  const editRef = useRef(null);
+  const deleteRef = useRef(null);
+  const confirmRef = useRef(null);
+  const previousMode = useRef(mode);
+  useEffect(() => {
+    const previous = previousMode.current;
+    previousMode.current = mode;
+    if (mode === "confirm") confirmRef.current?.focus();
+    else if (previous === "confirm") deleteRef.current?.focus();
+    else if (previous === "edit") editRef.current?.focus();
+  }, [mode]);
 
   function startEdit() {
     setDraft(comment.text);
@@ -201,7 +215,7 @@ function CommentItem({
             )}
           >
             {comment.mine ? "Delete this comment?" : "Remove this comment for everyone?"}
-            <ActionButton danger onClick={remove} autoFocus>
+            <ActionButton danger onClick={remove} ref={confirmRef}>
               {comment.mine ? "Delete" : "Remove"}
             </ActionButton>
             <ActionButton dark={dark} onClick={() => setMode("view")}>
@@ -236,12 +250,12 @@ function CommentItem({
                 Reply
               </ActionButton>
               {canEdit && (
-                <ActionButton dark={dark} onClick={startEdit}>
+                <ActionButton dark={dark} onClick={startEdit} ref={editRef}>
                   Edit
                 </ActionButton>
               )}
               {canDelete && (
-                <ActionButton danger onClick={() => setMode("confirm")}>
+                <ActionButton danger onClick={() => setMode("confirm")} ref={deleteRef}>
                   {comment.mine ? "Delete" : "Remove"}
                 </ActionButton>
               )}
@@ -275,6 +289,7 @@ function Thread({
   const user = session.user;
   const comments = useThreadComments(threadId, { seed, seedCount });
   const now = useNow(); // one clock per thread keeps "5 minutes ago" labels current
+  const headingRef = useRef(null); // where focus goes when an Undo notice closes
   const [draft, setDraft] = useState("");
   const [showAll, setShowAll] = useState(false);
   const [undo, setUndo] = useState(null);
@@ -378,7 +393,10 @@ function Thread({
   return (
     <section className={className} aria-label={title}>
       <h2
+        ref={headingRef}
+        tabIndex={-1}
         className={classNames(
+          "outline-none",
           "font-extrabold uppercase tracking-widest",
           compact ? "mb-3 text-2xs" : "mb-6 text-sm"
         )}
@@ -392,6 +410,7 @@ function Thread({
           message={undo.message}
           onUndo={undo.run}
           onDone={() => setUndo(null)}
+          returnFocusTo={headingRef}
           className="mt-4"
         />
       )}

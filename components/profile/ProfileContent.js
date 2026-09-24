@@ -26,6 +26,7 @@ import { usePlayer } from "../../lib/player";
 import { useUI } from "../../lib/ui";
 import { formatNumber, formatLongDate, formatUSD, formatTime, pad2 } from "../../lib/format";
 import { downloadDemoTrack } from "../../lib/demoAudio";
+import { useDownloadPass } from "../../lib/entitlements";
 import CaptionsTrack from "../videos/CaptionsTrack";
 
 const FEATURES = [
@@ -340,8 +341,15 @@ function PrivacyBar() {
   );
 }
 
+// "3 days" of download access bought with one receipt line.
+function passLength(item) {
+  const days = item.entitlement.days * (item.qty || 1);
+  return `${days} ${days === 1 ? "day" : "days"}`;
+}
+
 function Purchases() {
   const { state } = useStore();
+  const { until: downloadsUntil } = useDownloadPass();
   if (!state.purchases.length)
     return (
       <Empty
@@ -393,8 +401,9 @@ function Purchases() {
                   {item.downloads?.length > 0 && <Downloads tracks={item.downloads} />}
                   {item.entitlement?.type === "downloads" && (
                     <p className="mt-2 text-xs text-neutral-500">
-                      Unlimited downloads for {item.entitlement.days * (item.qty || 1)} days from{" "}
-                      {formatLongDate(order.date)}. Use the download buttons on any album page.
+                      Adds {passLength(item)} of unlimited downloads. Passes stack: your download
+                      access runs until {formatLongDate(downloadsUntil)}. Use the download buttons
+                      on any album page.
                     </p>
                   )}
                 </div>
