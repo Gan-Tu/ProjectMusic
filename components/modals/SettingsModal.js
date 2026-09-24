@@ -311,6 +311,11 @@ export default function SettingsModal({ open, onClose, tab: initialTab = "genera
               checked={draft.popupMessaging}
               onChange={(v) => set({ popupMessaging: v })}
             />
+            <ToggleRow
+              label="Single-key shortcuts (P, B, M, 1–3, ?)"
+              checked={draft.characterShortcuts}
+              onChange={(v) => set({ characterShortcuts: v })}
+            />
           </div>
         )}
 

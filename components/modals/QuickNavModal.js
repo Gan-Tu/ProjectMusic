@@ -140,6 +140,9 @@ export default function QuickNavModal({ open, onClose }) {
             </div>
           ))}
         </dl>
+        <p className="text-xs text-neutral-500 md:col-start-2">
+          Letter, number and ? shortcuts can be turned off in Settings → General.
+        </p>
       </div>
     </Modal>
   );

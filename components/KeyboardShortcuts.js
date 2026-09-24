@@ -22,18 +22,21 @@ function isInteractive(el) {
 export default function KeyboardShortcuts() {
   const player = usePlayer();
   const ui = useUI();
-  const { actions } = useStore();
+  const { state, actions } = useStore();
   const latest = useRef(null);
 
   useEffect(() => {
-    latest.current = { player, ui, actions };
+    latest.current = { player, ui, actions, settings: state.settings };
   });
 
   useEffect(() => {
     function onKeyDown(e) {
       if (!latest.current || e.defaultPrevented || e.metaKey || e.ctrlKey || e.altKey) return;
       if (isTypingTarget(e.target) || e.target?.closest?.("video, audio")) return;
-      const { player: p, ui: u, actions: a } = latest.current;
+      const { player: p, ui: u, actions: a, settings } = latest.current;
+      // Letter, number and symbol shortcuts can be switched off in Settings (speech
+      // input could trigger them); Space and the arrow keys always work.
+      if (e.key.length === 1 && e.key !== " " && !settings.characterShortcuts) return;
 
       if (e.key === "Escape" && u.megaMenu.open) {
         u.closeMegaMenu();
