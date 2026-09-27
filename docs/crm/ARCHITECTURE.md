@@ -1,7 +1,7 @@
-# Projct Music — database, accounts and CRM
+# Projct Music — database, accounts and CMS
 
 This document is the contract for turning the static demo into a database-backed site
-with member accounts and an admin CRM. Read it fully before changing code.
+with member accounts and an admin CMS. Read it fully before changing code.
 
 ## 1. What we are building
 
@@ -14,12 +14,12 @@ with member accounts and an admin CRM. Read it fully before changing code.
   and can be reset to it.
 - **Public site** (existing Next.js 16 Pages Router app): pages read the DB in
   `getStaticProps` through `lib/server/content.js`, with ISR (`revalidate: 60`) plus
-  on-demand revalidation (`res.revalidate(path)`) triggered by CRM edits. Dynamic
+  on-demand revalidation (`res.revalidate(path)`) triggered by CMS edits. Dynamic
   routes use `fallback: "blocking"` so newly created content works immediately.
 - **Member accounts**: sign up / log in / log out, a server-side credit balance and
   points, fake payments (card or credits) for credit packs, music, merch and tickets,
   order history, credit history. Comments are real (stored in the DB, visible to all).
-- **CRM** at `/crm` (single admin; its email and password come from the
+- **CMS** at `/cms` (single admin; its email and password come from the
   `CRM_ADMIN_USERNAME` / `CRM_ADMIN_PASSWORD` environment variables, never the repo):
   manage every entity, centered on **the artist hub** — one page per artist that
   manages the artist's profile/bio and *all* of their linked content (music, videos,
@@ -97,19 +97,19 @@ setting (seeded as 1,000) as a `signup_bonus` ledger entry.
 | Module | Owner | Purpose |
 | --- | --- | --- |
 | `lib/server/db.js` | shared (done) | `sql` tagged template (HTTP), `sql.query(text, params)`, `sql.transaction([...])`, `withTransaction(async client => …)`, `runScript(text)` |
-| `lib/server/auth.js` | shared (done) | password hashing (scrypt), DB sessions, cookies `pm_session` (members) / `pm_admin` (CRM), `getSessionUser(req)`, `getSessionAdmin(req)`, `createSession`, `destroySession`, `publicUser(row)`, `checkAdminCredentials` |
+| `lib/server/auth.js` | shared (done) | password hashing (scrypt), DB sessions, cookies `pm_session` (members) / `pm_admin` (CMS), `getSessionUser(req)`, `getSessionAdmin(req)`, `createSession`, `destroySession`, `publicUser(row)`, `checkAdminCredentials` |
 | `lib/server/http.js` | shared (done) | `apiHandler({ GET, POST, … })` (405s, same-origin + JSON check on mutations, error → JSON), `HttpError`, `requireUser`, `requireAdmin`, input helpers `str`, `int`, `url`, `slugify`, `makeId` |
 | `lib/placements.js` | shared (done) | placement catalog (client-safe) |
-| `lib/server/rateLimit.js` | shared (done) | `rateLimit(req, res, { key, limit, windowSeconds })` — atomic fixed-window throttle (reserve-then-work, `release()` to refund), `clientIp(req)`; used by login, signup, CRM login, comments, inbox |
+| `lib/server/rateLimit.js` | shared (done) | `rateLimit(req, res, { key, limit, windowSeconds })` — atomic fixed-window throttle (reserve-then-work, `release()` to refund), `clientIp(req)`; used by login, signup, CMS login, comments, inbox |
 | `lib/server/seed.js` | Seed agent | `buildSeedData()`, `applySeed({ scope })` |
 | `lib/server/content.js` | Public-site agent | read queries returning the shapes pages already use |
-| `lib/server/revalidate.js` | CRM agent | `revalidatePaths(res, paths)`, `pathsForChange(entity, ids…)` |
+| `lib/server/revalidate.js` | CMS agent | `revalidatePaths(res, paths)`, `pathsForChange(entity, ids…)` |
 | `lib/server/pricing.js` | Accounts agent | authoritative server-side price check for checkout lines |
 
 API conventions: `pages/api/**`, wrap handlers with `apiHandler`; JSON in/out;
 errors as `{ error }` with a 4xx status; mutations need `Content-Type:
 application/json` (the client must send it, also for bodyless POSTs send `{}`).
-Write an `audit_log` row for every CRM mutation (`actor: "admin:<admin email>"`).
+Write an `audit_log` row for every CMS mutation (`actor: "admin:<admin email>"`).
 
 ### API map
 
@@ -121,7 +121,7 @@ Write an `audit_log` row for every CRM mutation (`actor: "admin:<admin email>"`)
 | `GET/POST /api/comments`, `PATCH/DELETE /api/comments/[id]` | Public site |
 | `POST /api/inbox` (contact, feedback, newsletter, sms, volunteer) | Public site |
 | `GET /api/public/albums/[id]` (tracks on demand, if needed) | Public site |
-| `/api/crm/**` (login, logout, session, CRUD, placements, reset, revalidate, stats) | CRM |
+| `/api/cms/**` (login, logout, session, CRUD, placements, reset, revalidate, stats) | CMS |
 
 ## 5. Public content layer (`lib/server/content.js`)
 
@@ -173,7 +173,7 @@ Suggested functions (the Accounts agent's `pages/profile.js` uses the first thre
 
 Public pages: `getStaticProps` returns `revalidate: 60`; dynamic routes return
 `paths: []` (or a few) with `fallback: "blocking"` and `notFound: true` for missing /
-draft rows. The CRM calls `res.revalidate()` for the affected paths after each
+draft rows. The CMS calls `res.revalidate()` for the affected paths after each
 mutation (list pages + detail pages + home + linked artist pages), and offers a
 "Refresh public site" action that revalidates every list page.
 

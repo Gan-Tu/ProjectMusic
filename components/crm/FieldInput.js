@@ -487,12 +487,12 @@ function ReadonlyValue({ field, value }) {
 
 // Where to create the record a select points to (shown when there are none yet).
 const CREATE_REF = {
-  artists: { href: "/crm/artists/new", label: "an artist" },
-  albums: { href: "/crm/music/new", label: "an album" },
-  events: { href: "/crm/events/new", label: "an event" },
-  product_categories: { href: "/crm/shop-categories/new", label: "a shop category" },
-  photo_categories: { href: "/crm/photo-categories/new", label: "a photo category" },
-  social_networks: { href: "/crm/socials/new", label: "a social network" }
+  artists: { href: "/cms/artists/new", label: "an artist" },
+  albums: { href: "/cms/music/new", label: "an album" },
+  events: { href: "/cms/events/new", label: "an event" },
+  product_categories: { href: "/cms/shop-categories/new", label: "a shop category" },
+  photo_categories: { href: "/cms/photo-categories/new", label: "a photo category" },
+  social_networks: { href: "/cms/socials/new", label: "a social network" }
 };
 
 export function MissingRef({ type, required }) {

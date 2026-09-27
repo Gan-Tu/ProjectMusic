@@ -63,14 +63,14 @@ function GettingStarted() {
   const steps = [
     [
       "Create an artist",
-      "/crm/artists/new",
+      "/cms/artists/new",
       "Each artist gets a hub for their music, videos, events and merch."
     ],
-    ["Add music", "/crm/music/new", "Albums or singles with tracks and audio links."],
-    ["Set up the shop", "/crm/shop-categories/new", "Create a category first, then products."],
-    ["Add pictures", "/crm/photo-categories/new", "Create a gallery, then photos."],
-    ["Add social networks", "/crm/socials/new", "Then posts for each network."],
-    ["Write news", "/crm/posts/new?section=news", "News, blog or artist timeline posts."]
+    ["Add music", "/cms/music/new", "Albums or singles with tracks and audio links."],
+    ["Set up the shop", "/cms/shop-categories/new", "Create a category first, then products."],
+    ["Add pictures", "/cms/photo-categories/new", "Create a gallery, then photos."],
+    ["Add social networks", "/cms/socials/new", "Then posts for each network."],
+    ["Write news", "/cms/posts/new?section=news", "News, blog or artist timeline posts."]
   ];
   return (
     <section className="border border-neutral-900 bg-neutral-900 p-5 text-white sm:p-8">
@@ -78,7 +78,7 @@ function GettingStarted() {
       <h2 className="mt-2 text-2xl font-black uppercase tracking-tight">The site is empty</h2>
       <p className="mt-2 max-w-2xl text-sm leading-6 text-neutral-300">
         Start with an artist, then add their content. Or bring back the demo from{" "}
-        <Link href="/crm/settings" className="font-bold text-white underline">
+        <Link href="/cms/settings" className="font-bold text-white underline">
           Settings → Reset to demo data
         </Link>
         .
@@ -131,10 +131,10 @@ function describeAudit(entry) {
       return `Cleared ${detail.scope === "all" ? "everything" : "all content"}`;
     case "login":
       return entry.entity === "crm" || entry.actor.startsWith("admin:")
-        ? "Signed in to the CRM"
+        ? "Signed in to the CMS"
         : `Member signed in${from}`;
     case "login_failed":
-      return `Failed ${entry.entity === "users" ? "member" : "CRM"} login${from}`;
+      return `Failed ${entry.entity === "users" ? "member" : "CMS"} login${from}`;
     case "signup":
       return `New member sign-up${from}`;
     case "inbox_submit":
@@ -156,7 +156,7 @@ function ActivityCard({ audit, activity }) {
           value={feed}
           onChange={setFeed}
           options={[
-            { value: "crm", label: "CRM edits" },
+            { value: "crm", label: "CMS edits" },
             { value: "site", label: "Site activity" }
           ]}
         />
@@ -166,7 +166,7 @@ function ActivityCard({ audit, activity }) {
       {entries.length === 0 ? (
         <p className="p-5 text-sm text-neutral-500">
           {feed === "crm"
-            ? "No CRM edits yet."
+            ? "No CMS edits yet."
             : "Sign-ups, member logins and form messages will show up here."}
         </p>
       ) : (
@@ -200,7 +200,7 @@ function ActivityCard({ audit, activity }) {
 }
 
 export default function Dashboard() {
-  const { data, error } = useCrmData("/api/crm/stats");
+  const { data, error } = useCrmData("/api/cms/stats");
   const counts = data?.counts;
   return (
     <CrmLayout title="Dashboard">
@@ -222,48 +222,48 @@ export default function Dashboard() {
             aria-label="Totals"
             className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-6"
           >
-            <Tile label="Artists" value={compact(counts.artists)} href="/crm/artists" />
+            <Tile label="Artists" value={compact(counts.artists)} href="/cms/artists" />
             <Tile
               label="Albums"
               value={compact(counts.albums)}
               note={`${formatCount(counts.tracks)} tracks`}
-              href="/crm/music"
+              href="/cms/music"
             />
-            <Tile label="Videos" value={compact(counts.videos)} href="/crm/videos" />
+            <Tile label="Videos" value={compact(counts.videos)} href="/cms/videos" />
             <Tile
               label="Events"
               value={compact(counts.events)}
               note={`${counts.upcoming_events} upcoming`}
-              href="/crm/events"
+              href="/cms/events"
             />
-            <Tile label="Products" value={compact(counts.products)} href="/crm/shop" />
-            <Tile label="Photos" value={compact(counts.photos)} href="/crm/pictures" />
-            <Tile label="Posts" value={compact(counts.posts)} href="/crm/posts" />
+            <Tile label="Products" value={compact(counts.products)} href="/cms/shop" />
+            <Tile label="Photos" value={compact(counts.photos)} href="/cms/pictures" />
+            <Tile label="Posts" value={compact(counts.posts)} href="/cms/posts" />
             <Tile
               label="Social posts"
               value={compact(counts.social_posts)}
               note={`${counts.social_networks} networks`}
-              href="/crm/social-posts"
+              href="/cms/social-posts"
             />
             <Tile
               label="Comments"
               value={compact(counts.comments)}
               note={`${counts.hidden_comments} hidden`}
-              href="/crm/comments"
+              href="/cms/comments"
             />
             <Tile
               label="Members"
               value={compact(counts.members)}
               note={`${counts.new_members} new this week`}
-              href="/crm/members"
+              href="/cms/members"
             />
             <Tile
               label="Orders"
               value={compact(counts.orders)}
               note={`${formatMoney(counts.revenue_usd)} · ₵${compact(counts.revenue_credits)}`}
-              href="/crm/orders"
+              href="/cms/orders"
             />
-            <Tile label="Unread inbox" value={compact(counts.inbox_new)} href="/crm/inbox" />
+            <Tile label="Unread inbox" value={compact(counts.inbox_new)} href="/cms/inbox" />
           </section>
 
           <div className="grid grid-cols-1 items-start gap-6 xl:grid-cols-2">
@@ -271,7 +271,7 @@ export default function Dashboard() {
               title="Recent orders"
               actions={
                 <Link
-                  href="/crm/orders"
+                  href="/cms/orders"
                   className="inline-flex min-h-10 items-center text-2xs font-bold uppercase tracking-widest text-pmred-dark hover:underline"
                 >
                   All orders
@@ -287,7 +287,7 @@ export default function Dashboard() {
               ) : (
                 <ul className="divide-y divide-neutral-100">
                   {data.orders.map((order) => (
-                    <ListLink key={order.id} href={`/crm/orders/${encodeURIComponent(order.id)}`}>
+                    <ListLink key={order.id} href={`/cms/orders/${encodeURIComponent(order.id)}`}>
                       <span className="min-w-0 flex-1">
                         <span className="block truncate text-sm font-bold">{order.id}</span>
                         <span className="block truncate text-xs text-neutral-500">
@@ -310,7 +310,7 @@ export default function Dashboard() {
               title="Newest members"
               actions={
                 <Link
-                  href="/crm/members"
+                  href="/cms/members"
                   className="inline-flex min-h-10 items-center text-2xs font-bold uppercase tracking-widest text-pmred-dark hover:underline"
                 >
                   All members
@@ -325,7 +325,7 @@ export default function Dashboard() {
               ) : (
                 <ul className="divide-y divide-neutral-100">
                   {data.members.map((member) => (
-                    <ListLink key={member.id} href={`/crm/members/${member.id}`}>
+                    <ListLink key={member.id} href={`/cms/members/${member.id}`}>
                       <Thumb src={member.avatar_url} shape="round" className="w-9" />
                       <span className="min-w-0 flex-1">
                         <span className="block truncate text-sm font-bold">{member.name}</span>
@@ -344,7 +344,7 @@ export default function Dashboard() {
               title="Latest comments"
               actions={
                 <Link
-                  href="/crm/comments"
+                  href="/cms/comments"
                   className="inline-flex min-h-10 items-center text-2xs font-bold uppercase tracking-widest text-pmred-dark hover:underline"
                 >
                   Moderate
@@ -361,7 +361,7 @@ export default function Dashboard() {
                   {data.comments.map((comment) => (
                     <ListLink
                       key={comment.id}
-                      href={`/crm/comments/${encodeURIComponent(comment.id)}`}
+                      href={`/cms/comments/${encodeURIComponent(comment.id)}`}
                     >
                       <Thumb src={comment.author_avatar} shape="round" className="w-9" />
                       <span className="min-w-0 flex-1">
@@ -383,7 +383,7 @@ export default function Dashboard() {
               title="Unread inbox"
               actions={
                 <Link
-                  href="/crm/inbox"
+                  href="/cms/inbox"
                   className="inline-flex min-h-10 items-center text-2xs font-bold uppercase tracking-widest text-pmred-dark hover:underline"
                 >
                   Inbox
@@ -401,7 +401,7 @@ export default function Dashboard() {
                   <PanelEmpty
                     icon={InboxIcon}
                     title="All caught up"
-                    href="/crm/inbox"
+                    href="/cms/inbox"
                     action="Open the inbox"
                   >
                     No unread messages — {counts.inbox_total} in the inbox.
@@ -410,7 +410,7 @@ export default function Dashboard() {
               ) : (
                 <ul className="divide-y divide-neutral-100">
                   {data.inbox.map((item) => (
-                    <ListLink key={item.id} href={`/crm/inbox/${encodeURIComponent(item.id)}`}>
+                    <ListLink key={item.id} href={`/cms/inbox/${encodeURIComponent(item.id)}`}>
                       <span className="min-w-0 flex-1">
                         <span className="block truncate text-sm font-bold">
                           {item.subject ||

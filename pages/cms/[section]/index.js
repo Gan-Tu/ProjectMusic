@@ -21,7 +21,7 @@ export function SectionTabs({ section }) {
         return (
           <Link
             key={item}
-            href={`/crm/${item}`}
+            href={`/cms/${item}`}
             aria-current={active ? "page" : undefined}
             className={classNames(
               "inline-flex items-center rounded-full border px-4 py-2 text-2xs font-bold uppercase tracking-wider transition-colors max-sm:min-h-10",

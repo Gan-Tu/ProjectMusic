@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Router from "next/router";
 
-// Client helpers for the CRM API. Mutations always send JSON (the API requires it).
+// Client helpers for the CMS API. Mutations always send JSON (the API requires it).
 export async function crmFetch(url, { method = "GET", body } = {}) {
   const init = { method, credentials: "same-origin", headers: { Accept: "application/json" } };
   if (method !== "GET") {
@@ -15,9 +15,9 @@ export async function crmFetch(url, { method = "GET", body } = {}) {
   } catch {
     // empty or non-JSON body
   }
-  if (res.status === 401 && url !== "/api/crm/login" && typeof window !== "undefined") {
+  if (res.status === 401 && url !== "/api/cms/login" && typeof window !== "undefined") {
     const next = `${window.location.pathname}${window.location.search}`;
-    Router.replace(`/crm/login?next=${encodeURIComponent(next)}`);
+    Router.replace(`/cms/login?next=${encodeURIComponent(next)}`);
   }
   if (!res.ok) {
     const error = new Error(data?.error || `Request failed (${res.status}).`);
@@ -34,7 +34,7 @@ export function notifyBadges() {
 }
 
 export function entityApi(entity, id) {
-  const base = `/api/crm/entities/${entity}`;
+  const base = `/api/cms/entities/${entity}`;
   return id === undefined ? base : `${base}/${encodeURIComponent(id)}`;
 }
 
@@ -53,7 +53,7 @@ const optionCache = new Map();
 export function loadOptions(types) {
   const missing = types.filter((type) => !optionCache.has(type));
   if (missing.length) {
-    const request = crmFetch(`/api/crm/options?types=${missing.join(",")}`);
+    const request = crmFetch(`/api/cms/options?types=${missing.join(",")}`);
     request.catch(() => missing.forEach((type) => optionCache.delete(type)));
     missing.forEach((type) =>
       optionCache.set(

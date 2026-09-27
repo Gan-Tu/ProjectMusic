@@ -11,7 +11,7 @@ export default function ArtistsPage() {
         Every artist is a hub: open one to manage the profile and all linked music, videos, photos,
         events, merch, posts and comments — and choose where each item shows on the site.
       </p>
-      <EntityListView entity="artists" createHref="/crm/artists/new" defaultView="grid" />
+      <EntityListView entity="artists" createHref="/cms/artists/new" defaultView="grid" />
     </CrmLayout>
   );
 }

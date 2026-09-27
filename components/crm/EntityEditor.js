@@ -37,7 +37,7 @@ export function prefillRow(entity, query = {}) {
 const subscribeNothing = () => () => {};
 
 function editorPath(entity, id) {
-  return entity === "artists" ? `/crm/artists/${encodeURIComponent(id)}` : crmPath(entity, id);
+  return entity === "artists" ? `/cms/artists/${encodeURIComponent(id)}` : crmPath(entity, id);
 }
 
 // Create / edit form for one row, rendered from the field definitions. `hide` lists
@@ -177,7 +177,7 @@ export default function EntityEditor({ entity, id, prefill, hide = [], onSaved, 
   async function remove() {
     if (await confirmDelete(entity, base)) {
       setBase(values);
-      router.push(entity === "artists" ? "/crm/artists" : crmPath(entity));
+      router.push(entity === "artists" ? "/cms/artists" : crmPath(entity));
     }
   }
 

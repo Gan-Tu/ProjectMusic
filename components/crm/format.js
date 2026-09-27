@@ -1,4 +1,4 @@
-// Formatting helpers for the CRM (client-safe).
+// Formatting helpers for the CMS (client-safe).
 
 const pad = (n) => String(n).padStart(2, "0");
 

@@ -29,7 +29,7 @@ export default function CrmLogin({ next }) {
     setBusy(true);
     setError(null);
     try {
-      await crmFetch("/api/crm/login", {
+      await crmFetch("/api/cms/login", {
         method: "POST",
         body: { username: form.get("username"), password: form.get("password") }
       });
@@ -44,14 +44,14 @@ export default function CrmLogin({ next }) {
   return (
     <main className="flex min-h-dvh items-center justify-center bg-black p-4">
       <Head>
-        <title>CRM login · Projct Music</title>
+        <title>CMS login · Projct Music</title>
         <meta name="robots" content="noindex, nofollow" />
       </Head>
       <div className="w-full max-w-md shadow-2xl motion-safe:animate-slide-up">
         <div className="flex items-center justify-between bg-white px-7 py-5 sm:px-10">
           <Logo href="/" className="text-sm" />
           <span className="bg-black px-1.5 py-0.5 text-2xs font-bold tracking-widest text-white">
-            CRM
+            CMS
           </span>
         </div>
         <section className="bg-pmred px-7 py-10 text-white sm:px-10 sm:py-12">

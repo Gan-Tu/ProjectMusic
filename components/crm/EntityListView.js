@@ -47,7 +47,7 @@ const EMPTY_HINTS = {
   inbox: "Contact and feedback messages, newsletter, text and volunteer sign-ups arrive here."
 };
 
-// URL names of list filters that would clash with route params (/crm/[section]).
+// URL names of list filters that would clash with route params (/cms/[section]).
 const URL_KEYS = { section: "post_section" };
 const urlKey = (key) => URL_KEYS[key] || key;
 

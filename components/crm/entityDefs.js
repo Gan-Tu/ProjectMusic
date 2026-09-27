@@ -1,4 +1,4 @@
-// CRM entity definitions (client-safe, pure data). The admin UI renders forms and lists
+// CMS entity definitions (client-safe, pure data). The admin UI renders forms and lists
 // from these, and lib/server/crm/registry.js adds the SQL details (search, sorting,
 // filters, relations) for the generic engine.
 //
@@ -904,7 +904,7 @@ export const ENTITIES = {
   }
 };
 
-// URL segment under /crm -> entity key (artists have their own hub pages).
+// URL segment under /cms -> entity key (artists have their own hub pages).
 export const SECTIONS = Object.fromEntries(
   Object.entries(ENTITIES)
     .filter(([, def]) => def.section && !def.hidden)
@@ -925,7 +925,7 @@ export function entityPk(key) {
 export function crmPath(key, id) {
   const def = ENTITIES[key];
   if (!def?.section) return null;
-  return id === undefined ? `/crm/${def.section}` : `/crm/${def.section}/${encodeURIComponent(id)}`;
+  return id === undefined ? `/cms/${def.section}` : `/cms/${def.section}/${encodeURIComponent(id)}`;
 }
 
 export function rowTitle(key, row) {
@@ -962,7 +962,7 @@ export const THREAD_KINDS = {
 };
 
 // Public page of a comment thread ("album:<id>" -> /albums/<id>; social posts need the
-// network, which the CRM API adds as `thread_network`).
+// network, which the CMS API adds as `thread_network`).
 export function threadPath(threadId, network) {
   const [kind, ...rest] = String(threadId || "").split(":");
   const id = rest.join(":");
@@ -979,7 +979,7 @@ export function threadPath(threadId, network) {
   return null;
 }
 
-// "Celestial · Album" from a comment row (thread_title is resolved by the CRM API; null
+// "Celestial · Album" from a comment row (thread_title is resolved by the CMS API; null
 // means the album/video/… no longer exists).
 export function threadLabel(row) {
   const [kind, ...rest] = String(row?.thread_id || "").split(":");

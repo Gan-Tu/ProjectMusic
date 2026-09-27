@@ -3,7 +3,7 @@ const { IMAGE_HOSTS } = require("./lib/imageHosts");
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  // Parallel dev servers (e.g. `NEXT_DIST_DIR=.next-crm next dev -p 3002`) need
+  // Parallel dev servers (e.g. `NEXT_DIST_DIR=.next-cms next dev -p 3002`) need
   // separate build folders.
   distDir: process.env.NEXT_DIST_DIR || ".next",
   images: {
@@ -12,6 +12,16 @@ const nextConfig = {
   },
   async redirects() {
     return [
+      {
+        source: "/crm/:path*",
+        destination: "/cms/:path*",
+        permanent: true
+      },
+      {
+        source: "/api/crm/:path*",
+        destination: "/api/cms/:path*",
+        permanent: true
+      },
       {
         source: "/musics/:slug",
         destination: "/albums/:slug",

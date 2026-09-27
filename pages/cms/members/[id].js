@@ -28,7 +28,7 @@ function CreditsForm({ id, credits, onDone }) {
     event.preventDefault();
     setBusy(true);
     try {
-      const result = await crmFetch(`/api/crm/members/${id}/credits`, {
+      const result = await crmFetch(`/api/cms/members/${id}/credits`, {
         method: "POST",
         body: { delta: amount, note }
       });
@@ -87,7 +87,7 @@ function PasswordForm({ id }) {
     event.preventDefault();
     setBusy(true);
     try {
-      await crmFetch(`/api/crm/members/${id}/password`, { method: "POST", body: { password } });
+      await crmFetch(`/api/cms/members/${id}/password`, { method: "POST", body: { password } });
       toast.success("Password changed. The member was signed out everywhere.");
       setPassword("");
     } catch (error) {
@@ -124,13 +124,13 @@ const TH = "px-4 py-2 text-left text-2xs font-bold uppercase tracking-widest tex
 const TD = "px-4 py-2.5 align-top";
 
 export default function MemberPage({ id }) {
-  const { data, error, reload } = useCrmData(`/api/crm/members/${id}`);
+  const { data, error, reload } = useCrmData(`/api/cms/members/${id}`);
   const [version, setVersion] = useState(0);
   const member = data?.member;
   return (
     <CrmLayout title={member ? member.name : "Member"}>
       <Link
-        href="/crm/members"
+        href="/cms/members"
         className="mb-3 inline-flex min-h-10 items-center gap-1.5 text-2xs font-bold uppercase tracking-widest text-neutral-500 transition hover:text-pmred"
       >
         <ArrowLeftIcon className="h-4 w-4" /> All members
@@ -169,7 +169,7 @@ export default function MemberPage({ id }) {
                     <tr key={order.id}>
                       <td className={TD}>
                         <Link
-                          href={`/crm/orders/${encodeURIComponent(order.id)}`}
+                          href={`/cms/orders/${encodeURIComponent(order.id)}`}
                           className="font-bold hover:text-pmred"
                         >
                           {order.id}
@@ -249,7 +249,7 @@ export default function MemberPage({ id }) {
                   <li key={comment.id} className="flex items-start gap-3 px-5 py-3">
                     <span className="min-w-0 flex-1">
                       <Link
-                        href={`/crm/comments/${encodeURIComponent(comment.id)}`}
+                        href={`/cms/comments/${encodeURIComponent(comment.id)}`}
                         className="block text-sm hover:text-pmred"
                       >
                         {comment.body}

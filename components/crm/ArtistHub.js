@@ -125,7 +125,7 @@ function LinkExisting({ entity, artistId, onLinked, label }) {
 }
 
 function newHref(section, params) {
-  return `/crm/${section}/new${queryString(params)}`;
+  return `/cms/${section}/new${queryString(params)}`;
 }
 
 function RotationEditor({ artist, onSaved }) {
@@ -178,7 +178,7 @@ function LineupAdd({ artistId, onChanged }) {
     if (!eventId) return;
     setBusy(true);
     try {
-      await crmFetch(`/api/crm/artists/${encodeURIComponent(artistId)}/lineup`, {
+      await crmFetch(`/api/cms/artists/${encodeURIComponent(artistId)}/lineup`, {
         method: "POST",
         body: { eventId, action: "add" }
       });
@@ -308,7 +308,7 @@ function RemoveFromLineup({ artistId, eventId, onChanged }) {
       type="button"
       onClick={async () => {
         try {
-          await crmFetch(`/api/crm/artists/${encodeURIComponent(artistId)}/lineup`, {
+          await crmFetch(`/api/cms/artists/${encodeURIComponent(artistId)}/lineup`, {
             method: "POST",
             body: { eventId, action: "remove" }
           });

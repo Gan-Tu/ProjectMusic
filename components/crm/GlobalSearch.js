@@ -31,7 +31,7 @@ export default function GlobalSearch({ className, autoFocus = false, onNavigate 
     let alive = true;
     const timer = setTimeout(() => {
       setState((current) => ({ ...current, loading: true }));
-      crmFetch(`/api/crm/search?q=${encodeURIComponent(term)}`)
+      crmFetch(`/api/cms/search?q=${encodeURIComponent(term)}`)
         .then(({ results }) => alive && setState({ q: term, results, loading: false }))
         .catch(() => alive && setState({ q: term, results: [], loading: false }));
     }, 200);
@@ -61,7 +61,7 @@ export default function GlobalSearch({ className, autoFocus = false, onNavigate 
           aria-hidden="true"
         />
         <ComboboxInput
-          aria-label="Search the CRM"
+          aria-label="Search the CMS"
           placeholder="Search artists, music, members…"
           autoComplete="off"
           autoFocus={autoFocus}

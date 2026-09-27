@@ -1,6 +1,6 @@
 # Provisioned resources, pricing and rollback
 
-Everything created for the database / accounts / CRM work, what it costs, and how to
+Everything created for the database / accounts / CMS work, what it costs, and how to
 undo it. Provisioned on 2026-09-24.
 
 ## Summary
@@ -10,7 +10,7 @@ undo it. Provisioned on 2026-09-24.
 | Neon Postgres database `project-music-db` | Vercel Marketplace → Neon (team `tugan-team`) | **Neon Free** (`free_v3`): **$0/month** | **Yes** |
 | Neon integration installation `icfg_1V9Ja0EB3D46XkiohGLtusYA` | Vercel team `tugan-team` | Free plan | No (already installed, reused) |
 | 18 environment variables on Vercel project `project-music` | Production, Preview, Development | $0 | **Yes** (added automatically when the database was connected) |
-| `CRM_ADMIN_USERNAME`, `CRM_ADMIN_PASSWORD` env vars | Production + Preview (password stored as sensitive), Development | $0 | **Yes** (the CRM admin login) |
+| `CRM_ADMIN_USERNAME`, `CRM_ADMIN_PASSWORD` env vars | Production + Preview (password stored as sensitive), Development | $0 | **Yes** (the CMS admin login) |
 | Neon Postgres database `project-music-test-db` (test sandbox) | Vercel Marketplace → Neon, connected to **Development only** with the `TEST_` prefix (`TEST_DATABASE_URL`, …) | **Neon Free** (`free_v3`): **$0/month** | **Yes** (for destructive tests such as "Clear all data" without touching the live data) |
 | Vercel project `project-music` (Hobby) | tugan-team | existing plan, no paid add-ons | No |
 | AWS | — | — | **Nothing provisioned** (not needed: media is URL-only) |
@@ -60,28 +60,28 @@ If the 100 CU-hours or 0.5 GB were ever exceeded, Neon suspends the compute unti
 next month instead of billing — the site would show errors for database-backed pages.
 Upgrading is a plan change in the Neon dashboard (Launch plan: $0.106 per CU-hour and
 $0.35 per GB-month, billed through Vercel). ISR caching (pages regenerate at most once a
-minute, or on CRM edits) keeps database load low.
+minute, or on CMS edits) keeps database load low.
 
 ## Vercel usage
 
-No new Vercel products. The new API routes (auth, checkout, comments, CRM) run as
+No new Vercel products. The new API routes (auth, checkout, comments, CMS) run as
 Vercel Functions and the public pages use ISR; both count toward the Hobby plan's
 included usage (see Vercel → Usage).
 
 ## Credentials
 
-- CRM admin: the email and password in the `CRM_ADMIN_USERNAME` / `CRM_ADMIN_PASSWORD`
+- CMS admin: the email and password in the `CRM_ADMIN_USERNAME` / `CRM_ADMIN_PASSWORD`
   env vars on Vercel (they are not in the repository, which is public). Without both
-  variables CRM login is disabled. To change them:
+  variables CMS login is disabled. To change them:
   `printf '%s' '<new value>' | vercel env add CRM_ADMIN_PASSWORD production --sensitive --force`
-  (repeat for `preview` and `development`), redeploy, and sign in again — existing CRM
+  (repeat for `preview` and `development`), redeploy, and sign in again — existing CMS
   sessions stay valid until they expire (3 days) unless you clear them
   (`delete from sessions where kind = 'admin'`).
 - Demo member account (seeded): username `demo`, password `demo1234`.
 
 ## Rollback
 
-1. **Code**: revert the CRM/database commits on `main` and push (`git revert <sha>…`)
+1. **Code**: revert the CMS/database commits on `main` and push (`git revert <sha>…`)
    — the site returns to the static demo data. The static generators in `utils/` are
    still in the repo (they are the seed source).
 2. **Disconnect** the database from the project (keeps the data, removes the env
@@ -94,6 +94,6 @@ included usage (see Vercel → Usage).
 ## Operations
 
 - Apply the schema (idempotent): `npm run db:migrate`
-- Reset all data to the demo (members, orders and content): `npm run db:seed`, or CRM →
+- Reset all data to the demo (members, orders and content): `npm run db:seed`, or CMS →
   Settings → Reset to demo data (choose content only, or everything).
 - Local setup: `vercel env pull .env.local` then `npm run dev`.

@@ -4,7 +4,7 @@ import { PhotoIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import Button from "../ui/Button";
 import { classNames } from "../../lib/format";
 
-// Small building blocks for the CRM, in the site's visual language: square white
+// Small building blocks for the CMS, in the site's visual language: square white
 // cards, uppercase tracked labels, pill inputs and buttons, the pmred accent.
 
 export const LABEL = "text-2xs font-bold uppercase tracking-widest text-neutral-500";

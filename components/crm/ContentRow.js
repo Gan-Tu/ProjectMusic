@@ -260,7 +260,7 @@ export function describeRow(entity, row) {
 
 export function editHref(entity, row) {
   const id = row[entityPk(entity)];
-  return entity === "artists" ? `/crm/artists/${encodeURIComponent(id)}` : crmPath(entity, id);
+  return entity === "artists" ? `/cms/artists/${encodeURIComponent(id)}` : crmPath(entity, id);
 }
 
 const ICON_LINK =

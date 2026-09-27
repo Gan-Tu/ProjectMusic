@@ -62,7 +62,7 @@ function ItemDetails({ item }) {
 const TD = "px-4 py-2.5 align-top";
 
 export default function OrderPage({ id }) {
-  const { data, error, reload } = useCrmData(`/api/crm/orders/${encodeURIComponent(id)}`);
+  const { data, error, reload } = useCrmData(`/api/cms/orders/${encodeURIComponent(id)}`);
   const [busy, setBusy] = useState(false);
   const order = data?.order;
 
@@ -77,7 +77,7 @@ export default function OrderPage({ id }) {
     if (!window.confirm(`Refund order ${order.id}? ${credits}${granted}`)) return;
     setBusy(true);
     try {
-      await crmFetch(`/api/crm/orders/${encodeURIComponent(id)}/refund`, { method: "POST" });
+      await crmFetch(`/api/cms/orders/${encodeURIComponent(id)}/refund`, { method: "POST" });
       toast.success("Order refunded.");
       reload();
     } catch (refundError) {
@@ -90,7 +90,7 @@ export default function OrderPage({ id }) {
   return (
     <CrmLayout title={`Order ${id}`}>
       <Link
-        href="/crm/orders"
+        href="/cms/orders"
         className="mb-3 inline-flex min-h-10 items-center gap-1.5 text-2xs font-bold uppercase tracking-widest text-neutral-500 transition hover:text-pmred"
       >
         <ArrowLeftIcon className="h-4 w-4" /> All orders
@@ -192,7 +192,7 @@ export default function OrderPage({ id }) {
                     order.user_id ? (
                       <Link
                         key="m"
-                        href={`/crm/members/${order.user_id}`}
+                        href={`/cms/members/${order.user_id}`}
                         className="font-bold hover:text-pmred"
                       >
                         {order.member_name || order.username || order.user_id}

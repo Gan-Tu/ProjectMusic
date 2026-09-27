@@ -20,7 +20,7 @@ export default function SectionEditor({ section, id }) {
   if (isNew && def.canCreate === false) {
     return (
       <CrmLayout title={def.plural}>
-        <p className="text-sm">{def.plural} can&apos;t be created in the CRM.</p>
+        <p className="text-sm">{def.plural} can&apos;t be created in the CMS.</p>
       </CrmLayout>
     );
   }

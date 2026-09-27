@@ -31,30 +31,30 @@ import { crmFetch } from "./api";
 import GlobalSearch from "./GlobalSearch";
 
 export const NAV = [
-  { href: "/crm", label: "Dashboard", icon: Squares2X2Icon, match: [""] },
-  { href: "/crm/artists", label: "Artists", icon: MicrophoneIcon, match: ["artists"] },
-  { href: "/crm/music", label: "Music", icon: MusicalNoteIcon, match: ["music"] },
-  { href: "/crm/videos", label: "Videos", icon: FilmIcon, match: ["videos"] },
-  { href: "/crm/events", label: "Events", icon: CalendarDaysIcon, match: ["events"] },
-  { href: "/crm/shop", label: "Shop", icon: ShoppingBagIcon, match: ["shop", "shop-categories"] },
+  { href: "/cms", label: "Dashboard", icon: Squares2X2Icon, match: [""] },
+  { href: "/cms/artists", label: "Artists", icon: MicrophoneIcon, match: ["artists"] },
+  { href: "/cms/music", label: "Music", icon: MusicalNoteIcon, match: ["music"] },
+  { href: "/cms/videos", label: "Videos", icon: FilmIcon, match: ["videos"] },
+  { href: "/cms/events", label: "Events", icon: CalendarDaysIcon, match: ["events"] },
+  { href: "/cms/shop", label: "Shop", icon: ShoppingBagIcon, match: ["shop", "shop-categories"] },
   {
-    href: "/crm/pictures",
+    href: "/cms/pictures",
     label: "Pictures",
     icon: PhotoIcon,
     match: ["pictures", "photo-categories"]
   },
-  { href: "/crm/posts", label: "Posts", icon: NewspaperIcon, match: ["posts"] },
+  { href: "/cms/posts", label: "Posts", icon: NewspaperIcon, match: ["posts"] },
   {
-    href: "/crm/socials",
+    href: "/cms/socials",
     label: "Socials",
     icon: GlobeAltIcon,
     match: ["socials", "social-posts"]
   },
-  { href: "/crm/comments", label: "Comments", icon: ChatBubbleLeftRightIcon, match: ["comments"] },
-  { href: "/crm/members", label: "Members", icon: UsersIcon, match: ["members"] },
-  { href: "/crm/orders", label: "Orders", icon: ReceiptPercentIcon, match: ["orders"] },
-  { href: "/crm/inbox", label: "Inbox", icon: InboxIcon, match: ["inbox"], badge: "inbox" },
-  { href: "/crm/settings", label: "Settings", icon: Cog6ToothIcon, match: ["settings"] }
+  { href: "/cms/comments", label: "Comments", icon: ChatBubbleLeftRightIcon, match: ["comments"] },
+  { href: "/cms/members", label: "Members", icon: UsersIcon, match: ["members"] },
+  { href: "/cms/orders", label: "Orders", icon: ReceiptPercentIcon, match: ["orders"] },
+  { href: "/cms/inbox", label: "Inbox", icon: InboxIcon, match: ["inbox"], badge: "inbox" },
+  { href: "/cms/settings", label: "Settings", icon: Cog6ToothIcon, match: ["settings"] }
 ];
 
 // Sidebar counts (unread inbox), kept between page navigations and reloaded when a
@@ -66,7 +66,7 @@ function useBadges() {
   useEffect(() => {
     let alive = true;
     const load = () =>
-      crmFetch("/api/crm/badges")
+      crmFetch("/api/cms/badges")
         .then((data) => {
           cachedBadges = data;
           if (alive) setBadges(data);
@@ -86,7 +86,7 @@ function NavLinks({ onNavigate, badges }) {
   const router = useRouter();
   const segment = router.asPath.split(/[?#]/)[0].split("/")[2] || "";
   return (
-    <nav aria-label="CRM" className="flex flex-col py-4">
+    <nav aria-label="CMS" className="flex flex-col py-4">
       {NAV.map((item) => {
         const active = item.match.includes(segment);
         const Icon = item.icon;
@@ -130,17 +130,17 @@ export default function CrmLayout({ title, viewHref = "/", actions, children }) 
 
   async function logout() {
     try {
-      await crmFetch("/api/crm/logout", { method: "POST" });
+      await crmFetch("/api/cms/logout", { method: "POST" });
     } catch (error) {
       toast.error(error.message);
     }
-    router.replace("/crm/login");
+    router.replace("/cms/login");
   }
 
   return (
     <div className="min-h-dvh bg-neutral-100 text-neutral-900">
       <Head>
-        <title>{`${title ? `${title} · ` : ""}CRM · Projct Music`}</title>
+        <title>{`${title ? `${title} · ` : ""}CMS · Projct Music`}</title>
         <meta name="robots" content="noindex, nofollow" />
       </Head>
       <header className="sticky top-0 z-40 flex h-16 items-center bg-white shadow-[0_4px_20px_-6px_rgba(0,0,0,0.15)]">
@@ -153,9 +153,9 @@ export default function CrmLayout({ title, viewHref = "/", actions, children }) 
           >
             <Bars3Icon className="h-6 w-6" />
           </button>
-          <Logo href="/crm" className="min-h-10 text-xs sm:text-sm" />
+          <Logo href="/cms" className="min-h-10 text-xs sm:text-sm" />
           <span className="bg-black px-1.5 py-0.5 text-2xs font-bold tracking-widest text-white">
-            CRM
+            CMS
           </span>
         </div>
         <div className="flex min-w-0 flex-1 items-center justify-end gap-3 px-3 sm:px-6 lg:justify-between lg:px-8">
@@ -212,7 +212,7 @@ export default function CrmLayout({ title, viewHref = "/", actions, children }) 
           >
             <div className="flex h-16 items-center justify-between px-6">
               <span className="text-2xs font-bold uppercase tracking-[0.3em] text-white">
-                Projct CRM
+                Projct CMS
               </span>
               <button
                 type="button"

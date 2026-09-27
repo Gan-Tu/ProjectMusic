@@ -29,8 +29,8 @@ const TOAST_OPTIONS = {
 };
 
 function MyApp({ Component, pageProps, router }) {
-  // The CRM (/crm) is its own app: no member session, store, player or site chrome.
-  if (router.pathname.startsWith("/crm")) {
+  // The CMS (/cms) is its own app: no member session, store, player or site chrome.
+  if (router.pathname === "/cms" || router.pathname.startsWith("/cms/")) {
     return (
       <>
         <style jsx global>{`

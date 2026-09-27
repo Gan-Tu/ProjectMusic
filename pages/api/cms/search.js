@@ -3,7 +3,7 @@ import { sql } from "../../../lib/server/db";
 
 const LIMIT = 5;
 
-// GET ?q= : up to 5 matches per type by name/title, each with the CRM page to open.
+// GET ?q= : up to 5 matches per type by name/title, each with the CMS page to open.
 const QUERY = `
   (select 'artist' as type, id, name as title, location as subtitle, image_url as image,
      null::text as parent from artists where name ilike $1 or id ilike $1 order by name limit ${LIMIT})
@@ -35,14 +35,14 @@ const QUERY = `
      where name ilike $1 or username ilike $1 or email ilike $1 order by name limit ${LIMIT})`;
 
 const HREF = {
-  artist: (row) => `/crm/artists/${encodeURIComponent(row.id)}`,
-  album: (row) => `/crm/music/${encodeURIComponent(row.id)}`,
-  track: (row) => `/crm/music/${encodeURIComponent(row.parent)}`,
-  video: (row) => `/crm/videos/${encodeURIComponent(row.id)}`,
-  event: (row) => `/crm/events/${encodeURIComponent(row.id)}`,
-  product: (row) => `/crm/shop/${encodeURIComponent(row.id)}`,
-  post: (row) => `/crm/posts/${encodeURIComponent(row.id)}`,
-  member: (row) => `/crm/members/${encodeURIComponent(row.id)}`
+  artist: (row) => `/cms/artists/${encodeURIComponent(row.id)}`,
+  album: (row) => `/cms/music/${encodeURIComponent(row.id)}`,
+  track: (row) => `/cms/music/${encodeURIComponent(row.parent)}`,
+  video: (row) => `/cms/videos/${encodeURIComponent(row.id)}`,
+  event: (row) => `/cms/events/${encodeURIComponent(row.id)}`,
+  product: (row) => `/cms/shop/${encodeURIComponent(row.id)}`,
+  post: (row) => `/cms/posts/${encodeURIComponent(row.id)}`,
+  member: (row) => `/cms/members/${encodeURIComponent(row.id)}`
 };
 const ORDER = Object.keys(HREF);
 

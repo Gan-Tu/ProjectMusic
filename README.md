@@ -1,27 +1,30 @@
 # Projct Music
 
 The website of Projct Music / Truth Studios: music streaming, videos, artists, photos,
-news and blog, events, a merch and digital-goods shop, and social feeds — plus a **CRM**
+news and blog, events, a merch and digital-goods shop, and social feeds — plus a **CMS**
 that controls all of it. Content lives in a Postgres database (Neon), seeded with the
 original demo data; members sign up, log in and keep a credit balance; payments are
 simulated.
 
-Live: https://project-music.tugan.app · CRM: https://project-music.tugan.app/crm
+Live: https://project-music.tugan.app · CMS: https://project-music.tugan.app/cms
 
 ## Accounts
 
 | Who | Where | Login |
 | --- | --- | --- |
-| CRM admin (the only CRM user) | `/crm` | email + password from the `CRM_ADMIN_USERNAME` / `CRM_ADMIN_PASSWORD` environment variables (set on Vercel, never committed) |
+| CMS admin (the only CMS user) | `/cms` | email + password from the `CRM_ADMIN_USERNAME` / `CRM_ADMIN_PASSWORD` environment variables (set on Vercel, never committed) |
 | Demo member (seeded, shared) | `/login` | username `demo`, password `demo1234` |
 
 Anyone can create a member account at `/signup` (new members get the sign-up bonus set
-in CRM → Settings, 1,000 credits by default).
+in CMS → Settings, 1,000 credits by default).
 
-## CRM
+## CMS
 
-`/crm` manages every piece of public content, with the **artist hub** at its center:
-one page per artist (`/crm/artists/<id>`) for the profile and bio plus all of the
+Old `/crm` and `/api/crm` URLs permanently redirect to `/cms` and `/api/cms`,
+including nested paths and query strings.
+
+`/cms` manages every piece of public content, with the **artist hub** at its center:
+one page per artist (`/cms/artists/<id>`) for the profile and bio plus all of the
 artist's music, videos, photos, events, merch, timeline posts and the comments on
 them. Every item has **placement toggles** that decide which parts of the site show it
 (e.g. an album on the Music tab, Home, the artist page and/or the socials players), and
@@ -72,10 +75,10 @@ pages (on-demand ISR); everything else refreshes within a minute.
   and password settings. Guests can browse, play and fill the cart; checkout, commenting
   and the profile need an account.
 - **Community**: comments stored in the database (reply, like, edit and delete own
-  comments with undo; moderation happens in the CRM), chat with conversations and a
+  comments with undo; moderation happens in the CMS), chat with conversations and a
   friends list (simulated replies, delete messages/conversations), notifications
   (dismiss / clear), contact, volunteer, newsletter and text-message sign-ups (delivered
-  to the CRM inbox), settings (profile edits, photo upload, blocked users, privacy
+  to the CMS inbox), settings (profile edits, photo upload, blocked users, privacy
   toggles).
 - **Mega menu** with Home / Shop / Socials tabs, header dropdowns for messages,
   notifications and more, and a "Quick navigation" panel.
@@ -119,30 +122,30 @@ npm install
 vercel env pull .env.local   # DATABASE_URL and friends
 npm run db:migrate           # apply db/schema.sql (idempotent)
 npm run db:seed              # reset ALL data (content, members, orders) to the demo
-npm run dev                  # http://localhost:3000 (CRM at /crm)
+npm run dev                  # http://localhost:3000 (CMS at /cms)
 npm run build                # production build
 npm run lint                 # ESLint (flat config, eslint-config-next)
 ```
 
 The local environment uses the same database as production (there is one database for
-all environments), so `db:seed` and CRM edits made locally change the live site.
+all environments), so `db:seed` and CMS edits made locally change the live site.
 
 ## Project structure
 
 ```
 pages/            routes (Pages Router); public pages use getStaticProps + ISR
   api/            auth, me, checkout, comments, inbox, public album data
-  api/crm/        CRM API (admin session required)
-  crm/            the CRM app
+  api/cms/        CMS API (admin session required)
+  cms/            the CMS app
 components/       page sections and shared UI
   ui/             Button, Modal/Drawer, form fields, SmartImage (any image host), …
   modals/         global pop-ups (cart, checkout, purchase, chat, settings, …)
   comments/       comment threads (DB-backed)
-  crm/            CRM layout, entity definitions, editors, artist hub
+  crm/            CMS layout, entity definitions, editors, artist hub
 db/schema.sql     database schema
 lib/
   server/         server-only: db client, auth/sessions, API helpers, content queries,
-                  seed/reset, checkout pricing, CRM engine, ISR revalidation
+                  seed/reset, checkout pricing, CMS engine, ISR revalidation
   placements.js   which content can appear on which parts of the site
   store.js        browser-local state (cart, likes, follows, playlist, chat,
                   notifications, settings); credits, points and orders come from the server
@@ -161,10 +164,10 @@ public/           images (including crops from the design mock)
   from picsum.photos placeholders.
 - Audio uses the SoundHelix sample MP3s and video uses public sample clips (W3C, MDN,
   test-videos.co.uk) until licensed media is available. Clips with sound have English
-  captions in `public/captions`. Replace any of them in the CRM with your own URLs
+  captions in `public/captions`. Replace any of them in the CMS with your own URLs
   (YouTube / Vimeo links work for videos).
 - The database is seeded from the generators in `utils/` (same ids as before, so old
-  links keep working) together with a few demo members, orders and inbox messages. CRM →
+  links keep working) together with a few demo members, orders and inbox messages. CMS →
   Settings → **Reset to demo data** (or `npm run db:seed`) restores it.
 - Payments are simulated: card checkouts always succeed, credits are real balances on
   the member's account. Messages, likes, follows, playlists and notifications stay in the

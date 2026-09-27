@@ -50,7 +50,7 @@ function SettingsForm({ settings, onSaved }) {
     try {
       const values = { signup_bonus_credits: Number(bonus) };
       for (const [key, text] of Object.entries(texts)) values[key] = JSON.parse(text);
-      const { settings: saved } = await crmFetch("/api/crm/settings", {
+      const { settings: saved } = await crmFetch("/api/cms/settings", {
         method: "PUT",
         body: { values }
       });
@@ -134,7 +134,7 @@ function RefreshCard() {
   async function refresh() {
     setBusy(true);
     try {
-      const { revalidation } = await crmFetch("/api/crm/revalidate", { method: "POST" });
+      const { revalidation } = await crmFetch("/api/cms/revalidate", { method: "POST" });
       if (revalidation.skipped)
         toast.success("Dev server: pages are always fresh, nothing to refresh.");
       else {
@@ -171,7 +171,7 @@ function ResetCard({ onReset }) {
     setBusy(true);
     const pending = toast.loading("Resetting to the demo data…");
     try {
-      const result = await crmFetch("/api/crm/reset", { method: "POST", body: { scope, confirm } });
+      const result = await crmFetch("/api/cms/reset", { method: "POST", body: { scope, confirm } });
       const total = Object.values(result.counts || {}).reduce((sum, n) => sum + n, 0);
       toast.success(`Demo data restored (${total} rows).`, { id: pending });
       setConfirm("");
@@ -187,7 +187,7 @@ function ResetCard({ onReset }) {
       <form onSubmit={reset} className="flex flex-col gap-4">
         <p className="flex gap-2 text-sm leading-6 text-neutral-700">
           <ExclamationTriangleIcon className="mt-1 h-4 w-4 shrink-0 text-pmred" />
-          Replaces the data with the original demo data. Everything edited or created in the CRM is
+          Replaces the data with the original demo data. Everything edited or created in the CMS is
           lost. The admin session is kept.
         </p>
         <Segmented
@@ -232,7 +232,7 @@ function ClearCard({ onCleared }) {
     setBusy(true);
     const pending = toast.loading("Clearing data…");
     try {
-      const result = await crmFetch("/api/crm/clear", { method: "POST", body: { scope, confirm } });
+      const result = await crmFetch("/api/cms/clear", { method: "POST", body: { scope, confirm } });
       const total = Object.values(result.counts || {}).reduce((sum, n) => sum + n, 0);
       toast.success(`Cleared ${total} rows. The site is empty now.`, { id: pending });
       setConfirm("");
@@ -303,7 +303,7 @@ function ClearCard({ onCleared }) {
 }
 
 export default function SettingsPage() {
-  const { data, error, reload, setData } = useCrmData("/api/crm/settings");
+  const { data, error, reload, setData } = useCrmData("/api/cms/settings");
   const settings = data?.settings;
   return (
     <CrmLayout title="Settings">

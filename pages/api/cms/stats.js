@@ -5,7 +5,7 @@ import { attachThreadTitles } from "../../../lib/server/crm/threads";
 // Dashboard: counts, recent orders, newest members, latest comments, unread inbox and
 // the audit log.
 
-// CRM edits and resets; sign-ins (admin or member), sign-ups and form posts go to the
+// CMS edits and resets; sign-ins (admin or member), sign-ups and form posts go to the
 // separate "Site activity" feed.
 const CRM_EDIT = `(actor like 'admin:%' or actor = 'system')
   and action not in ('login', 'login_failed', 'logout')`;
@@ -43,7 +43,7 @@ export default apiHandler({
         from comments order by created_at desc limit 6`),
       sql.query(`select id, kind, name, email, subject, body, created_at from inbox
         where status = 'new' order by created_at desc limit 6`),
-      // CRM edits (and resets) vs. site activity (member sign-ups/logins, form posts,
+      // CMS edits (and resets) vs. site activity (member sign-ups/logins, form posts,
       // failed logins) — the latter is high-volume, so it gets its own feed.
       sql.query(`select id::text as id, actor, action, entity, entity_id, detail, created_at
         from audit_log where ${CRM_EDIT}
